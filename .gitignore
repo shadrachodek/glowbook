@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build
+*.log
+*.cache
+
+# Testing
+.phpunit.result.cache
+coverage/
+tests/wp-tests-config.php
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local config
+.env
+phpstan.neon.dist
+phpunit.xml.dist
+TESTING.md
+.wp-playground/

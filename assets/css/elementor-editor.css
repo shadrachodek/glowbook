@@ -1,0 +1,973 @@
+/**
+ * GlowBook Elementor Editor Styles
+ *
+ * @package GlowBook
+ *
+ * Design System:
+ * - Primary: Deep rose (#c4426a) with coral accent (#ff6b6b)
+ * - Neutrals: Warm grays for sophistication
+ * - Typography: System fonts with refined weights
+ * - Motion: Smooth, purposeful animations
+ */
+
+/* ==========================================================================
+   Design Tokens
+   ========================================================================== */
+:root {
+    /* Brand Colors */
+    --gb-primary: #c4426a;
+    --gb-primary-dark: #a33556;
+    --gb-primary-light: #e8899f;
+    --gb-accent: #ff6b6b;
+    --gb-accent-soft: rgba(255, 107, 107, 0.12);
+
+    /* Neutrals - Warm Gray Scale */
+    --gb-black: #1a1a1a;
+    --gb-gray-900: #2d2d2d;
+    --gb-gray-700: #4a4a4a;
+    --gb-gray-500: #6b6b6b;
+    --gb-gray-300: #a8a8a8;
+    --gb-gray-200: #d4d4d4;
+    --gb-gray-100: #ebebeb;
+    --gb-gray-50: #f7f7f7;
+    --gb-white: #ffffff;
+
+    /* Shadows */
+    --gb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --gb-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --gb-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --gb-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.14);
+
+    /* Transitions */
+    --gb-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --gb-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --gb-duration-fast: 0.15s;
+    --gb-duration-normal: 0.25s;
+    --gb-duration-slow: 0.4s;
+
+    /* Spacing */
+    --gb-space-xs: 4px;
+    --gb-space-sm: 8px;
+    --gb-space-md: 16px;
+    --gb-space-lg: 24px;
+    --gb-space-xl: 32px;
+    --gb-space-2xl: 48px;
+
+    /* Border Radius */
+    --gb-radius-sm: 6px;
+    --gb-radius-md: 10px;
+    --gb-radius-lg: 16px;
+    --gb-radius-full: 9999px;
+}
+
+/* ==========================================================================
+   Widget Placeholder Styles
+   ========================================================================== */
+.sodek-gb-elementor-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: var(--gb-space-xl);
+    background: linear-gradient(135deg, var(--gb-gray-50) 0%, var(--gb-gray-100) 100%);
+    border: 2px dashed var(--gb-gray-200);
+    border-radius: var(--gb-radius-md);
+    text-align: center;
+    transition: border-color var(--gb-duration-normal) var(--gb-ease-out),
+                background var(--gb-duration-normal) var(--gb-ease-out);
+}
+
+.sodek-gb-elementor-placeholder:hover {
+    border-color: var(--gb-primary-light);
+    background: linear-gradient(135deg, var(--gb-white) 0%, var(--gb-gray-50) 100%);
+}
+
+.sodek-gb-elementor-placeholder-icon {
+    margin-bottom: var(--gb-space-md);
+    transition: transform var(--gb-duration-normal) var(--gb-ease-bounce);
+}
+
+.sodek-gb-elementor-placeholder:hover .sodek-gb-elementor-placeholder-icon {
+    transform: scale(1.1);
+}
+
+.sodek-gb-elementor-placeholder-icon i {
+    font-size: 44px;
+    color: var(--gb-primary);
+    opacity: 0.7;
+}
+
+.sodek-gb-elementor-placeholder-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gb-gray-700);
+    margin-bottom: var(--gb-space-sm);
+    letter-spacing: -0.01em;
+}
+
+.sodek-gb-elementor-placeholder-desc {
+    font-size: 13px;
+    color: var(--gb-gray-500);
+    line-height: 1.6;
+}
+
+.sodek-gb-elementor-placeholder-desc small {
+    display: block;
+    margin-top: var(--gb-space-xs);
+    color: var(--gb-gray-300);
+    font-size: 12px;
+}
+
+/* GlowBook Widget Category Icon */
+.elementor-panel .elementor-element-wrapper .icon[class*="glowbook"] i::before {
+    content: "\f073";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 400;
+}
+
+/* Widget Icons in Panel */
+.elementor-element [class*="sodek-gb"] .icon i {
+    color: var(--gb-primary);
+}
+
+/* ==========================================================================
+   Services Grid Editor Styles
+   ========================================================================== */
+.sodek-gb-services-grid {
+    display: grid;
+    gap: var(--gb-space-xl);
+}
+
+.sodek-gb-services-grid.sodek-gb-columns-1 {
+    grid-template-columns: 1fr;
+}
+
+.sodek-gb-services-grid.sodek-gb-columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.sodek-gb-services-grid.sodek-gb-columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.sodek-gb-services-grid.sodek-gb-columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* ==========================================================================
+   Service Card Editor Styles
+   ========================================================================== */
+.sodek-gb-service-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--gb-white);
+    border-radius: var(--gb-radius-md);
+    overflow: hidden;
+    box-shadow: var(--gb-shadow-md);
+    transition: transform var(--gb-duration-normal) var(--gb-ease-out),
+                box-shadow var(--gb-duration-normal) var(--gb-ease-out);
+}
+
+.sodek-gb-service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--gb-shadow-hover);
+}
+
+.sodek-gb-service-card--horizontal {
+    flex-direction: row;
+}
+
+.sodek-gb-service-card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.sodek-gb-service-card-link:focus {
+    outline: 2px solid var(--gb-primary);
+    outline-offset: 2px;
+}
+
+.sodek-gb-service-card-image {
+    position: relative;
+    overflow: hidden;
+    background: var(--gb-gray-100);
+}
+
+.sodek-gb-service-card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.03) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.sodek-gb-service-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--gb-duration-slow) var(--gb-ease-out);
+}
+
+.sodek-gb-service-card:hover .sodek-gb-service-card-image img {
+    transform: scale(1.06);
+}
+
+.sodek-gb-service-card--horizontal .sodek-gb-service-card-image {
+    flex: 0 0 40%;
+}
+
+.sodek-gb-service-card-content {
+    display: flex;
+    flex-direction: column;
+    padding: var(--gb-space-lg);
+    flex: 1;
+}
+
+.sodek-gb-service-card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gb-gray-900);
+    margin: 0 0 var(--gb-space-sm) 0;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.sodek-gb-service-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--gb-space-md);
+    margin-bottom: var(--gb-space-md);
+    font-size: 14px;
+}
+
+.sodek-gb-service-card-price {
+    font-weight: 700;
+    color: var(--gb-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.sodek-gb-service-card-duration {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--gb-gray-500);
+    font-size: 13px;
+}
+
+.sodek-gb-service-card-duration svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+}
+
+.sodek-gb-service-card-excerpt,
+.sodek-gb-service-card-description {
+    font-size: 14px;
+    color: var(--gb-gray-500);
+    line-height: 1.65;
+    margin-bottom: var(--gb-space-md);
+    flex: 1;
+}
+
+.sodek-gb-service-card-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: var(--gb-primary);
+    color: var(--gb-white);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border-radius: var(--gb-radius-sm);
+    transition: background var(--gb-duration-fast) var(--gb-ease-out),
+                transform var(--gb-duration-fast) var(--gb-ease-out);
+    position: relative;
+    z-index: 2;
+    letter-spacing: 0.01em;
+}
+
+.sodek-gb-service-card-button:hover {
+    background: var(--gb-primary-dark);
+    color: var(--gb-white);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-service-card-button:focus {
+    outline: 2px solid var(--gb-primary);
+    outline-offset: 2px;
+}
+
+.sodek-gb-service-card-button:active {
+    transform: translateY(0);
+}
+
+/* Elementor Widget Container */
+.sodek-gb-elementor-widget {
+    width: 100%;
+}
+
+/* ==========================================================================
+   Services List Styles
+   ========================================================================== */
+
+/* Style 1: Clean List Layout - Elegant & Refined */
+.sodek-gb-services-list--style-1 {
+    display: flex;
+    flex-direction: column;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--gb-space-lg) 0;
+    border-bottom: 1px solid var(--gb-gray-200);
+    position: relative;
+    transition: background var(--gb-duration-normal) var(--gb-ease-out);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-item::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    right: -16px;
+    top: 0;
+    bottom: 0;
+    background: var(--gb-gray-50);
+    border-radius: var(--gb-radius-sm);
+    opacity: 0;
+    transition: opacity var(--gb-duration-normal) var(--gb-ease-out);
+    z-index: -1;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-item:hover::before {
+    opacity: 1;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-item:first-child {
+    border-top: 1px solid var(--gb-gray-200);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-info {
+    flex: 1;
+    min-width: 0;
+    padding-right: var(--gb-space-lg);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gb-gray-900);
+    margin: 0;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    transition: color var(--gb-duration-fast) var(--gb-ease-out);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-item:hover .sodek-gb-service-list-title {
+    color: var(--gb-black);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gb-space-lg);
+    flex-shrink: 0;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-meta {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gb-space-sm);
+    white-space: nowrap;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-price {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--gb-gray-900);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-duration {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gb-accent);
+    padding: 2px 8px;
+    background: var(--gb-accent-soft);
+    border-radius: var(--gb-radius-full);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    background: var(--gb-black);
+    color: var(--gb-white);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border-radius: var(--gb-radius-full);
+    transition: background var(--gb-duration-fast) var(--gb-ease-out),
+                transform var(--gb-duration-fast) var(--gb-ease-bounce),
+                box-shadow var(--gb-duration-fast) var(--gb-ease-out);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-button:hover {
+    background: var(--gb-gray-700);
+    color: var(--gb-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.25);
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-button:focus {
+    outline: 2px solid var(--gb-black);
+    outline-offset: 2px;
+}
+
+.sodek-gb-services-list--style-1 .sodek-gb-service-list-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Style 2: Icon Cards Layout - Sophisticated & Clean */
+.sodek-gb-services-list--style-2 {
+    display: grid;
+    gap: var(--gb-space-lg);
+}
+
+.sodek-gb-services-list--style-2.sodek-gb-columns-1 {
+    grid-template-columns: 1fr;
+}
+
+.sodek-gb-services-list--style-2.sodek-gb-columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.sodek-gb-services-list--style-2.sodek-gb-columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.sodek-gb-services-list--style-2.sodek-gb-columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--gb-space-xl) var(--gb-space-lg);
+    background: var(--gb-white);
+    border: 1px solid var(--gb-gray-200);
+    border-radius: var(--gb-radius-md);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: border-color var(--gb-duration-normal) var(--gb-ease-out),
+                box-shadow var(--gb-duration-normal) var(--gb-ease-out),
+                transform var(--gb-duration-normal) var(--gb-ease-out);
+}
+
+/* Subtle gradient overlay on hover */
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, var(--gb-accent-soft) 100%);
+    opacity: 0;
+    transition: opacity var(--gb-duration-normal) var(--gb-ease-out);
+    pointer-events: none;
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover {
+    border-color: var(--gb-primary);
+    box-shadow: var(--gb-shadow-lg);
+    transform: translateY(-4px);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover::before {
+    opacity: 1;
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:focus {
+    outline: 2px solid var(--gb-primary);
+    outline-offset: 2px;
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    margin-bottom: var(--gb-space-lg);
+    position: relative;
+    z-index: 1;
+    transition: transform var(--gb-duration-normal) var(--gb-ease-bounce);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover .sodek-gb-icon-card-icon {
+    transform: scale(1.08);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: filter var(--gb-duration-normal) var(--gb-ease-out);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover .sodek-gb-icon-card-icon img {
+    filter: brightness(1.05);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon svg {
+    width: 64px;
+    height: 64px;
+    stroke: var(--gb-primary);
+    stroke-width: 1.5;
+    transition: stroke var(--gb-duration-fast) var(--gb-ease-out);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover .sodek-gb-icon-card-icon svg {
+    stroke: var(--gb-primary-dark);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--gb-gray-900);
+    margin: 0 0 var(--gb-space-sm) 0;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 1;
+    transition: color var(--gb-duration-fast) var(--gb-ease-out);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover .sodek-gb-icon-card-title {
+    color: var(--gb-black);
+}
+
+.sodek-gb-services-list--style-2 .sodek-gb-icon-card-desc {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gb-gray-500);
+    line-height: 1.65;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    max-width: 280px;
+}
+
+/* Style 3: Appointment Cards Layout - Premium Booking Style */
+.sodek-gb-services-list--style-3 {
+    display: grid;
+    gap: var(--gb-space-lg);
+}
+
+.sodek-gb-services-list--style-3.sodek-gb-columns-1 {
+    grid-template-columns: 1fr;
+}
+
+.sodek-gb-services-list--style-3.sodek-gb-columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.sodek-gb-services-list--style-3.sodek-gb-columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.sodek-gb-services-list--style-3.sodek-gb-columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.sodek-gb-appt-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--gb-space-lg);
+    background: var(--gb-white);
+    border: 1px solid var(--gb-gray-200);
+    border-radius: var(--gb-radius-md);
+    transition: border-color var(--gb-duration-normal) var(--gb-ease-out),
+                box-shadow var(--gb-duration-normal) var(--gb-ease-out);
+}
+
+.sodek-gb-appt-card:hover {
+    border-color: var(--gb-gray-300);
+    box-shadow: var(--gb-shadow-md);
+}
+
+.sodek-gb-appt-card-content {
+    flex: 1;
+    min-width: 0;
+    padding-right: var(--gb-space-lg);
+}
+
+.sodek-gb-appt-card-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gb-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--gb-space-xs);
+}
+
+.sodek-gb-appt-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gb-black);
+    margin: 0 0 var(--gb-space-md) 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.sodek-gb-appt-card-divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--gb-gray-200);
+    margin-bottom: var(--gb-space-md);
+}
+
+.sodek-gb-appt-card-price {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #C4A35A; /* Golden/Mustard color from screenshot */
+    font-variant-numeric: tabular-nums;
+}
+
+.sodek-gb-appt-card-price .woocommerce-Price-amount {
+    color: inherit;
+}
+
+.sodek-gb-appt-card-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gb-space-sm);
+    padding: 14px 24px;
+    background: #C4A35A; /* Golden/Mustard color */
+    color: var(--gb-white);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border-radius: var(--gb-radius-sm);
+    transition: background var(--gb-duration-fast) var(--gb-ease-out),
+                transform var(--gb-duration-fast) var(--gb-ease-out);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.sodek-gb-appt-card-button:hover {
+    background: #A88A45; /* Darker golden on hover */
+    color: var(--gb-white);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-appt-card-button:focus {
+    outline: 2px solid #C4A35A;
+    outline-offset: 2px;
+}
+
+.sodek-gb-appt-card-button:active {
+    transform: translateY(0);
+}
+
+.sodek-gb-appt-card-button svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Responsive Styles
+   ========================================================================== */
+
+/* Grid Layout Responsive */
+@media (max-width: 1024px) {
+    .sodek-gb-services-grid.sodek-gb-columns-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-services-grid.sodek-gb-columns-3,
+    .sodek-gb-services-grid.sodek-gb-columns-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sodek-gb-service-card--horizontal {
+        flex-direction: column;
+    }
+
+    .sodek-gb-service-card--horizontal .sodek-gb-service-card-image {
+        flex: none;
+        height: 200px;
+    }
+
+    .sodek-gb-service-card-content {
+        padding: var(--gb-space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-services-grid.sodek-gb-columns-2,
+    .sodek-gb-services-grid.sodek-gb-columns-3,
+    .sodek-gb-services-grid.sodek-gb-columns-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Style 1: Clean List Responsive */
+@media (max-width: 768px) {
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gb-space-md);
+        padding: var(--gb-space-lg) 0;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-item::before {
+        left: -12px;
+        right: -12px;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-info {
+        padding-right: 0;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-title {
+        font-size: 16px;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-price {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--gb-space-md);
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-meta {
+        justify-content: flex-start;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-button {
+        width: 100%;
+    }
+}
+
+/* Style 2: Icon Cards Responsive */
+@media (max-width: 1024px) {
+    .sodek-gb-services-list--style-2.sodek-gb-columns-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-services-list--style-2.sodek-gb-columns-3,
+    .sodek-gb-services-list--style-2.sodek-gb-columns-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sodek-gb-services-list--style-2 {
+        gap: var(--gb-space-md);
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card {
+        padding: var(--gb-space-lg) var(--gb-space-md);
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon {
+        width: 68px;
+        height: 68px;
+        margin-bottom: var(--gb-space-md);
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon svg {
+        width: 52px;
+        height: 52px;
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-title {
+        font-size: 15px;
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-desc {
+        font-size: 13px;
+        line-height: 1.55;
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-services-list--style-2.sodek-gb-columns-2,
+    .sodek-gb-services-list--style-2.sodek-gb-columns-3,
+    .sodek-gb-services-list--style-2.sodek-gb-columns-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card {
+        flex-direction: row;
+        text-align: left;
+        gap: var(--gb-space-md);
+        padding: var(--gb-space-lg);
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon {
+        flex-shrink: 0;
+        margin-bottom: 0;
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-content {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+/* Style 3: Appointment Cards Responsive */
+@media (max-width: 1024px) {
+    .sodek-gb-services-list--style-3.sodek-gb-columns-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-services-list--style-3.sodek-gb-columns-3,
+    .sodek-gb-services-list--style-3.sodek-gb-columns-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sodek-gb-services-list--style-3 {
+        gap: var(--gb-space-md);
+    }
+
+    .sodek-gb-appt-card {
+        padding: var(--gb-space-md);
+    }
+
+    .sodek-gb-appt-card-title {
+        font-size: 16px;
+    }
+
+    .sodek-gb-appt-card-button {
+        padding: 12px 18px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-services-list--style-3.sodek-gb-columns-2,
+    .sodek-gb-services-list--style-3.sodek-gb-columns-3,
+    .sodek-gb-services-list--style-3.sodek-gb-columns-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-appt-card {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: var(--gb-space-md);
+    }
+
+    .sodek-gb-appt-card-content {
+        padding-right: 0;
+    }
+
+    .sodek-gb-appt-card-button {
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Accessibility & Reduced Motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .sodek-gb-service-card,
+    .sodek-gb-service-card-image img,
+    .sodek-gb-service-card-button,
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-item,
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-button,
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card,
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card-icon,
+    .sodek-gb-appt-card,
+    .sodek-gb-appt-card-button,
+    .sodek-gb-elementor-placeholder,
+    .sodek-gb-elementor-placeholder-icon {
+        transition: none;
+    }
+
+    .sodek-gb-service-card:hover,
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-button:hover,
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card:hover,
+    .sodek-gb-appt-card-button:hover {
+        transform: none;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-item {
+        border-bottom-width: 2px;
+    }
+
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card {
+        border-width: 2px;
+    }
+
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-button,
+    .sodek-gb-service-card-button {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+    .sodek-gb-service-card,
+    .sodek-gb-services-list--style-2 .sodek-gb-icon-card,
+    .sodek-gb-appt-card {
+        box-shadow: none;
+        border: 1px solid #000;
+        break-inside: avoid;
+    }
+
+    .sodek-gb-service-card-button,
+    .sodek-gb-services-list--style-1 .sodek-gb-service-list-button,
+    .sodek-gb-appt-card-button {
+        background: transparent;
+        color: #000;
+        border: 1px solid #000;
+    }
+}

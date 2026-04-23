@@ -1,0 +1,3741 @@
+/**
+ * GlowBook Booking Public Styles
+ *
+ * Uses CSS custom properties (design tokens) for theme compatibility.
+ * Follows WordPress Design System patterns.
+ */
+
+/* =====================================================
+   Bookable Product Page - Hide Duplicate Theme Galleries
+   ===================================================== */
+
+/* Hide theme hero/slider sections on bookable product pages */
+/* Uses both body class (via JS injection) and product wrapper class for maximum compatibility */
+body.sodek-gb-bookable-product .wp-block-woocommerce-product-image-gallery,
+body.sodek-gb-bookable-product .woocommerce-product-gallery:not(.sodek-gb-product-gallery),
+body.sodek-gb-bookable-product .product-gallery-slider,
+body.sodek-gb-bookable-product .product-images-slider,
+body.sodek-gb-bookable-product .product-hero-gallery,
+body.sodek-gb-bookable-product .flatsome-product-gallery,
+body.sodek-gb-bookable-product .astra-product-gallery,
+body.sodek-gb-bookable-product > .wp-block-cover:first-of-type,
+body.sodek-gb-bookable-product .wp-block-group:has(.wp-block-woocommerce-product-image-gallery),
+.product.sodek-gb-bookable-service .wp-block-woocommerce-product-image-gallery,
+.product.sodek-gb-bookable-service .woocommerce-product-gallery:not(.sodek-gb-product-gallery),
+.product.sodek-gb-bookable-service .product-gallery-slider {
+    display: none !important;
+}
+
+/* Ensure our custom gallery is always visible */
+body.sodek-gb-bookable-product .sodek-gb-product-gallery,
+.product.sodek-gb-bookable-service .sodek-gb-product-gallery {
+    display: block !important;
+}
+
+/* =====================================================
+   Product Layout Options
+   ===================================================== */
+
+/* ----- Centered Layout (No Image) ----- */
+/* Uses WooCommerce hook to remove images, these styles handle the layout */
+body.sodek-gb-centered-layout div.product div.summary,
+body.sodek-gb-centered-layout .woocommerce div.product div.summary,
+body.sodek-gb-centered-layout .summary.entry-summary {
+    width: 100% !important;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    float: none !important;
+    padding: 0 var(--sodek-gb-space-4, 1rem) !important;
+}
+
+/* Center product title and price for centered layout */
+body.sodek-gb-centered-layout .product_title,
+body.sodek-gb-centered-layout div.product .price,
+body.sodek-gb-centered-layout .woocommerce-product-details__short-description {
+    text-align: center !important;
+}
+
+body.sodek-gb-centered-layout .woocommerce-breadcrumb {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* ----- Compact Card Layout ----- */
+body.sodek-gb-compact-layout div.product div.summary,
+body.sodek-gb-compact-layout .woocommerce div.product div.summary,
+body.sodek-gb-compact-layout .summary.entry-summary {
+    width: 100% !important;
+    max-width: 550px !important;
+    margin: 0 auto !important;
+    float: none !important;
+}
+
+body.sodek-gb-compact-layout .product_title,
+body.sodek-gb-compact-layout div.product .price {
+    text-align: center !important;
+}
+
+body.sodek-gb-compact-layout .sodek-gb-product-booking-form {
+    max-width: 100% !important;
+    padding: var(--sodek-gb-space-3, 0.75rem) !important;
+}
+
+body.sodek-gb-compact-layout .sodek-gb-price-header {
+    padding: var(--sodek-gb-space-2, 0.5rem) var(--sodek-gb-space-3, 0.75rem) !important;
+}
+
+body.sodek-gb-compact-layout .sodek-gb-booking-section {
+    padding: var(--sodek-gb-space-3, 0.75rem) !important;
+}
+
+/* ----- No Product Image (fallback cleanup) ----- */
+body.sodek-gb-no-product-image .woocommerce-product-gallery,
+body.sodek-gb-no-product-image div.product div.images {
+    display: none !important;
+}
+
+/* =====================================================
+   Full-Width Bookable Product Layout (Legacy)
+   ===================================================== */
+
+/* Override theme's 2-column product layout */
+body.sodek-gb-bookable-product .sodek-gb-fullwidth-product,
+body.sodek-gb-bookable-product .sodek-gb-fullwidth-product > .product,
+body.sodek-gb-bookable-product .sodek-gb-fullwidth-product .product {
+    display: block !important;
+    width: 100% !important;
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    float: none !important;
+}
+
+/* Reset WooCommerce default grid */
+body.sodek-gb-bookable-product .woocommerce-product-gallery,
+body.sodek-gb-bookable-product .summary.entry-summary,
+body.sodek-gb-bookable-product div.product div.images,
+body.sodek-gb-bookable-product div.product div.summary {
+    float: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Product image - centered and constrained */
+body.sodek-gb-bookable-product .woocommerce-product-gallery {
+    max-width: 500px !important;
+    margin: 0 auto 2rem !important;
+}
+
+body.sodek-gb-bookable-product .woocommerce-product-gallery img {
+    border-radius: 12px;
+}
+
+/* Booking Header */
+.sodek-gb-booking-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.sodek-gb-product-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--sodek-gb-color-text, #1e1e1e);
+    line-height: 1.2;
+}
+
+.sodek-gb-product-description {
+    font-size: 1rem;
+    color: var(--sodek-gb-color-text-secondary, #50575e);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.sodek-gb-product-description p {
+    margin: 0;
+}
+
+/* Summary section - full width */
+body.sodek-gb-bookable-product .summary.entry-summary {
+    padding: 0 !important;
+}
+
+/* Hide sidebar on bookable product pages */
+body.sodek-gb-bookable-product #secondary,
+body.sodek-gb-bookable-product .sidebar,
+body.sodek-gb-bookable-product aside.widget-area,
+body.sodek-gb-bookable-product .site-sidebar {
+    display: none !important;
+}
+
+/* Make content area full width when sidebar is hidden */
+body.sodek-gb-bookable-product #primary,
+body.sodek-gb-bookable-product .site-main,
+body.sodek-gb-bookable-product .content-area,
+body.sodek-gb-bookable-product .hentry {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    margin: 0 auto !important;
+}
+
+/* Remove any padding/margins from theme wrappers */
+body.sodek-gb-bookable-product .woocommerce-notices-wrapper {
+    max-width: 800px;
+    margin: 0 auto 1rem;
+}
+
+/* =====================================================
+   Design Tokens (CSS Custom Properties)
+
+   These tokens provide theme-agnostic defaults that can be
+   overridden by themes using the same variable names.
+   ===================================================== */
+
+.sodek-gb-booking-form,
+.sodek-gb-services-grid,
+.sodek-gb-my-bookings,
+.sodek-gb-service-selector,
+.sodek-gb-product-booking-form {
+    /* Color Primitives */
+    --sodek-gb-color-primary: #2271b1;
+    --sodek-gb-color-primary-hover: #135e96;
+    --sodek-gb-color-primary-dark: #0a4b78;
+    --sodek-gb-color-success: #00a32a;
+    --sodek-gb-color-success-bg: #edfaef;
+    --sodek-gb-color-warning: #dba617;
+    --sodek-gb-color-warning-bg: #fcf9e8;
+    --sodek-gb-color-error: #d63638;
+    --sodek-gb-color-error-bg: #fcf0f1;
+
+    /* Neutral Colors */
+    --sodek-gb-color-text: #1e1e1e;
+    --sodek-gb-color-text-secondary: #50575e;
+    --sodek-gb-color-text-muted: #757575;
+    --sodek-gb-color-border: #c3c4c7;
+    --sodek-gb-color-border-light: #e0e0e0;
+    --sodek-gb-color-background: #ffffff;
+    --sodek-gb-color-background-subtle: #f6f7f7;
+    --sodek-gb-color-background-hover: #f0f0f0;
+
+    /* Spacing Scale (based on 4px grid) */
+    --sodek-gb-space-1: 4px;
+    --sodek-gb-space-2: 8px;
+    --sodek-gb-space-3: 12px;
+    --sodek-gb-space-4: 16px;
+    --sodek-gb-space-5: 20px;
+    --sodek-gb-space-6: 24px;
+    --sodek-gb-space-8: 32px;
+    --sodek-gb-space-10: 40px;
+
+    /* Border Radius */
+    --sodek-gb-radius-sm: 4px;
+    --sodek-gb-radius-md: 8px;
+    --sodek-gb-radius-lg: 12px;
+    --sodek-gb-radius-full: 9999px;
+
+    /* Typography */
+    --sodek-gb-font-size-sm: 0.875rem;
+    --sodek-gb-font-size-base: 1rem;
+    --sodek-gb-font-size-md: 1.125rem;
+    --sodek-gb-font-size-lg: 1.25rem;
+    --sodek-gb-font-size-xl: 1.5rem;
+    --sodek-gb-font-weight-normal: 400;
+    --sodek-gb-font-weight-medium: 500;
+    --sodek-gb-font-weight-semibold: 600;
+    --sodek-gb-line-height: 1.5;
+
+    /* Shadows */
+    --sodek-gb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --sodek-gb-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --sodek-gb-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* Transitions */
+    --sodek-gb-transition-fast: 150ms ease-in-out;
+    --sodek-gb-transition-normal: 200ms ease-in-out;
+
+    /* Focus Ring (accessibility) */
+    --sodek-gb-focus-ring: 0 0 0 2px var(--sodek-gb-color-background), 0 0 0 4px var(--sodek-gb-color-primary);
+
+    /* Base styles */
+    font-family: inherit;
+    line-height: var(--sodek-gb-line-height);
+    color: var(--sodek-gb-color-text);
+    box-sizing: border-box;
+}
+
+.sodek-gb-booking-form *,
+.sodek-gb-services-grid *,
+.sodek-gb-my-bookings *,
+.sodek-gb-service-selector *,
+.sodek-gb-product-booking-form * {
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   Service Cards Grid
+   ===================================================== */
+
+.sodek-gb-services-grid {
+    display: grid;
+    gap: var(--sodek-gb-space-6);
+    margin: var(--sodek-gb-space-6) 0;
+}
+
+.sodek-gb-columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.sodek-gb-columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.sodek-gb-columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.sodek-gb-service-card {
+    background: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-lg);
+    box-shadow: var(--sodek-gb-shadow-sm);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    overflow: hidden;
+    transition: transform var(--sodek-gb-transition-normal),
+                box-shadow var(--sodek-gb-transition-normal),
+                border-color var(--sodek-gb-transition-normal);
+}
+
+.sodek-gb-service-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sodek-gb-shadow-md);
+    border-color: var(--sodek-gb-color-border);
+}
+
+.sodek-gb-service-card:focus-within {
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-service-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.sodek-gb-service-content {
+    padding: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-service-title {
+    margin: 0 0 var(--sodek-gb-space-2);
+    font-size: var(--sodek-gb-font-size-lg);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-service-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--sodek-gb-space-4);
+    color: var(--sodek-gb-color-text-secondary);
+    font-size: var(--sodek-gb-font-size-sm);
+}
+
+.sodek-gb-service-duration {
+    display: flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-1);
+}
+
+.sodek-gb-service-duration svg {
+    opacity: 0.7;
+}
+
+.sodek-gb-service-price {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+    font-size: var(--sodek-gb-font-size-md);
+}
+
+.sodek-gb-service-description {
+    color: var(--sodek-gb-color-text-secondary);
+    font-size: var(--sodek-gb-font-size-sm);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-service-deposit {
+    color: var(--sodek-gb-color-text-muted);
+    font-size: var(--sodek-gb-font-size-sm);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+/* Primary Button (Book Button) */
+.sodek-gb-book-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-primary);
+    color: var(--sodek-gb-color-background);
+    border: none;
+    border-radius: var(--sodek-gb-radius-md);
+    font-size: var(--sodek-gb-font-size-base);
+    font-weight: var(--sodek-gb-font-weight-medium);
+    cursor: pointer;
+    transition: background var(--sodek-gb-transition-fast),
+                box-shadow var(--sodek-gb-transition-fast);
+    text-decoration: none;
+    text-align: center;
+    line-height: 1.4;
+    min-height: 44px; /* Accessibility: minimum touch target */
+}
+
+.sodek-gb-book-button:hover {
+    background: var(--sodek-gb-color-primary-hover);
+    color: var(--sodek-gb-color-background);
+}
+
+.sodek-gb-book-button:focus {
+    outline: none;
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-book-button:active {
+    background: var(--sodek-gb-color-primary-dark);
+}
+
+.sodek-gb-book-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--sodek-gb-color-text-muted);
+}
+
+/* =====================================================
+   Booking Form
+   ===================================================== */
+
+.sodek-gb-booking-form {
+    max-width: 600px;
+    margin: var(--sodek-gb-space-6) auto;
+    padding: var(--sodek-gb-space-6);
+    background: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-lg);
+    box-shadow: var(--sodek-gb-shadow-md);
+    border: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-service-info {
+    background: var(--sodek-gb-color-background-subtle);
+    padding: var(--sodek-gb-space-6);
+    border-radius: var(--sodek-gb-radius-lg);
+    margin-bottom: var(--sodek-gb-space-6);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    text-align: center;
+}
+
+.sodek-gb-service-info h3 {
+    margin: 0 0 var(--sodek-gb-space-3);
+    font-size: var(--sodek-gb-font-size-xl);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-service-info .sodek-gb-service-description {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-service-info p {
+    margin: var(--sodek-gb-space-2) 0;
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-service-info .sodek-gb-price-info {
+    margin-top: var(--sodek-gb-space-5);
+    padding-top: var(--sodek-gb-space-5);
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.sodek-gb-price-info p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--sodek-gb-space-2) 0;
+}
+
+.sodek-gb-balance-info {
+    background: var(--sodek-gb-color-warning-bg);
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+    border-radius: var(--sodek-gb-radius-sm);
+    margin-top: var(--sodek-gb-space-2);
+}
+
+/* =====================================================
+   Calendar
+   ===================================================== */
+
+.sodek-gb-date-picker-section {
+    margin-bottom: var(--sodek-gb-space-6);
+}
+
+.sodek-gb-date-picker-section > label {
+    display: block;
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    font-size: var(--sodek-gb-font-size-md);
+    margin-bottom: var(--sodek-gb-space-4);
+    color: var(--sodek-gb-color-text);
+    text-align: center;
+}
+
+.sodek-gb-calendar {
+    margin-bottom: var(--sodek-gb-space-6);
+    position: relative;
+    z-index: 1;
+    background: var(--sodek-gb-color-background);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    border-radius: var(--sodek-gb-radius-md);
+    padding: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-calendar-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--sodek-gb-space-3) 0;
+    margin-bottom: var(--sodek-gb-space-2);
+    position: relative;
+    z-index: 2;
+}
+
+.sodek-gb-calendar-title {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    font-size: var(--sodek-gb-font-size-md);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-calendar-nav {
+    display: flex;
+    gap: var(--sodek-gb-space-2);
+}
+
+.sodek-gb-calendar-nav button {
+    background: var(--sodek-gb-color-background-subtle);
+    border: 1px solid var(--sodek-gb-color-border);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--sodek-gb-radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--sodek-gb-transition-fast);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-calendar-nav button:hover:not(:disabled) {
+    background: var(--sodek-gb-color-background-hover);
+    border-color: var(--sodek-gb-color-primary);
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-calendar-nav button:focus {
+    outline: none;
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-calendar-nav button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Calendar navigation buttons - ensure clickable on all themes */
+.sodek-gb-calendar-header button.sodek-gb-calendar-prev,
+.sodek-gb-calendar-header button.sodek-gb-calendar-next,
+button.sodek-gb-calendar-prev,
+button.sodek-gb-calendar-next {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 10 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background: var(--sodek-gb-color-background-subtle, #f0f0f0) !important;
+    border: 1px solid var(--sodek-gb-color-border, #c3c4c7) !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: var(--sodek-gb-radius-full, 50%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 var(--sodek-gb-space-1, 4px) !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    color: var(--sodek-gb-color-text, #333) !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+}
+
+.sodek-gb-calendar-header button.sodek-gb-calendar-prev:hover,
+.sodek-gb-calendar-header button.sodek-gb-calendar-next:hover,
+button.sodek-gb-calendar-prev:hover,
+button.sodek-gb-calendar-next:hover {
+    background: var(--sodek-gb-color-background-hover, #e0e0e0) !important;
+    border-color: var(--sodek-gb-color-primary, #2271b1) !important;
+    color: var(--sodek-gb-color-primary, #2271b1) !important;
+}
+
+.sodek-gb-calendar-header button.sodek-gb-calendar-prev:focus,
+.sodek-gb-calendar-header button.sodek-gb-calendar-next:focus,
+button.sodek-gb-calendar-prev:focus,
+button.sodek-gb-calendar-next:focus {
+    box-shadow: var(--sodek-gb-focus-ring, 0 0 0 2px #fff, 0 0 0 4px #2271b1) !important;
+}
+
+.sodek-gb-calendar-header button.sodek-gb-calendar-prev:disabled,
+.sodek-gb-calendar-header button.sodek-gb-calendar-next:disabled,
+button.sodek-gb-calendar-prev:disabled,
+button.sodek-gb-calendar-next:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+.sodek-gb-calendar-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 4px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    width: 100% !important;
+}
+
+.sodek-gb-calendar-day-header {
+    text-align: center !important;
+    font-weight: 600 !important;
+    font-size: 11px !important;
+    color: #888 !important;
+    padding: 8px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    background: transparent !important;
+}
+
+.sodek-gb-calendar-day {
+    aspect-ratio: 1;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: var(--sodek-gb-radius-full);
+    font-size: var(--sodek-gb-font-size-sm);
+    transition: all var(--sodek-gb-transition-fast);
+    position: relative !important;
+    background: transparent;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-calendar-day:hover:not(.sodek-gb-day-disabled):not(.sodek-gb-day-empty) {
+    background: var(--sodek-gb-color-background-hover);
+}
+
+/* Available days - ensure clickable on all themes */
+.sodek-gb-calendar-day.sodek-gb-day-available {
+    font-weight: var(--sodek-gb-font-weight-medium);
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 5 !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-available:hover {
+    background: var(--sodek-gb-color-background-hover, #e8e8e8) !important;
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-available:focus {
+    outline: none;
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-available:active {
+    background: var(--sodek-gb-color-border-light, #d0d0d0) !important;
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-selected {
+    background: var(--sodek-gb-color-primary, #2271b1) !important;
+    color: var(--sodek-gb-color-background, #fff) !important;
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-disabled {
+    color: var(--sodek-gb-color-border);
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-empty {
+    cursor: default;
+    pointer-events: none !important;
+}
+
+.sodek-gb-calendar-day.sodek-gb-day-today {
+    border: 2px solid var(--sodek-gb-color-primary, #2271b1) !important;
+    font-weight: var(--sodek-gb-font-weight-semibold);
+}
+
+/* =====================================================
+   Time Slots
+   ===================================================== */
+
+.sodek-gb-time-slots-container {
+    margin-bottom: var(--sodek-gb-space-6);
+    position: relative;
+    z-index: 1;
+}
+
+.sodek-gb-time-slots-container > label {
+    display: block;
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    font-size: var(--sodek-gb-font-size-md);
+    margin-bottom: var(--sodek-gb-space-4);
+    color: var(--sodek-gb-color-text);
+    text-align: center;
+}
+
+.sodek-gb-time-slots {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: var(--sodek-gb-space-2);
+    position: relative;
+    z-index: 1;
+}
+
+/* Time slots - ensure clickable on all themes */
+.sodek-gb-time-slot {
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-2) !important;
+    text-align: center !important;
+    border: 1px solid var(--sodek-gb-color-border, #c3c4c7) !important;
+    border-radius: var(--sodek-gb-radius-md, 8px) !important;
+    cursor: pointer !important;
+    transition: all var(--sodek-gb-transition-fast);
+    font-size: var(--sodek-gb-font-size-sm);
+    font-weight: var(--sodek-gb-font-weight-medium);
+    background: var(--sodek-gb-color-background, #fff) !important;
+    color: var(--sodek-gb-color-text, #1e1e1e) !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 5 !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 44px; /* Accessibility: minimum touch target */
+}
+
+.sodek-gb-time-slot:hover {
+    border-color: var(--sodek-gb-color-primary, #2271b1) !important;
+    background: var(--sodek-gb-color-background-subtle, #f6f7f7) !important;
+    color: var(--sodek-gb-color-primary, #2271b1) !important;
+}
+
+.sodek-gb-time-slot:focus {
+    outline: none !important;
+    box-shadow: var(--sodek-gb-focus-ring, 0 0 0 2px #fff, 0 0 0 4px #2271b1) !important;
+}
+
+.sodek-gb-time-slot:active {
+    background: var(--sodek-gb-color-background-hover, #e9ecef) !important;
+}
+
+.sodek-gb-time-slot.selected {
+    background: var(--sodek-gb-color-primary, #2271b1) !important;
+    color: var(--sodek-gb-color-background, #fff) !important;
+    border-color: var(--sodek-gb-color-primary, #2271b1) !important;
+}
+
+.sodek-gb-no-slots {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--sodek-gb-color-text-muted);
+    padding: var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-md);
+    border: 1px dashed var(--sodek-gb-color-border);
+}
+
+/* =====================================================
+   Booking Summary
+   ===================================================== */
+
+.sodek-gb-booking-summary {
+    background: var(--sodek-gb-color-success-bg);
+    padding: var(--sodek-gb-space-6);
+    border-radius: var(--sodek-gb-radius-lg);
+    margin-bottom: var(--sodek-gb-space-6);
+    border: 1px solid var(--sodek-gb-color-success);
+    text-align: center;
+}
+
+.sodek-gb-booking-summary h4 {
+    margin: 0 0 var(--sodek-gb-space-4);
+    color: var(--sodek-gb-color-success);
+    font-size: var(--sodek-gb-font-size-md);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sodek-gb-space-2);
+}
+
+.sodek-gb-booking-summary h4::before {
+    content: "\2713";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: var(--sodek-gb-color-success);
+    color: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-full);
+    font-size: 14px;
+}
+
+.sodek-gb-booking-summary p {
+    margin: var(--sodek-gb-space-2) 0;
+    color: var(--sodek-gb-color-text);
+}
+
+/* =====================================================
+   Product Page Integration
+   ===================================================== */
+
+.sodek-gb-product-booking-form {
+    margin-bottom: var(--sodek-gb-space-5);
+    padding: var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-md);
+    border: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-product-booking-form .sodek-gb-service-info {
+    background: var(--sodek-gb-color-background);
+    padding: var(--sodek-gb-space-4);
+    border-radius: var(--sodek-gb-radius-md);
+    margin-bottom: var(--sodek-gb-space-5);
+    border: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-product-booking-form .sodek-gb-service-info p {
+    margin: var(--sodek-gb-space-2) 0;
+}
+
+.sodek-gb-date-picker-container {
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-date-picker-container label {
+    display: block;
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    margin-bottom: var(--sodek-gb-space-3);
+    color: var(--sodek-gb-color-text);
+}
+
+/* Ensure calendar renders properly in product page */
+.sodek-gb-product-booking-form .sodek-gb-calendar,
+.sodek-gb-product-booking-form #sodek-gb-calendar-inline {
+    background: var(--sodek-gb-color-background);
+    padding: var(--sodek-gb-space-4);
+    border-radius: var(--sodek-gb-radius-md);
+    border: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-product-booking-form .sodek-gb-time-slots-container {
+    background: var(--sodek-gb-color-background);
+    padding: var(--sodek-gb-space-4);
+    border-radius: var(--sodek-gb-radius-md);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-product-booking-form .sodek-gb-booking-summary {
+    padding: var(--sodek-gb-space-4);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-product-booking-form .sodek-gb-notes-field {
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+/* =====================================================
+   Cart & Checkout Deposit Display
+   ===================================================== */
+
+/* Cart item pricing breakdown */
+.sodek-gb-cart-item-pricing {
+    margin-top: var(--sodek-gb-space-3);
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+    background: var(--sodek-gb-color-background-subtle);
+    border-left: 3px solid var(--sodek-gb-color-primary);
+    font-size: var(--sodek-gb-font-size-sm);
+    border-radius: 0 var(--sodek-gb-radius-sm) var(--sodek-gb-radius-sm) 0;
+}
+
+.sodek-gb-cart-item-pricing strong {
+    color: var(--sodek-gb-color-primary);
+}
+
+/* Balance notice in cart */
+.sodek-gb-balance-notice {
+    color: #856404;
+    background: var(--sodek-gb-color-warning-bg);
+    padding: var(--sodek-gb-space-2) var(--sodek-gb-space-3);
+    border-radius: var(--sodek-gb-radius-sm);
+    margin-top: var(--sodek-gb-space-3);
+    border-left: 3px solid var(--sodek-gb-color-warning);
+}
+
+/* Cart totals deposit summary */
+.sodek-gb-deposit-summary-row th,
+.sodek-gb-deposit-summary-row td {
+    padding: var(--sodek-gb-space-3) 0;
+    border-top: 1px dashed var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-deposit-summary-row:first-of-type th,
+.sodek-gb-deposit-summary-row:first-of-type td {
+    border-top: 2px solid var(--sodek-gb-color-primary);
+    padding-top: var(--sodek-gb-space-4);
+}
+
+/* Order thank you page notice */
+.sodek-gb-order-deposit-notice {
+    background: var(--sodek-gb-color-success-bg);
+    border: 1px solid var(--sodek-gb-color-success);
+    border-left-width: 4px;
+    border-radius: var(--sodek-gb-radius-md);
+    padding: var(--sodek-gb-space-6);
+    margin-bottom: var(--sodek-gb-space-6);
+    box-shadow: var(--sodek-gb-shadow-sm);
+}
+
+.sodek-gb-order-deposit-notice h3 {
+    margin-top: 0;
+    color: var(--sodek-gb-color-success);
+    font-size: var(--sodek-gb-font-size-xl);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+}
+
+.sodek-gb-order-deposit-notice table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-order-deposit-notice td {
+    padding: var(--sodek-gb-space-3) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sodek-gb-order-deposit-notice tr:last-child td {
+    border-bottom: none;
+    padding-top: var(--sodek-gb-space-4);
+    font-size: var(--sodek-gb-font-size-md);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+}
+
+/* Order balance notice */
+.sodek-gb-order-balance-notice {
+    background: var(--sodek-gb-color-warning-bg);
+    border: 1px solid var(--sodek-gb-color-warning);
+    border-left-width: 4px;
+    border-radius: var(--sodek-gb-radius-md);
+    padding: var(--sodek-gb-space-5);
+    margin-bottom: var(--sodek-gb-space-6);
+    box-shadow: var(--sodek-gb-shadow-sm);
+}
+
+.sodek-gb-order-balance-notice p {
+    margin: 0;
+    color: #664d03;
+    font-size: var(--sodek-gb-font-size-base);
+}
+
+/* WooCommerce cart item data styling */
+.woocommerce-cart-form .cart_item dl.variation dt {
+    font-weight: var(--sodek-gb-font-weight-semibold, 600);
+    color: var(--sodek-gb-color-text, #333);
+}
+
+.woocommerce-cart-form .cart_item dl.variation dd {
+    margin-bottom: var(--sodek-gb-space-2, 8px);
+}
+
+.woocommerce-cart-form .cart_item dl.variation dd p {
+    margin: 0;
+}
+
+/* Checkout order review booking info */
+.woocommerce-checkout-review-order-table dl.variation {
+    margin: var(--sodek-gb-space-3, 10px) 0;
+    font-size: var(--sodek-gb-font-size-sm, 0.9em);
+}
+
+.woocommerce-checkout-review-order-table dl.variation dt {
+    display: inline;
+    font-weight: var(--sodek-gb-font-weight-semibold, 600);
+}
+
+.woocommerce-checkout-review-order-table dl.variation dd {
+    display: inline;
+    margin: 0 0 0 var(--sodek-gb-space-1, 5px);
+}
+
+.woocommerce-checkout-review-order-table dl.variation dd::after {
+    content: '';
+    display: block;
+    margin-bottom: var(--sodek-gb-space-1, 5px);
+}
+
+/* =====================================================
+   Service Selector
+   ===================================================== */
+
+.sodek-gb-service-selector {
+    margin-bottom: var(--sodek-gb-space-6);
+}
+
+.sodek-gb-service-select-wrapper {
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-service-select-wrapper label {
+    display: block;
+    font-weight: var(--sodek-gb-font-weight-medium);
+    margin-bottom: var(--sodek-gb-space-2);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-service-select {
+    width: 100%;
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+    font-size: var(--sodek-gb-font-size-base);
+    border: 1px solid var(--sodek-gb-color-border);
+    border-radius: var(--sodek-gb-radius-md);
+    background: var(--sodek-gb-color-background);
+    color: var(--sodek-gb-color-text);
+    cursor: pointer;
+    transition: border-color var(--sodek-gb-transition-fast),
+                box-shadow var(--sodek-gb-transition-fast);
+    min-height: 44px; /* Accessibility: minimum touch target */
+}
+
+.sodek-gb-service-select:hover {
+    border-color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-service-select:focus {
+    outline: none;
+    border-color: var(--sodek-gb-color-primary);
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-service-details {
+    display: none;
+    animation: sodek-gb-fade-in 0.2s ease-out;
+}
+
+.sodek-gb-service-details.visible {
+    display: block;
+}
+
+@keyframes sodek-gb-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   Loading State
+   ===================================================== */
+
+.sodek-gb-loading {
+    text-align: center;
+    padding: var(--sodek-gb-space-8);
+    color: var(--sodek-gb-color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sodek-gb-space-3);
+}
+
+.sodek-gb-loading::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--sodek-gb-color-border-light);
+    border-top-color: var(--sodek-gb-color-primary);
+    border-radius: var(--sodek-gb-radius-full);
+    animation: sodek-gb-spin 0.8s linear infinite;
+}
+
+@keyframes sodek-gb-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =====================================================
+   Error State
+   ===================================================== */
+
+.sodek-gb-error {
+    background: var(--sodek-gb-color-error-bg);
+    color: var(--sodek-gb-color-error);
+    padding: var(--sodek-gb-space-4) var(--sodek-gb-space-5);
+    border-radius: var(--sodek-gb-radius-md);
+    margin: var(--sodek-gb-space-5) 0;
+    border: 1px solid var(--sodek-gb-color-error);
+    border-left-width: 4px;
+}
+
+/* =====================================================
+   Responsive
+   ===================================================== */
+
+@media (max-width: 992px) {
+    .sodek-gb-columns-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-columns-3,
+    .sodek-gb-columns-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sodek-gb-time-slots {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .sodek-gb-booking-form {
+        padding: var(--sodek-gb-space-5);
+        margin: var(--sodek-gb-space-5);
+    }
+
+    .sodek-gb-calendar {
+        padding: var(--sodek-gb-space-3);
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-columns-2,
+    .sodek-gb-columns-3,
+    .sodek-gb-columns-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-time-slots {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .sodek-gb-calendar-day {
+        font-size: var(--sodek-gb-font-size-sm);
+    }
+
+    .sodek-gb-booking-form {
+        padding: var(--sodek-gb-space-4);
+        margin: var(--sodek-gb-space-3);
+    }
+
+    .sodek-gb-service-info {
+        padding: var(--sodek-gb-space-4);
+    }
+
+    .sodek-gb-calendar-header {
+        flex-wrap: wrap;
+        gap: var(--sodek-gb-space-2);
+    }
+}
+
+/* =====================================================
+   My Bookings Page
+   ===================================================== */
+
+.sodek-gb-my-bookings {
+    max-width: 900px;
+}
+
+.sodek-gb-my-bookings h2 {
+    margin: var(--sodek-gb-space-6) 0 var(--sodek-gb-space-5);
+    padding-bottom: var(--sodek-gb-space-3);
+    border-bottom: 2px solid var(--sodek-gb-color-primary);
+    font-size: var(--sodek-gb-font-size-xl);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-my-bookings h2:first-of-type {
+    margin-top: 0;
+}
+
+.sodek-gb-message {
+    padding: var(--sodek-gb-space-4) var(--sodek-gb-space-5);
+    border-radius: var(--sodek-gb-radius-md);
+    margin-bottom: var(--sodek-gb-space-5);
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+.sodek-gb-message-success {
+    background: var(--sodek-gb-color-success-bg);
+    color: var(--sodek-gb-color-success);
+    border-color: var(--sodek-gb-color-success);
+}
+
+.sodek-gb-message-error {
+    background: var(--sodek-gb-color-error-bg);
+    color: var(--sodek-gb-color-error);
+    border-color: var(--sodek-gb-color-error);
+}
+
+.sodek-gb-no-bookings {
+    color: var(--sodek-gb-color-text-muted);
+    font-style: italic;
+    padding: var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-md);
+    text-align: center;
+}
+
+.sodek-gb-bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-booking-card {
+    background: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-lg);
+    box-shadow: var(--sodek-gb-shadow-sm);
+    overflow: hidden;
+    border: 1px solid var(--sodek-gb-color-border-light);
+    border-left: 4px solid var(--sodek-gb-color-primary);
+    transition: box-shadow var(--sodek-gb-transition-normal);
+}
+
+.sodek-gb-booking-card:hover {
+    box-shadow: var(--sodek-gb-shadow-md);
+}
+
+.sodek-gb-booking-card.sodek-gb-booking-status-confirmed {
+    border-left-color: var(--sodek-gb-color-success);
+}
+
+.sodek-gb-booking-card.sodek-gb-booking-status-pending {
+    border-left-color: var(--sodek-gb-color-warning);
+}
+
+.sodek-gb-booking-card.sodek-gb-booking-status-cancelled {
+    border-left-color: var(--sodek-gb-color-error);
+    opacity: 0.7;
+}
+
+.sodek-gb-booking-card.sodek-gb-booking-status-completed {
+    border-left-color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-booking-card.sodek-gb-booking-past {
+    opacity: 0.8;
+}
+
+.sodek-gb-booking-header {
+    padding: var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-background-subtle);
+    border-bottom: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-booking-service {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sodek-gb-space-3);
+}
+
+.sodek-gb-booking-service h3 {
+    margin: 0;
+    font-size: var(--sodek-gb-font-size-lg);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-booking-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sodek-gb-space-1) var(--sodek-gb-space-3);
+    border-radius: var(--sodek-gb-radius-full);
+    font-size: var(--sodek-gb-font-size-sm);
+    font-weight: var(--sodek-gb-font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sodek-gb-status-confirmed {
+    background: var(--sodek-gb-color-success-bg);
+    color: var(--sodek-gb-color-success);
+}
+
+.sodek-gb-status-pending {
+    background: var(--sodek-gb-color-warning-bg);
+    color: #856404;
+}
+
+.sodek-gb-status-cancelled {
+    background: var(--sodek-gb-color-error-bg);
+    color: var(--sodek-gb-color-error);
+}
+
+.sodek-gb-status-completed {
+    background: var(--sodek-gb-color-background-subtle);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-status-no-show {
+    background: var(--sodek-gb-color-error-bg);
+    color: var(--sodek-gb-color-error);
+}
+
+.sodek-gb-booking-details {
+    padding: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-booking-datetime {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sodek-gb-space-5);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-booking-date,
+.sodek-gb-booking-time,
+.sodek-gb-booking-duration {
+    display: flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-icon {
+    font-size: 1.2em;
+}
+
+.sodek-gb-booking-pricing {
+    background: var(--sodek-gb-color-background-subtle);
+    padding: var(--sodek-gb-space-4);
+    border-radius: var(--sodek-gb-radius-md);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--sodek-gb-space-1) 0;
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-price-row.sodek-gb-balance-row {
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    margin-top: var(--sodek-gb-space-3);
+    padding-top: var(--sodek-gb-space-3);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-paid {
+    color: var(--sodek-gb-color-success);
+}
+
+.sodek-gb-balance {
+    color: var(--sodek-gb-color-error);
+}
+
+.sodek-gb-booking-notes {
+    background: var(--sodek-gb-color-warning-bg);
+    padding: var(--sodek-gb-space-4);
+    border-radius: var(--sodek-gb-radius-md);
+    margin-top: var(--sodek-gb-space-4);
+    border-left: 3px solid var(--sodek-gb-color-warning);
+}
+
+.sodek-gb-booking-notes strong {
+    display: block;
+    margin-bottom: var(--sodek-gb-space-2);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-booking-notes p {
+    margin: 0;
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-booking-actions {
+    padding: var(--sodek-gb-space-4) var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-background-subtle);
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    display: flex;
+    gap: var(--sodek-gb-space-3);
+    flex-wrap: wrap;
+}
+
+.sodek-gb-booking-actions .button {
+    padding: var(--sodek-gb-space-2) var(--sodek-gb-space-4);
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--sodek-gb-radius-sm);
+    font-weight: var(--sodek-gb-font-weight-medium);
+    transition: all var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-booking-actions .button:focus {
+    outline: none;
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-cancel-btn {
+    background: var(--sodek-gb-color-error) !important;
+    color: var(--sodek-gb-color-background) !important;
+    border-color: var(--sodek-gb-color-error) !important;
+}
+
+.sodek-gb-cancel-btn:hover {
+    background: #c82333 !important;
+    border-color: #c82333 !important;
+}
+
+.sodek-gb-cancel-btn:focus {
+    box-shadow: 0 0 0 2px var(--sodek-gb-color-background), 0 0 0 4px var(--sodek-gb-color-error) !important;
+}
+
+/* Modal */
+.sodek-gb-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: sodek-gb-modal-fade-in 0.2s ease-out;
+}
+
+@keyframes sodek-gb-modal-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.sodek-gb-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.sodek-gb-modal-content {
+    position: relative;
+    background: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-lg);
+    padding: var(--sodek-gb-space-6);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--sodek-gb-shadow-lg);
+    animation: sodek-gb-modal-slide-in 0.2s ease-out;
+}
+
+@keyframes sodek-gb-modal-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sodek-gb-modal-close {
+    position: absolute;
+    top: var(--sodek-gb-space-4);
+    right: var(--sodek-gb-space-4);
+    background: var(--sodek-gb-color-background-subtle);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--sodek-gb-radius-full);
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--sodek-gb-color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-modal-close:hover {
+    color: var(--sodek-gb-color-text);
+    background: var(--sodek-gb-color-background-hover);
+    border-color: var(--sodek-gb-color-border);
+}
+
+.sodek-gb-modal-close:focus {
+    outline: none;
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-modal-content h3 {
+    margin: 0 0 var(--sodek-gb-space-5);
+    font-size: var(--sodek-gb-font-size-lg);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+    padding-right: var(--sodek-gb-space-8); /* Space for close button */
+}
+
+.sodek-gb-reschedule-calendar {
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-reschedule-calendar label,
+.sodek-gb-reschedule-slots label {
+    display: block;
+    font-weight: var(--sodek-gb-font-weight-medium);
+    margin-bottom: var(--sodek-gb-space-3);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-reschedule-calendar input[type="date"] {
+    width: 100%;
+    padding: var(--sodek-gb-space-3);
+    border: 1px solid var(--sodek-gb-color-border);
+    border-radius: var(--sodek-gb-radius-md);
+    font-size: var(--sodek-gb-font-size-base);
+    color: var(--sodek-gb-color-text);
+    background: var(--sodek-gb-color-background);
+    min-height: 44px;
+    transition: border-color var(--sodek-gb-transition-fast),
+                box-shadow var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-reschedule-calendar input[type="date"]:hover {
+    border-color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-reschedule-calendar input[type="date"]:focus {
+    outline: none;
+    border-color: var(--sodek-gb-color-primary);
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-reschedule-slots {
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-modal-actions {
+    display: flex;
+    gap: var(--sodek-gb-space-3);
+    justify-content: flex-end;
+    margin-top: var(--sodek-gb-space-5);
+    padding-top: var(--sodek-gb-space-5);
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-modal-actions .button {
+    min-height: 40px;
+    padding: var(--sodek-gb-space-2) var(--sodek-gb-space-4);
+}
+
+body.sodek-gb-modal-open {
+    overflow: hidden;
+}
+
+/* Booking Notes Field */
+.sodek-gb-notes-field {
+    margin-bottom: var(--sodek-gb-space-6);
+}
+
+.sodek-gb-notes-field label {
+    display: block;
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    font-size: var(--sodek-gb-font-size-md);
+    margin-bottom: var(--sodek-gb-space-4);
+    color: var(--sodek-gb-color-text);
+    text-align: center;
+}
+
+.sodek-gb-notes-field textarea {
+    width: 100%;
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+    border: 1px solid var(--sodek-gb-color-border);
+    border-radius: var(--sodek-gb-radius-md);
+    font-size: var(--sodek-gb-font-size-base);
+    font-family: inherit;
+    color: var(--sodek-gb-color-text);
+    background: var(--sodek-gb-color-background);
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color var(--sodek-gb-transition-fast),
+                box-shadow var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-notes-field textarea:hover {
+    border-color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-notes-field textarea:focus {
+    outline: none;
+    border-color: var(--sodek-gb-color-primary);
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+.sodek-gb-notes-field textarea::placeholder {
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-notes-field .description {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+    margin-top: var(--sodek-gb-space-2);
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .sodek-gb-booking-datetime {
+        flex-direction: column;
+        gap: var(--sodek-gb-space-3);
+    }
+
+    .sodek-gb-booking-actions {
+        flex-direction: column;
+    }
+
+    .sodek-gb-booking-actions .button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .sodek-gb-modal-content {
+        padding: var(--sodek-gb-space-5);
+        margin: var(--sodek-gb-space-4);
+        width: calc(100% - var(--sodek-gb-space-8));
+    }
+
+    .sodek-gb-modal-actions {
+        flex-direction: column;
+    }
+
+    .sodek-gb-modal-actions .button {
+        width: 100%;
+    }
+}
+
+/* =====================================================
+   Accessibility Utilities
+   ===================================================== */
+
+/* Screen reader only text - visually hidden but accessible */
+.sodek-gb-booking-form .screen-reader-text,
+.sodek-gb-services-grid .screen-reader-text,
+.sodek-gb-my-bookings .screen-reader-text,
+.sodek-gb-service-selector .screen-reader-text,
+.sodek-gb-modal .screen-reader-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Skip link for keyboard users */
+.sodek-gb-skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--sodek-gb-color-primary);
+    color: var(--sodek-gb-color-background);
+    padding: var(--sodek-gb-space-2) var(--sodek-gb-space-4);
+    z-index: 100000;
+    transition: top var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-skip-link:focus {
+    top: 0;
+}
+
+/* Fieldset reset for better styling */
+.sodek-gb-booking-form fieldset,
+.sodek-gb-service-selector fieldset,
+.sodek-gb-product-booking-form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sodek-gb-booking-form legend.screen-reader-text,
+.sodek-gb-service-selector legend.screen-reader-text,
+.sodek-gb-product-booking-form legend.screen-reader-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* =====================================================
+   Theme Compatibility & Reset Overrides
+
+   These rules ensure the plugin works correctly across
+   all WordPress themes by resetting problematic styles.
+   ===================================================== */
+
+/* Ensure consistent box-sizing */
+.sodek-gb-booking-form,
+.sodek-gb-services-grid,
+.sodek-gb-my-bookings,
+.sodek-gb-service-selector,
+.sodek-gb-product-booking-form,
+.sodek-gb-modal {
+    line-height: var(--sodek-gb-line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset theme button styles */
+.sodek-gb-booking-form button,
+.sodek-gb-services-grid button,
+.sodek-gb-my-bookings button,
+.sodek-gb-modal button,
+.sodek-gb-product-booking-form button {
+    font-family: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+/* Ensure form elements inherit properly */
+.sodek-gb-booking-form input,
+.sodek-gb-booking-form select,
+.sodek-gb-booking-form textarea,
+.sodek-gb-product-booking-form input,
+.sodek-gb-product-booking-form select,
+.sodek-gb-product-booking-form textarea {
+    font-family: inherit;
+    font-size: var(--sodek-gb-font-size-base);
+}
+
+/* Prevent theme link styles from affecting plugin */
+.sodek-gb-booking-form a,
+.sodek-gb-services-grid a,
+.sodek-gb-my-bookings a {
+    text-decoration: none;
+}
+
+.sodek-gb-booking-form a:hover,
+.sodek-gb-services-grid a:hover,
+.sodek-gb-my-bookings a:hover {
+    text-decoration: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .sodek-gb-booking-form,
+    .sodek-gb-services-grid,
+    .sodek-gb-my-bookings,
+    .sodek-gb-service-selector,
+    .sodek-gb-product-booking-form {
+        --sodek-gb-color-border: #000;
+        --sodek-gb-color-border-light: #666;
+    }
+
+    .sodek-gb-book-button,
+    .sodek-gb-time-slot.selected,
+    .sodek-gb-calendar-day.sodek-gb-day-selected {
+        border: 2px solid currentColor !important;
+    }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .sodek-gb-booking-form *,
+    .sodek-gb-services-grid *,
+    .sodek-gb-my-bookings *,
+    .sodek-gb-modal * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sodek-gb-booking-actions,
+    .sodek-gb-book-button,
+    .sodek-gb-modal {
+        display: none !important;
+    }
+
+    .sodek-gb-booking-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* =====================================================
+   Add-ons Selection
+   ===================================================== */
+
+.sodek-gb-addons-section {
+    margin: var(--sodek-gb-space-6) 0;
+    padding: var(--sodek-gb-space-6);
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-lg);
+    border: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-addons-section legend {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    font-size: var(--sodek-gb-font-size-md);
+    color: var(--sodek-gb-color-text);
+    margin-bottom: var(--sodek-gb-space-2);
+    padding: 0;
+    display: block;
+    width: 100%;
+    float: none;
+    text-align: center;
+}
+
+.sodek-gb-addons-section > .description {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+    margin-bottom: var(--sodek-gb-space-5);
+    text-align: center;
+}
+
+.sodek-gb-addons-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sodek-gb-space-3);
+}
+
+.sodek-gb-addon-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sodek-gb-space-3);
+    padding: var(--sodek-gb-space-4);
+    background: var(--sodek-gb-color-background);
+    border: 2px solid var(--sodek-gb-color-border-light);
+    border-radius: var(--sodek-gb-radius-md);
+    cursor: pointer;
+    transition: all var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-addon-item:hover {
+    border-color: var(--sodek-gb-color-primary);
+    background: var(--sodek-gb-color-background);
+}
+
+.sodek-gb-addon-item:has(input:checked) {
+    border-color: var(--sodek-gb-color-primary);
+    background: rgba(34, 113, 177, 0.05);
+}
+
+.sodek-gb-addon-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--sodek-gb-color-primary);
+    cursor: pointer;
+}
+
+/* Add-on with image - adjust layout */
+.sodek-gb-addon-item.has-image {
+    align-items: center;
+}
+
+.sodek-gb-addon-item.has-image input[type="checkbox"] {
+    margin-top: 0;
+}
+
+/* Add-on image styles */
+.sodek-gb-addon-image {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--sodek-gb-radius-md);
+    overflow: hidden;
+    background: var(--sodek-gb-color-background-subtle);
+}
+
+.sodek-gb-addon-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-addon-item:hover .sodek-gb-addon-image img {
+    transform: scale(1.05);
+}
+
+.sodek-gb-addon-item:has(input:checked) .sodek-gb-addon-image {
+    box-shadow: 0 0 0 2px var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-addon-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sodek-gb-space-1);
+    flex: 1;
+}
+
+.sodek-gb-addon-name {
+    font-weight: var(--sodek-gb-font-weight-medium);
+    color: var(--sodek-gb-color-text);
+    font-size: var(--sodek-gb-font-size-base);
+}
+
+.sodek-gb-addon-desc {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+    line-height: 1.4;
+}
+
+.sodek-gb-addon-meta {
+    display: flex;
+    gap: var(--sodek-gb-space-3);
+    margin-top: var(--sodek-gb-space-1);
+}
+
+.sodek-gb-addon-price {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-primary);
+    font-size: var(--sodek-gb-font-size-sm);
+}
+
+.sodek-gb-addon-duration {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-addons-total {
+    margin-top: var(--sodek-gb-space-5);
+    padding-top: var(--sodek-gb-space-4);
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sodek-gb-space-3);
+    text-align: center;
+}
+
+.sodek-gb-addons-total strong {
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-addons-total-price {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-addons-total-duration {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+/* Summary Enhancements for Add-ons */
+.sodek-gb-booking-summary .sodek-gb-summary-addons {
+    margin: var(--sodek-gb-space-4) 0;
+    padding: var(--sodek-gb-space-3);
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-sm);
+}
+
+.sodek-gb-summary-addons-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--sodek-gb-space-2) 0 0 0;
+}
+
+.sodek-gb-summary-addons-list li {
+    padding: var(--sodek-gb-space-1) 0;
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sodek-gb-summary-addons-list li small {
+    color: var(--sodek-gb-color-text-muted);
+    margin-left: var(--sodek-gb-space-1);
+}
+
+.sodek-gb-summary-pricing {
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    padding-top: var(--sodek-gb-space-4);
+    margin-top: var(--sodek-gb-space-4);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.sodek-gb-summary-pricing p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--sodek-gb-space-2);
+}
+
+.sodek-gb-summary-total {
+    font-size: var(--sodek-gb-font-size-lg);
+    padding-top: var(--sodek-gb-space-3);
+    border-top: 2px solid var(--sodek-gb-color-success);
+    margin-top: var(--sodek-gb-space-3) !important;
+}
+
+.sodek-gb-summary-deposit {
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-summary-balance {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+/* Responsive adjustments for add-ons */
+@media (max-width: 480px) {
+    .sodek-gb-addon-item {
+        padding: var(--sodek-gb-space-3);
+    }
+
+    .sodek-gb-addon-image {
+        width: 50px;
+        height: 50px;
+    }
+
+    .sodek-gb-addon-meta {
+        flex-direction: column;
+        gap: var(--sodek-gb-space-1);
+    }
+
+    .sodek-gb-addons-total {
+        flex-wrap: wrap;
+    }
+}
+
+/* =====================================================
+   Flexible Deposit Section
+   ===================================================== */
+
+.sodek-gb-deposit-section {
+    margin-top: var(--sodek-gb-space-6);
+    padding: var(--sodek-gb-space-6);
+    background: linear-gradient(135deg, var(--sodek-gb-color-background-subtle) 0%, var(--sodek-gb-color-background) 100%);
+    border-radius: var(--sodek-gb-radius-lg);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    text-align: center;
+}
+
+.sodek-gb-deposit-section h5 {
+    margin: 0 0 var(--sodek-gb-space-2) 0;
+    font-size: var(--sodek-gb-font-size-md);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+    text-align: center;
+}
+
+.sodek-gb-deposit-section > .description {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+    margin-bottom: var(--sodek-gb-space-5);
+    text-align: center;
+}
+
+/* Deposit Input - Centered */
+.sodek-gb-deposit-input-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sodek-gb-space-2);
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-deposit-range-info {
+    flex-basis: 100%;
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+    margin-top: var(--sodek-gb-space-2);
+    text-align: center;
+}
+
+.sodek-gb-currency-symbol {
+    font-size: var(--sodek-gb-font-size-xl);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-deposit-input {
+    width: 140px;
+    padding: var(--sodek-gb-space-4);
+    font-size: var(--sodek-gb-font-size-xl);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    text-align: center;
+    border: 2px solid var(--sodek-gb-color-border);
+    border-radius: var(--sodek-gb-radius-md);
+    background: var(--sodek-gb-color-background);
+    color: var(--sodek-gb-color-text);
+    transition: border-color var(--sodek-gb-transition-fast), box-shadow var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-deposit-input:focus {
+    outline: none;
+    border-color: var(--sodek-gb-color-primary);
+    box-shadow: var(--sodek-gb-focus-ring);
+}
+
+/* Quick Options - Centered Grid */
+.sodek-gb-deposit-quick-options {
+    display: flex;
+    gap: var(--sodek-gb-space-3);
+    margin: var(--sodek-gb-space-5) auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 400px;
+}
+
+.sodek-gb-deposit-option {
+    flex: 0 1 auto;
+    min-width: 80px;
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+    font-size: var(--sodek-gb-font-size-sm);
+    font-weight: var(--sodek-gb-font-weight-medium);
+    text-align: center;
+    background: var(--sodek-gb-color-background);
+    border: 2px solid var(--sodek-gb-color-border-light);
+    border-radius: var(--sodek-gb-radius-full);
+    color: var(--sodek-gb-color-text-secondary);
+    cursor: pointer;
+    transition: all var(--sodek-gb-transition-fast);
+}
+
+.sodek-gb-deposit-option:hover {
+    border-color: var(--sodek-gb-color-primary);
+    color: var(--sodek-gb-color-primary);
+    background: var(--sodek-gb-color-background);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-deposit-option.active {
+    background: var(--sodek-gb-color-primary);
+    border-color: var(--sodek-gb-color-primary);
+    color: var(--sodek-gb-color-background);
+    box-shadow: 0 2px 8px rgba(34, 113, 177, 0.3);
+}
+
+/* Deposit Summary Box - Centered with balanced layout */
+.sodek-gb-deposit-summary-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sodek-gb-space-4);
+    padding: var(--sodek-gb-space-5);
+    background: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-md);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    margin-top: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-deposit-paying,
+.sodek-gb-deposit-remaining {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sodek-gb-space-1);
+    text-align: center;
+    padding: var(--sodek-gb-space-3);
+}
+
+.sodek-gb-deposit-paying {
+    border-right: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-deposit-paying span,
+.sodek-gb-deposit-remaining span {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sodek-gb-chosen-deposit {
+    font-size: var(--sodek-gb-font-size-xl);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-remaining-balance {
+    font-size: var(--sodek-gb-font-size-lg);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+/* Responsive adjustments for deposit section */
+@media (max-width: 480px) {
+    .sodek-gb-deposit-section {
+        padding: var(--sodek-gb-space-5);
+    }
+
+    .sodek-gb-deposit-quick-options {
+        gap: var(--sodek-gb-space-2);
+    }
+
+    .sodek-gb-deposit-option {
+        flex: 1 1 45%;
+        min-width: 0;
+        border-radius: var(--sodek-gb-radius-md);
+    }
+
+    .sodek-gb-deposit-summary-box {
+        grid-template-columns: 1fr;
+        gap: var(--sodek-gb-space-3);
+    }
+
+    .sodek-gb-deposit-paying {
+        border-right: none;
+        border-bottom: 1px solid var(--sodek-gb-color-border-light);
+        padding-bottom: var(--sodek-gb-space-4);
+    }
+}
+
+/* =====================================================
+   Enhanced Booking Flow - Step-Based Design
+   ===================================================== */
+
+.sodek-gb-booking-flow {
+    max-width: 100%;
+}
+
+/* Sticky Price Header */
+.sodek-gb-price-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--sodek-gb-color-background);
+    border-bottom: 1px solid var(--sodek-gb-color-border-light);
+    margin: calc(-1 * var(--sodek-gb-space-4)) calc(-1 * var(--sodek-gb-space-4)) var(--sodek-gb-space-5);
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+}
+
+.sodek-gb-price-header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.sodek-gb-service-duration-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-1);
+    padding: var(--sodek-gb-space-1) var(--sodek-gb-space-3);
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-full);
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-running-total {
+    display: flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+}
+
+.sodek-gb-running-total-label {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-running-total-value {
+    font-size: var(--sodek-gb-font-size-lg);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+/* Select addon prompt for addon-only services */
+.sodek-gb-select-addon-prompt {
+    font-size: var(--sodek-gb-font-size-sm);
+    font-weight: var(--sodek-gb-font-weight-medium);
+    color: var(--sodek-gb-color-primary, #2271b1);
+    font-style: italic;
+}
+
+/* Price display for addon-only services */
+.sodek-gb-price-from,
+.sodek-gb-price-varies {
+    font-size: inherit;
+    color: var(--sodek-gb-color-text, #1e1e1e);
+}
+
+.sodek-gb-price-from .woocommerce-Price-amount {
+    font-weight: 600;
+}
+
+.sodek-gb-price-varies {
+    font-style: italic;
+    color: var(--sodek-gb-color-text-secondary, #50575e);
+}
+
+/* =====================================================
+   Booking Policies Accordion
+   ===================================================== */
+.sodek-gb-policies-accordion {
+    margin-bottom: var(--sodek-gb-space-4, 1rem);
+    border: 1px solid var(--sodek-gb-color-border-light, #e0e0e0);
+    border-radius: var(--sodek-gb-radius-lg, 12px);
+    background: var(--sodek-gb-color-surface, #fafafa);
+    overflow: hidden;
+}
+
+.sodek-gb-policies-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--sodek-gb-space-3, 0.75rem) var(--sodek-gb-space-4, 1rem);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: var(--sodek-gb-font-size-base, 1rem);
+    font-weight: var(--sodek-gb-font-weight-medium, 500);
+    color: var(--sodek-gb-color-text, #1e1e1e);
+    transition: background-color 0.2s ease;
+}
+
+.sodek-gb-policies-toggle:hover {
+    background: var(--sodek-gb-color-surface-hover, #f0f0f0);
+}
+
+.sodek-gb-policies-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--sodek-gb-space-2, 0.5rem);
+    color: var(--sodek-gb-color-primary, #2271b1);
+}
+
+.sodek-gb-policies-title {
+    flex: 1;
+}
+
+.sodek-gb-policies-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    color: var(--sodek-gb-color-text-muted, #757575);
+}
+
+.sodek-gb-policies-toggle[aria-expanded="true"] .sodek-gb-policies-arrow {
+    transform: rotate(180deg);
+}
+
+.sodek-gb-policies-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.sodek-gb-policies-content[aria-hidden="false"] {
+    max-height: 1000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.sodek-gb-policies-inner {
+    padding: 0 var(--sodek-gb-space-4, 1rem) var(--sodek-gb-space-4, 1rem);
+    border-top: 1px solid var(--sodek-gb-color-border-light, #e0e0e0);
+    font-size: var(--sodek-gb-font-size-sm, 0.875rem);
+    line-height: 1.6;
+    color: var(--sodek-gb-color-text-secondary, #50575e);
+}
+
+.sodek-gb-policies-inner p {
+    margin: 0 0 var(--sodek-gb-space-3, 0.75rem);
+}
+
+.sodek-gb-policies-inner p:last-child {
+    margin-bottom: 0;
+}
+
+.sodek-gb-policies-inner strong {
+    color: var(--sodek-gb-color-text, #1e1e1e);
+}
+
+/* Progress Steps - Horizontal step indicator */
+.sodek-gb-booking-steps {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin-bottom: 24px !important;
+    padding: 16px 0 !important;
+    background: #f8f9fa !important;
+    border-radius: 12px !important;
+    flex-wrap: nowrap !important;
+}
+
+.sodek-gb-step {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+    opacity: 0.4 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.sodek-gb-step-active,
+.sodek-gb-step-completed {
+    opacity: 1 !important;
+}
+
+.sodek-gb-step-number {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #e0e0e0 !important;
+    color: #666 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+}
+
+.sodek-gb-step-active .sodek-gb-step-number {
+    background: #2271b1 !important;
+    background: var(--sodek-gb-color-primary, #2271b1) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(34, 113, 177, 0.35) !important;
+    transform: scale(1.1) !important;
+}
+
+.sodek-gb-step-completed .sodek-gb-step-number {
+    background: #00a32a !important;
+    background: var(--sodek-gb-color-success, #00a32a) !important;
+    color: white !important;
+}
+
+.sodek-gb-step-completed .sodek-gb-step-number::after {
+    content: "✓" !important;
+    font-size: 14px !important;
+}
+
+.sodek-gb-step-label {
+    font-size: 12px !important;
+    color: #666 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+}
+
+.sodek-gb-step-active .sodek-gb-step-label {
+    color: #1e1e1e !important;
+    font-weight: 600 !important;
+}
+
+.sodek-gb-step-connector {
+    flex: 0 0 30px !important;
+    height: 3px !important;
+    background: #e0e0e0 !important;
+    border-radius: 2px !important;
+    margin: 0 4px !important;
+}
+
+.sodek-gb-step-completed + .sodek-gb-step-connector {
+    background: #00a32a !important;
+    background: var(--sodek-gb-color-success, #00a32a) !important;
+}
+
+/* Booking Sections */
+.sodek-gb-booking-section {
+    display: none;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.sodek-gb-booking-section.sodek-gb-section-active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sodek-gb-section-header {
+    text-align: center;
+    margin-bottom: var(--sodek-gb-space-6);
+}
+
+.sodek-gb-section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+    margin: 0 0 var(--sodek-gb-space-2);
+    font-size: var(--sodek-gb-font-size-lg);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-section-title svg {
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-section-subtitle {
+    margin: 0;
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+/* Section Action Buttons */
+.sodek-gb-section-actions {
+    display: flex !important;
+    justify-content: center !important;
+    gap: var(--sodek-gb-space-3);
+    margin-top: var(--sodek-gb-space-6);
+    padding-top: var(--sodek-gb-space-5);
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    position: relative !important;
+    z-index: 100 !important;
+}
+
+.sodek-gb-section-actions button {
+    pointer-events: auto !important;
+}
+
+.sodek-gb-btn-primary,
+.sodek-gb-btn-secondary,
+.sodek-gb-btn-back {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: var(--sodek-gb-space-2);
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-5) !important;
+    border-radius: var(--sodek-gb-radius-md) !important;
+    font-size: var(--sodek-gb-font-size-base) !important;
+    font-weight: var(--sodek-gb-font-weight-medium) !important;
+    cursor: pointer !important;
+    transition: all var(--sodek-gb-transition-fast);
+    border: none !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 10 !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    text-decoration: none !important;
+    min-height: 44px; /* Accessibility: minimum touch target */
+    box-sizing: border-box !important;
+}
+
+.sodek-gb-btn-primary {
+    background: var(--sodek-gb-color-primary);
+    color: white;
+}
+
+.sodek-gb-btn-primary:hover {
+    background: var(--sodek-gb-color-primary-hover);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-btn-secondary {
+    background: transparent;
+    color: var(--sodek-gb-color-text-secondary);
+    border: 1px solid var(--sodek-gb-color-border);
+}
+
+.sodek-gb-btn-secondary:hover {
+    background: var(--sodek-gb-color-background-subtle);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-btn-back {
+    background: transparent;
+    color: var(--sodek-gb-color-text-muted);
+    padding-left: var(--sodek-gb-space-3);
+}
+
+.sodek-gb-btn-back:hover {
+    color: var(--sodek-gb-color-text);
+}
+
+/* Add-ons Grid */
+.sodek-gb-addons-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
+}
+
+/* Single-column addon list layout */
+.sodek-gb-addons-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+}
+
+.sodek-gb-addon-card {
+    position: relative !important;
+    cursor: pointer !important;
+    display: block !important;
+    overflow: hidden !important;
+}
+
+/* Hide any theme-added pseudo-elements on the label itself that might create radio circles */
+.sodek-gb-addon-card::before,
+.sodek-gb-addon-card::after,
+label.sodek-gb-addon-card::before,
+label.sodek-gb-addon-card::after {
+    content: none !important;
+    display: none !important;
+}
+
+.sodek-gb-addon-checkbox,
+.sodek-gb-addon-radio {
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    -webkit-clip-path: inset(50%) !important;
+    clip-path: inset(50%) !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Hide any pseudo-elements added by themes for custom radio styling */
+.sodek-gb-addon-checkbox::before,
+.sodek-gb-addon-checkbox::after,
+.sodek-gb-addon-radio::before,
+.sodek-gb-addon-radio::after {
+    display: none !important;
+    content: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Ensure radio/checkbox is inside the label, not outside */
+.sodek-gb-addon-card input[type="radio"],
+.sodek-gb-addon-card input[type="checkbox"] {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Also hide pseudo-elements on the inputs themselves */
+.sodek-gb-addon-card input[type="radio"]::before,
+.sodek-gb-addon-card input[type="radio"]::after,
+.sodek-gb-addon-card input[type="checkbox"]::before,
+.sodek-gb-addon-card input[type="checkbox"]::after {
+    display: none !important;
+    content: none !important;
+    visibility: hidden !important;
+}
+
+/* Global override for any theme radio styling within addon cards */
+/* Ultra-aggressive hiding - uses multiple techniques to ensure visibility is removed */
+.sodek-gb-addons-list input[type="radio"],
+.sodek-gb-addons-list input[type="checkbox"],
+.sodek-gb-section-addons input[type="radio"],
+.sodek-gb-section-addons input[type="checkbox"],
+.sodek-gb-addon-card > input[type="radio"],
+.sodek-gb-addon-card > input[type="checkbox"],
+label.sodek-gb-addon-card input[type="radio"],
+label.sodek-gb-addon-card input[type="checkbox"] {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    clip: rect(0, 0, 0, 0) !important;
+    -webkit-clip-path: inset(100%) !important;
+    clip-path: inset(100%) !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+}
+
+.sodek-gb-addons-list input[type="radio"]::before,
+.sodek-gb-addons-list input[type="radio"]::after,
+.sodek-gb-addons-list input[type="checkbox"]::before,
+.sodek-gb-addons-list input[type="checkbox"]::after,
+.sodek-gb-section-addons input[type="radio"]::before,
+.sodek-gb-section-addons input[type="radio"]::after,
+.sodek-gb-section-addons input[type="checkbox"]::before,
+.sodek-gb-section-addons input[type="checkbox"]::after,
+.sodek-gb-addon-card > input::before,
+.sodek-gb-addon-card > input::after,
+label.sodek-gb-addon-card input::before,
+label.sodek-gb-addon-card input::after {
+    display: none !important;
+    content: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+.sodek-gb-addon-card-inner {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    background: #fff !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 12px !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+}
+
+.sodek-gb-addon-card:hover .sodek-gb-addon-card-inner {
+    border-color: #c0c0c0 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+}
+
+.sodek-gb-addon-checkbox:checked + .sodek-gb-addon-card-inner,
+.sodek-gb-addon-radio:checked + .sodek-gb-addon-card-inner {
+    border-color: #2271b1 !important;
+    border-color: var(--sodek-gb-color-primary, #2271b1) !important;
+    background: linear-gradient(135deg, rgba(34, 113, 177, 0.06) 0%, #fff 100%) !important;
+    box-shadow: 0 4px 16px rgba(34, 113, 177, 0.15) !important;
+}
+
+.sodek-gb-addon-card-image {
+    flex-shrink: 0 !important;
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: #f5f5f5 !important;
+}
+
+.sodek-gb-addon-card-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+.sodek-gb-addon-card-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+
+.sodek-gb-addon-card-name {
+    display: block !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    color: #1e1e1e !important;
+    margin: 0 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.3 !important;
+}
+
+.sodek-gb-addon-card-desc {
+    display: block !important;
+    font-size: 13px !important;
+    color: #666 !important;
+    margin: 4px 0 0 !important;
+    line-height: 1.5 !important;
+}
+
+.sodek-gb-addon-card-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-top: 6px !important;
+}
+
+.sodek-gb-addon-card-price {
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    color: #2271b1 !important;
+    color: var(--sodek-gb-color-primary, #2271b1) !important;
+}
+
+.sodek-gb-addon-card-time {
+    font-size: 12px !important;
+    color: #888 !important;
+    background: #f0f0f0 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+}
+
+/* Addon card check indicator */
+.sodek-gb-addon-card-check {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 24px !important;
+    height: 24px !important;
+    border: 2px solid #ddd !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #fff !important;
+    transition: all 0.2s ease !important;
+}
+
+.sodek-gb-addon-card-check svg {
+    opacity: 0 !important;
+    transform: scale(0.5) !important;
+    transition: all 0.2s ease !important;
+    color: #fff !important;
+}
+
+.sodek-gb-addon-checkbox:checked + .sodek-gb-addon-card-inner .sodek-gb-addon-card-check,
+.sodek-gb-addon-radio:checked + .sodek-gb-addon-card-inner .sodek-gb-addon-card-check {
+    background: #2271b1 !important;
+    background: var(--sodek-gb-color-primary, #2271b1) !important;
+    border-color: #2271b1 !important;
+    border-color: var(--sodek-gb-color-primary, #2271b1) !important;
+}
+
+.sodek-gb-addon-checkbox:checked + .sodek-gb-addon-card-inner .sodek-gb-addon-card-check svg,
+.sodek-gb-addon-radio:checked + .sodek-gb-addon-card-inner .sodek-gb-addon-card-check svg {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+/* Old addon card time style - keeping for compatibility */
+.sodek-gb-addon-card-time-old {
+    font-size: 12px !important;
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-addon-card-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--sodek-gb-color-border);
+    color: transparent;
+    transition: all var(--sodek-gb-transition-fast);
+    flex-shrink: 0;
+}
+
+.sodek-gb-addon-checkbox:checked + .sodek-gb-addon-card-inner .sodek-gb-addon-card-check,
+.sodek-gb-addon-radio:checked + .sodek-gb-addon-card-inner .sodek-gb-addon-card-check {
+    background: var(--sodek-gb-color-primary);
+    border-color: var(--sodek-gb-color-primary);
+    color: white;
+}
+
+/* Add-ons Summary */
+.sodek-gb-addons-summary {
+    margin-top: var(--sodek-gb-space-5);
+    padding: var(--sodek-gb-space-4);
+    background: var(--sodek-gb-color-success-bg);
+    border-radius: var(--sodek-gb-radius-md);
+    text-align: center;
+}
+
+.sodek-gb-addons-summary-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-addons-summary-count {
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+.sodek-gb-addons-summary-total {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-success);
+}
+
+/* Date & Time Grid */
+.sodek-gb-datetime-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sodek-gb-space-5);
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-datetime-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sodek-gb-date-picker-card,
+.sodek-gb-time-picker-card {
+    background: #fff !important;
+    border: 1px solid #e8e8e8 !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+}
+
+.sodek-gb-picker-label {
+    display: none !important; /* Hidden since we have section headers */
+}
+
+/* Selected date display in time step */
+.sodek-gb-selected-date-display {
+    font-weight: 600 !important;
+    color: #2271b1 !important;
+    color: var(--sodek-gb-color-primary, #2271b1) !important;
+}
+
+.sodek-gb-picker-label svg {
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-time-slots-wrapper {
+    min-height: 200px;
+}
+
+.sodek-gb-time-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    text-align: center;
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-time-placeholder p {
+    margin: var(--sodek-gb-space-3) 0 0;
+    font-size: var(--sodek-gb-font-size-sm);
+}
+
+/* Loading Spinner */
+.sodek-gb-loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--sodek-gb-color-border-light);
+    border-top-color: var(--sodek-gb-color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: var(--sodek-gb-space-2);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Confirmation Section */
+.sodek-gb-confirmation-card {
+    background: var(--sodek-gb-color-background);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    border-radius: var(--sodek-gb-radius-lg);
+    padding: var(--sodek-gb-space-5);
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-confirmation-datetime {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sodek-gb-space-4);
+    padding-bottom: var(--sodek-gb-space-4);
+    border-bottom: 1px solid var(--sodek-gb-color-border-light);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-confirmation-date,
+.sodek-gb-confirmation-time,
+.sodek-gb-confirmation-duration {
+    display: flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+    font-size: var(--sodek-gb-font-size-base);
+}
+
+.sodek-gb-confirmation-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--sodek-gb-color-background-subtle);
+    border-radius: var(--sodek-gb-radius-md);
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-confirmation-addons {
+    padding: var(--sodek-gb-space-4) 0;
+    border-bottom: 1px solid var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-confirmation-addons h4 {
+    margin: 0 0 var(--sodek-gb-space-3);
+    font-size: var(--sodek-gb-font-size-sm);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sodek-gb-confirmation-pricing {
+    padding-top: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--sodek-gb-space-2) 0;
+    font-size: var(--sodek-gb-font-size-base);
+}
+
+.sodek-gb-pricing-row.sodek-gb-pricing-total {
+    padding-top: var(--sodek-gb-space-3);
+    border-top: 1px solid var(--sodek-gb-color-border-light);
+    margin-top: var(--sodek-gb-space-2);
+    font-size: var(--sodek-gb-font-size-md);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+}
+
+/* Notes Card */
+.sodek-gb-notes-card {
+    background: var(--sodek-gb-color-background);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    border-radius: var(--sodek-gb-radius-lg);
+    padding: var(--sodek-gb-space-5);
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-notes-label {
+    display: flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+    margin-bottom: var(--sodek-gb-space-3);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+}
+
+.sodek-gb-notes-label svg {
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-optional-badge {
+    font-size: var(--sodek-gb-font-size-sm);
+    font-weight: var(--sodek-gb-font-weight-normal);
+    color: var(--sodek-gb-color-text-muted);
+    background: var(--sodek-gb-color-background-subtle);
+    padding: 2px 8px;
+    border-radius: var(--sodek-gb-radius-full);
+    margin-left: auto;
+}
+
+.sodek-gb-notes-card textarea {
+    width: 100%;
+    padding: var(--sodek-gb-space-3);
+    border: 1px solid var(--sodek-gb-color-border);
+    border-radius: var(--sodek-gb-radius-md);
+    font-size: var(--sodek-gb-font-size-base);
+    resize: vertical;
+    min-height: 80px;
+}
+
+.sodek-gb-notes-card textarea:focus {
+    outline: none;
+    border-color: var(--sodek-gb-color-primary);
+    box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.1);
+}
+
+/* Deposit Card */
+.sodek-gb-deposit-card {
+    background: linear-gradient(135deg, var(--sodek-gb-color-background-subtle) 0%, var(--sodek-gb-color-background) 100%);
+    border: 1px solid var(--sodek-gb-color-border-light);
+    border-radius: var(--sodek-gb-radius-lg);
+    padding: var(--sodek-gb-space-5);
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+
+/* Deposit Input Section */
+.sodek-gb-deposit-input-section {
+    text-align: center;
+    margin-bottom: var(--sodek-gb-space-5);
+}
+
+.sodek-gb-deposit-label {
+    display: block;
+    font-size: var(--sodek-gb-font-size-md);
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text);
+    margin-bottom: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-booking-flow .sodek-gb-deposit-input-wrapper,
+.sodek-gb-deposit-card .sodek-gb-deposit-input-wrapper {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.25rem !important;
+    background: var(--sodek-gb-color-background) !important;
+    border: 2px solid var(--sodek-gb-color-border) !important;
+    border-radius: var(--sodek-gb-radius-lg) !important;
+    padding: 1rem 1.25rem !important;
+    min-width: 180px !important;
+    transition: border-color var(--sodek-gb-transition-fast), box-shadow var(--sodek-gb-transition-fast) !important;
+}
+
+.sodek-gb-booking-flow .sodek-gb-deposit-input-wrapper:focus-within,
+.sodek-gb-deposit-card .sodek-gb-deposit-input-wrapper:focus-within {
+    border-color: var(--sodek-gb-color-primary) !important;
+    box-shadow: 0 0 0 4px rgba(34, 113, 177, 0.12) !important;
+}
+
+.sodek-gb-booking-flow .sodek-gb-deposit-input-wrapper .sodek-gb-currency-symbol,
+.sodek-gb-deposit-card .sodek-gb-deposit-input-wrapper .sodek-gb-currency-symbol {
+    display: inline !important;
+    float: none !important;
+    position: static !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: var(--sodek-gb-color-text) !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.sodek-gb-booking-flow .sodek-gb-deposit-input,
+.sodek-gb-booking-flow .sodek-gb-deposit-input:focus,
+.sodek-gb-booking-flow .sodek-gb-deposit-input:active,
+.sodek-gb-booking-flow .sodek-gb-deposit-input:hover,
+.sodek-gb-deposit-card .sodek-gb-deposit-input,
+.sodek-gb-deposit-card .sodek-gb-deposit-input:focus,
+.sodek-gb-deposit-card .sodek-gb-deposit-input:active,
+.sodek-gb-deposit-card .sodek-gb-deposit-input:hover,
+.sodek-gb-deposit-input-wrapper input[type="number"],
+.sodek-gb-deposit-input-wrapper input[type="number"]:focus,
+.sodek-gb-deposit-input-wrapper input[type="number"]:active,
+.sodek-gb-deposit-input-wrapper input[type="number"]:hover {
+    display: inline-block !important;
+    float: none !important;
+    position: static !important;
+    width: 100px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-width: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: var(--sodek-gb-color-text) !important;
+    text-align: left !important;
+    line-height: 1 !important;
+    -moz-appearance: textfield !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.sodek-gb-deposit-input::-webkit-outer-spin-button,
+.sodek-gb-deposit-input::-webkit-inner-spin-button,
+.sodek-gb-deposit-input-wrapper input[type="number"]::-webkit-outer-spin-button,
+.sodek-gb-deposit-input-wrapper input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+    display: none !important;
+}
+
+.sodek-gb-deposit-hint {
+    margin: var(--sodek-gb-space-3) 0 0;
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-deposit-hint .sodek-gb-min-deposit-display,
+.sodek-gb-deposit-hint .sodek-gb-max-deposit-display {
+    font-weight: var(--sodek-gb-font-weight-semibold);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+/* Deposit Error Message */
+.sodek-gb-deposit-error {
+    margin-top: var(--sodek-gb-space-3);
+    padding: var(--sodek-gb-space-3);
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: var(--sodek-gb-radius-md);
+    color: #dc2626;
+    font-size: var(--sodek-gb-font-size-sm);
+    text-align: center;
+}
+
+/* Deposit Breakdown */
+.sodek-gb-deposit-breakdown {
+    background: var(--sodek-gb-color-background);
+    border-radius: var(--sodek-gb-radius-md);
+    padding: var(--sodek-gb-space-4);
+}
+
+.sodek-gb-deposit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--sodek-gb-space-2) 0;
+}
+
+.sodek-gb-deposit-row:first-child {
+    padding-bottom: var(--sodek-gb-space-3);
+    border-bottom: 1px dashed var(--sodek-gb-color-border-light);
+}
+
+.sodek-gb-deposit-row:last-child {
+    padding-top: var(--sodek-gb-space-3);
+}
+
+.sodek-gb-deposit-paying strong {
+    font-size: var(--sodek-gb-font-size-lg);
+    color: var(--sodek-gb-color-primary);
+}
+
+.sodek-gb-deposit-remaining strong {
+    font-size: var(--sodek-gb-font-size-base);
+    color: var(--sodek-gb-color-text-secondary);
+}
+
+/* Submit Wrapper */
+.sodek-gb-submit-wrapper {
+    margin-top: var(--sodek-gb-space-6);
+    text-align: center;
+}
+
+.sodek-gb-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sodek-gb-space-3);
+    width: 100%;
+    max-width: 400px;
+    padding: var(--sodek-gb-space-4) var(--sodek-gb-space-6);
+    font-size: var(--sodek-gb-font-size-md);
+}
+
+.sodek-gb-btn-price {
+    padding: var(--sodek-gb-space-1) var(--sodek-gb-space-3);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--sodek-gb-radius-full);
+    font-size: var(--sodek-gb-font-size-sm);
+}
+
+.sodek-gb-secure-notice {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+    margin-top: var(--sodek-gb-space-3);
+    font-size: var(--sodek-gb-font-size-sm);
+    color: var(--sodek-gb-color-text-muted);
+}
+
+.sodek-gb-secure-notice svg {
+    color: var(--sodek-gb-color-success);
+}
+
+/* Button Loading State */
+.sodek-gb-btn-content {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sodek-gb-space-3);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sodek-gb-btn-loading {
+    display: none;
+    align-items: center;
+    gap: var(--sodek-gb-space-2);
+}
+
+.sodek-gb-spinner {
+    animation: sodek-gb-spin 1s linear infinite;
+}
+
+@keyframes sodek-gb-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.sodek-gb-loading-text {
+    font-size: var(--sodek-gb-font-size-sm);
+}
+
+/* Loading state */
+.sodek-gb-submit-btn.sodek-gb-loading,
+.sodek-gb-book-button.sodek-gb-loading {
+    pointer-events: none !important;
+    opacity: 0.9 !important;
+    cursor: wait !important;
+}
+
+.sodek-gb-submit-btn.sodek-gb-loading .sodek-gb-btn-content,
+.sodek-gb-book-button.sodek-gb-loading .sodek-gb-btn-content,
+.sodek-gb-submit-btn.sodek-gb-loading .sodek-gb-btn-text,
+.sodek-gb-book-button.sodek-gb-loading .sodek-gb-btn-text,
+.sodek-gb-submit-btn.sodek-gb-loading .sodek-gb-btn-price,
+.sodek-gb-book-button.sodek-gb-loading .sodek-gb-btn-price {
+    display: none !important;
+}
+
+.sodek-gb-submit-btn.sodek-gb-loading .sodek-gb-btn-loading,
+.sodek-gb-book-button.sodek-gb-loading .sodek-gb-btn-loading {
+    display: inline-flex !important;
+}
+
+/* Success state */
+.sodek-gb-submit-btn.sodek-gb-success {
+    background: var(--sodek-gb-color-success) !important;
+    pointer-events: none;
+}
+
+/* Reduced motion - disable spinner animation */
+@media (prefers-reduced-motion: reduce) {
+    .sodek-gb-spinner {
+        animation: none;
+    }
+
+    .sodek-gb-submit-btn.sodek-gb-loading .sodek-gb-btn-loading::before {
+        content: "...";
+    }
+}
+
+/* Validation Error Notice */
+.sodek-gb-validation-error {
+    display: none;
+    padding: var(--sodek-gb-space-3) var(--sodek-gb-space-4);
+    margin-bottom: var(--sodek-gb-space-4);
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-left: 4px solid var(--sodek-gb-color-error, #dc2626);
+    border-radius: var(--sodek-gb-radius-md);
+    color: #991b1b;
+    font-size: var(--sodek-gb-font-size-sm);
+    line-height: 1.5;
+    animation: sodek-gb-shake 0.4s ease;
+}
+
+.sodek-gb-validation-error.sodek-gb-error-visible {
+    display: block;
+}
+
+.sodek-gb-error-icon {
+    margin-right: var(--sodek-gb-space-2);
+    color: var(--sodek-gb-color-error, #dc2626);
+}
+
+@keyframes sodek-gb-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sodek-gb-validation-error {
+        animation: none;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .sodek-gb-price-header {
+        margin: calc(-1 * var(--sodek-gb-space-3)) calc(-1 * var(--sodek-gb-space-3)) var(--sodek-gb-space-4);
+        padding: var(--sodek-gb-space-2) var(--sodek-gb-space-3);
+    }
+
+    .sodek-gb-booking-steps {
+        gap: var(--sodek-gb-space-1);
+    }
+
+    .sodek-gb-step-label {
+        font-size: 0.75rem;
+    }
+
+    .sodek-gb-step-connector {
+        flex: 0 0 20px;
+    }
+
+    .sodek-gb-addons-grid,
+    .sodek-gb-addons-list {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-section-actions {
+        flex-direction: column;
+    }
+
+    .sodek-gb-section-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sodek-gb-confirmation-datetime {
+        flex-direction: column;
+        gap: var(--sodek-gb-space-3);
+    }
+}
+
+/* ==========================================================================
+   CUSTOM PRODUCT GALLERY FOR BOOKABLE SERVICES
+   ========================================================================== */
+
+.sodek-gb-product-gallery {
+    position: relative;
+    width: 100%;
+    margin-bottom: var(--sodek-gb-space-4, 1rem);
+}
+
+/* Main Image Container */
+.sodek-gb-gallery-main {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--sodek-gb-radius-lg, 12px);
+    background: var(--sodek-gb-color-background-subtle, #f9fafb);
+}
+
+.sodek-gb-gallery-main-image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.sodek-gb-gallery-main-image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.sodek-gb-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.sodek-gb-gallery-main:hover .sodek-gb-main-img {
+    transform: scale(1.02);
+}
+
+/* Zoom Icon */
+.sodek-gb-zoom-icon {
+    position: absolute;
+    bottom: var(--sodek-gb-space-4, 1rem);
+    right: var(--sodek-gb-space-4, 1rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--sodek-gb-radius-full, 50%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: var(--sodek-gb-color-text, #1f2937);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s ease;
+}
+
+.sodek-gb-gallery-main:hover .sodek-gb-zoom-icon {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sodek-gb-zoom-icon:hover {
+    background: var(--sodek-gb-color-primary, #2271b1);
+    color: #fff;
+}
+
+/* Service Category Badge */
+.sodek-gb-gallery-service-info {
+    position: absolute;
+    top: var(--sodek-gb-space-4, 1rem);
+    left: var(--sodek-gb-space-4, 1rem);
+    z-index: 2;
+}
+
+.sodek-gb-service-category-badge {
+    display: inline-block;
+    padding: var(--sodek-gb-space-1, 0.25rem) var(--sodek-gb-space-3, 0.75rem);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--sodek-gb-radius-full, 50px);
+    font-size: var(--sodek-gb-font-size-xs, 0.75rem);
+    font-weight: var(--sodek-gb-font-weight-medium, 500);
+    color: var(--sodek-gb-color-text, #1f2937);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Thumbnails */
+.sodek-gb-gallery-thumbs {
+    display: flex;
+    gap: var(--sodek-gb-space-2, 0.5rem);
+    margin-top: var(--sodek-gb-space-3, 0.75rem);
+    padding: var(--sodek-gb-space-1, 0.25rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.sodek-gb-gallery-thumbs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.sodek-gb-gallery-thumbs::-webkit-scrollbar-track {
+    background: var(--sodek-gb-color-border-light, #e5e7eb);
+    border-radius: 2px;
+}
+
+.sodek-gb-gallery-thumbs::-webkit-scrollbar-thumb {
+    background: var(--sodek-gb-color-border, #d1d5db);
+    border-radius: 2px;
+}
+
+.sodek-gb-gallery-thumb {
+    flex: 0 0 auto;
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: var(--sodek-gb-radius-md, 8px);
+    background: none;
+    cursor: pointer;
+    overflow: hidden;
+    scroll-snap-align: start;
+    transition: all 0.2s ease;
+}
+
+.sodek-gb-gallery-thumb:hover {
+    border-color: var(--sodek-gb-color-border, #d1d5db);
+}
+
+.sodek-gb-gallery-thumb.sodek-gb-thumb-active {
+    border-color: var(--sodek-gb-color-primary, #2271b1);
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.2);
+}
+
+.sodek-gb-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--sodek-gb-radius-md, 8px) - 2px);
+}
+
+/* Placeholder */
+.sodek-gb-gallery-placeholder {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--sodek-gb-color-background-subtle, #f9fafb) 0%, #e5e7eb 100%);
+    border-radius: var(--sodek-gb-radius-lg, 12px);
+    border: 2px dashed var(--sodek-gb-color-border, #d1d5db);
+}
+
+.sodek-gb-placeholder-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sodek-gb-space-3, 0.75rem);
+    color: var(--sodek-gb-color-text-muted, #9ca3af);
+}
+
+.sodek-gb-placeholder-inner svg {
+    opacity: 0.5;
+}
+
+.sodek-gb-placeholder-inner span {
+    font-size: var(--sodek-gb-font-size-sm, 0.875rem);
+    font-weight: var(--sodek-gb-font-weight-medium, 500);
+}
+
+/* Single Image (no gallery) */
+.sodek-gb-single-image .sodek-gb-gallery-main {
+    border-radius: var(--sodek-gb-radius-lg, 12px);
+}
+
+/* Gallery with WooCommerce single product layout */
+.woocommerce div.product div.images.sodek-gb-product-gallery {
+    float: none;
+    width: 100%;
+}
+
+/* Lightbox / Fancybox integration */
+.sodek-gb-gallery-zoom {
+    display: block;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sodek-gb-gallery-main-image {
+        aspect-ratio: 1 / 1;
+    }
+
+    .sodek-gb-gallery-thumb {
+        width: 60px;
+        height: 60px;
+    }
+
+    .sodek-gb-zoom-icon {
+        width: 40px;
+        height: 40px;
+        bottom: var(--sodek-gb-space-3, 0.75rem);
+        right: var(--sodek-gb-space-3, 0.75rem);
+    }
+}
+
+/* Override WooCommerce default gallery styles */
+.woocommerce-product-gallery.sodek-gb-product-gallery {
+    opacity: 1 !important;
+}
+
+.sodek-gb-product-gallery .woocommerce-product-gallery__trigger {
+    display: none;
+}
+
+/* Smooth image swap animation */
+.sodek-gb-main-img.sodek-gb-img-loading {
+    opacity: 0.6;
+}
+
+.sodek-gb-main-img.sodek-gb-img-loaded {
+    animation: sodekGbFadeIn 0.3s ease;
+}
+
+@keyframes sodekGbFadeIn {
+    from {
+        opacity: 0.6;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,691 @@
+/**
+ * Braiderholic Booking Admin Styles
+ */
+
+/* Dashboard Stats */
+.sodek-gb-dashboard-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.sodek-gb-stat-box {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px 30px;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.sodek-gb-stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1d2327;
+    line-height: 1.2;
+}
+
+.sodek-gb-stat-label {
+    display: block;
+    font-size: 13px;
+    color: #646970;
+    margin-top: 5px;
+}
+
+/* Dashboard Columns */
+.sodek-gb-dashboard-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.sodek-gb-dashboard-column {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.sodek-gb-dashboard-column h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.sodek-gb-no-bookings {
+    color: #646970;
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+    background: #f6f7f7;
+    border-radius: 4px;
+}
+
+/* Status badges */
+.sodek-gb-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.sodek-gb-status-pending,
+.sodek-gb-status-warning {
+    background: #fcf0e3;
+    color: #9a6700;
+}
+
+.sodek-gb-status-confirmed,
+.sodek-gb-status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.sodek-gb-status-completed,
+.sodek-gb-status-info {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.sodek-gb-status-cancelled,
+.sodek-gb-status-no-show,
+.sodek-gb-status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Availability Page */
+.sodek-gb-availability-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.sodek-gb-availability-column {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.sodek-gb-availability-column h2 {
+    margin-top: 0;
+}
+
+.sodek-gb-schedule-table .sodek-gb-time-input {
+    width: 120px;
+}
+
+.sodek-gb-schedule-table td {
+    vertical-align: middle;
+}
+
+.sodek-gb-date-limit-overrides {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.sodek-gb-date-limit-overrides th:nth-child(1),
+.sodek-gb-date-limit-overrides td:nth-child(1) {
+    width: 32%;
+}
+
+.sodek-gb-date-limit-overrides th:nth-child(2),
+.sodek-gb-date-limit-overrides td:nth-child(2) {
+    width: 18%;
+}
+
+.sodek-gb-date-limit-overrides th:nth-child(3),
+.sodek-gb-date-limit-overrides td:nth-child(3) {
+    width: 50%;
+}
+
+.sodek-gb-date-limit-overrides input[type="date"],
+.sodek-gb-date-limit-overrides input[type="number"],
+.sodek-gb-date-limit-overrides input[type="text"] {
+    max-width: 100%;
+}
+
+.sodek-gb-date-limit-overrides input[type="text"].regular-text {
+    width: 100%;
+}
+
+.sodek-gb-block-date-form {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+/* Service meta boxes */
+.sodek-gb-deposit-suffix {
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+/* Booking list status column */
+.column-sodek_gb_status {
+    width: 100px;
+}
+
+.column-sodek_gb_datetime {
+    width: 120px;
+}
+
+/* Widget styling */
+.sodek-gb-widget-bookings {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sodek-gb-widget-bookings li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.sodek-gb-widget-bookings li:last-child {
+    border-bottom: none;
+}
+
+/* Responsive */
+@media screen and (max-width: 1200px) {
+    .sodek-gb-dashboard-columns,
+    .sodek-gb-availability-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .sodek-gb-dashboard-stats {
+        flex-direction: column;
+    }
+
+    .sodek-gb-stat-box {
+        width: 100%;
+    }
+
+    .sodek-gb-date-limit-overrides {
+        table-layout: auto;
+    }
+
+    .sodek-gb-date-limit-overrides th:nth-child(1),
+    .sodek-gb-date-limit-overrides td:nth-child(1),
+    .sodek-gb-date-limit-overrides th:nth-child(2),
+    .sodek-gb-date-limit-overrides td:nth-child(2),
+    .sodek-gb-date-limit-overrides th:nth-child(3),
+    .sodek-gb-date-limit-overrides td:nth-child(3) {
+        width: auto;
+    }
+}
+
+/* ============================================
+   Calendar Page
+   ============================================ */
+
+.sodek-gb-calendar-wrap {
+    margin-right: 20px;
+}
+
+.sodek-gb-calendar-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: #fff;
+    padding: 15px 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.sodek-gb-calendar-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sodek-gb-calendar-filters label {
+    font-weight: 500;
+    margin-right: 5px;
+}
+
+.sodek-gb-calendar-filters select {
+    min-width: 150px;
+}
+
+.sodek-gb-calendar-legend {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.sodek-gb-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #646970;
+}
+
+.sodek-gb-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.sodek-gb-legend-pending .sodek-gb-legend-dot {
+    background: #f0ad4e;
+}
+
+.sodek-gb-legend-confirmed .sodek-gb-legend-dot {
+    background: #5cb85c;
+}
+
+.sodek-gb-legend-completed .sodek-gb-legend-dot {
+    background: #5bc0de;
+}
+
+.sodek-gb-legend-cancelled .sodek-gb-legend-dot {
+    background: #d9534f;
+}
+
+/* FullCalendar customization */
+#sodek-gb-calendar {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+}
+
+#sodek-gb-calendar.sodek-gb-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.4em;
+}
+
+.fc .fc-button-primary {
+    background-color: #2271b1;
+    border-color: #2271b1;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: #135e96;
+    border-color: #135e96;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: #135e96;
+    border-color: #135e96;
+}
+
+.fc-event {
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+.sodek-gb-event-content {
+    overflow: hidden;
+}
+
+.sodek-gb-event-time {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.sodek-gb-event-title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sodek-gb-event-service {
+    font-size: 11px;
+    opacity: 0.85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Status-based event styling */
+.fc-event.sodek-gb-status-pending {
+    background-color: #f0ad4e !important;
+    border-color: #eea236 !important;
+}
+
+.fc-event.sodek-gb-status-confirmed {
+    background-color: #5cb85c !important;
+    border-color: #4cae4c !important;
+}
+
+.fc-event.sodek-gb-status-completed {
+    background-color: #5bc0de !important;
+    border-color: #46b8da !important;
+}
+
+.fc-event.sodek-gb-status-cancelled {
+    background-color: #d9534f !important;
+    border-color: #d43f3a !important;
+    opacity: 0.7;
+}
+
+.fc-event.sodek-gb-status-no-show {
+    background-color: #777 !important;
+    border-color: #666 !important;
+    opacity: 0.7;
+}
+
+/* Modal */
+.sodek-gb-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.sodek-gb-modal-content {
+    background: #fff;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.sodek-gb-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.sodek-gb-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.sodek-gb-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #646970;
+    padding: 0;
+    line-height: 1;
+}
+
+.sodek-gb-modal-close:hover {
+    color: #1d2327;
+}
+
+.sodek-gb-modal-body {
+    padding: 20px;
+}
+
+.sodek-gb-detail-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.sodek-gb-detail-row:last-child {
+    border-bottom: none;
+}
+
+.sodek-gb-detail-row label {
+    font-weight: 600;
+    width: 100px;
+    flex-shrink: 0;
+    color: #646970;
+}
+
+.sodek-gb-detail-row span {
+    flex: 1;
+}
+
+.sodek-gb-detail-notes {
+    flex-direction: column;
+}
+
+.sodek-gb-detail-notes label {
+    margin-bottom: 5px;
+}
+
+.sodek-gb-modal-footer {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid #dcdcde;
+    background: #f6f7f7;
+}
+
+/* Status badge in modal */
+.sodek-gb-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.sodek-gb-status-badge.sodek-gb-status-pending {
+    background: #fcf0e3;
+    color: #9a6700;
+}
+
+.sodek-gb-status-badge.sodek-gb-status-confirmed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.sodek-gb-status-badge.sodek-gb-status-completed {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.sodek-gb-status-badge.sodek-gb-status-cancelled,
+.sodek-gb-status-badge.sodek-gb-status-no-show {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Admin notices */
+.sodek-gb-notice {
+    transition: opacity 0.3s ease;
+}
+
+/* Responsive calendar */
+@media screen and (max-width: 782px) {
+    .sodek-gb-calendar-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sodek-gb-calendar-filters {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .sodek-gb-calendar-filters select {
+        width: 100%;
+    }
+
+    .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* ============================================
+   Booking Admin Mobile Experience
+   ============================================ */
+
+body.sodek-gb-booking-admin {
+    background: #f4efe8;
+}
+
+body.sodek-gb-booking-admin #wpcontent,
+body.sodek-gb-booking-admin #wpfooter {
+    margin-left: 0;
+}
+
+body.sodek-gb-booking-admin .wrap {
+    max-width: 1240px;
+}
+
+body.sodek-gb-booking-admin .notice,
+body.sodek-gb-booking-admin .updated,
+body.sodek-gb-booking-admin .error {
+    border-radius: 16px;
+    border-color: #eadfce;
+    box-shadow: 0 12px 30px rgba(72, 47, 33, 0.06);
+}
+
+body.sodek-gb-booking-admin .postbox,
+body.sodek-gb-booking-admin .stuffbox,
+body.sodek-gb-booking-admin .card,
+body.sodek-gb-booking-admin .widefat,
+body.sodek-gb-booking-admin .wp-list-table {
+    border-color: #eadfce;
+    border-radius: 20px;
+    box-shadow: 0 16px 34px rgba(72, 47, 33, 0.06);
+}
+
+body.sodek-gb-booking-admin .wp-core-ui .button,
+body.sodek-gb-booking-admin .wp-core-ui .button-primary {
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+}
+
+body.sodek-gb-booking-admin .wp-core-ui .button-primary {
+    border-color: #4e3729;
+    background: linear-gradient(135deg, #2a1f19, #6f513e);
+    box-shadow: 0 12px 24px rgba(78, 55, 41, 0.18);
+}
+
+body.sodek-gb-booking-admin .wp-core-ui .button-primary:hover,
+body.sodek-gb-booking-admin .wp-core-ui .button-primary:focus {
+    border-color: #2a1f19;
+    background: linear-gradient(135deg, #201713, #5f4535);
+}
+
+body.sodek-gb-booking-admin input[type="text"],
+body.sodek-gb-booking-admin input[type="search"],
+body.sodek-gb-booking-admin input[type="email"],
+body.sodek-gb-booking-admin input[type="tel"],
+body.sodek-gb-booking-admin input[type="number"],
+body.sodek-gb-booking-admin input[type="date"],
+body.sodek-gb-booking-admin input[type="time"],
+body.sodek-gb-booking-admin select,
+body.sodek-gb-booking-admin textarea {
+    border-color: #e3d7c8;
+    border-radius: 14px;
+    min-height: 44px;
+    box-shadow: none;
+}
+
+body.sodek-gb-booking-admin .wp-heading-inline {
+    font-size: 30px;
+    line-height: 1.15;
+}
+
+@media screen and (max-width: 782px) {
+    body.sodek-gb-booking-admin.auto-fold #adminmenumain,
+    body.sodek-gb-booking-admin.auto-fold #adminmenuwrap,
+    body.sodek-gb-booking-admin.auto-fold #adminmenu,
+    body.sodek-gb-booking-admin #screen-meta-links,
+    body.sodek-gb-booking-admin #contextual-help-link-wrap,
+    body.sodek-gb-booking-admin #wpfooter {
+        display: none;
+    }
+
+    body.sodek-gb-booking-admin #wpcontent,
+    body.sodek-gb-booking-admin.auto-fold #wpcontent,
+    body.sodek-gb-booking-admin.auto-fold #wpfooter {
+        margin-left: 0;
+    }
+
+    body.sodek-gb-booking-admin #wpbody-content {
+        padding-bottom: 28px;
+    }
+
+    body.sodek-gb-booking-admin .wrap {
+        margin: 0;
+        padding: 16px 12px 28px;
+    }
+
+    body.sodek-gb-booking-admin .wp-heading-inline {
+        font-size: 26px;
+    }
+
+    body.sodek-gb-booking-admin .postbox,
+    body.sodek-gb-booking-admin .stuffbox,
+    body.sodek-gb-booking-admin .card,
+    body.sodek-gb-booking-admin .widefat,
+    body.sodek-gb-booking-admin .wp-list-table,
+    body.sodek-gb-booking-admin .sodek-gb-calendar-toolbar,
+    body.sodek-gb-booking-admin .sodek-gb-dashboard-column,
+    body.sodek-gb-booking-admin .sodek-gb-availability-column {
+        border-radius: 18px;
+    }
+
+    body.sodek-gb-booking-admin .wp-list-table thead,
+    body.sodek-gb-booking-admin .wp-list-table tfoot {
+        display: none;
+    }
+
+    body.sodek-gb-booking-admin .wp-list-table,
+    body.sodek-gb-booking-admin .wp-list-table tbody,
+    body.sodek-gb-booking-admin .wp-list-table tr,
+    body.sodek-gb-booking-admin .wp-list-table td {
+        display: block;
+        width: 100%;
+    }
+
+    body.sodek-gb-booking-admin .wp-list-table tr {
+        padding: 12px;
+        border-bottom: 1px solid #f0e8dd;
+    }
+
+    body.sodek-gb-booking-admin .wp-list-table td {
+        padding: 6px 0;
+        border: 0;
+    }
+
+    body.sodek-gb-booking-admin .wp-list-table td::before {
+        content: attr(data-colname);
+        display: block;
+        margin-bottom: 4px;
+        color: #7a6a5b;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+}

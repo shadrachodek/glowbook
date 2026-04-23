@@ -1,0 +1,1728 @@
+/**
+ * GlowBook Customer Portal Styles
+ *
+ * Styles for the customer self-service portal.
+ *
+ * @package GlowBook
+ * @since   2.0.0
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* =============================================
+   Portal Layout
+   ============================================= */
+.sodek-gb-portal {
+    min-height: 100vh;
+    background: var(--sodek-gb-bg-light);
+    padding: 40px 20px;
+}
+
+.sodek-gb-portal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.sodek-gb-portal-welcome h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--sodek-gb-text);
+}
+
+.sodek-gb-portal-welcome p {
+    color: var(--sodek-gb-text-light);
+    margin: 0;
+}
+
+.sodek-gb-portal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* =============================================
+   Tabs
+   ============================================= */
+.sodek-gb-portal-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--sodek-gb-border);
+    margin-bottom: 30px;
+    overflow-x: auto;
+}
+
+.sodek-gb-tab {
+    padding: 16px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--sodek-gb-text-light);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: var(--sodek-gb-transition);
+    white-space: nowrap;
+}
+
+.sodek-gb-tab:hover {
+    color: var(--sodek-gb-text);
+}
+
+.sodek-gb-tab.active {
+    color: var(--sodek-gb-accent);
+    border-bottom-color: var(--sodek-gb-accent);
+}
+
+.sodek-gb-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--sodek-gb-accent);
+    color: white;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+/* =============================================
+   Tab Panels
+   ============================================= */
+.sodek-gb-tab-panel {
+    display: none;
+}
+
+.sodek-gb-tab-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* =============================================
+   Bookings List
+   ============================================= */
+.sodek-gb-bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sodek-gb-booking-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: var(--sodek-gb-bg);
+    border-radius: var(--sodek-gb-radius);
+    padding: 24px;
+    box-shadow: var(--sodek-gb-shadow);
+    transition: var(--sodek-gb-transition);
+}
+
+.sodek-gb-booking-card:hover {
+    box-shadow: var(--sodek-gb-shadow-lg);
+}
+
+.sodek-gb-booking-date {
+    flex-shrink: 0;
+    width: 70px;
+    text-align: center;
+    padding: 12px;
+    background: var(--sodek-gb-accent);
+    color: white;
+    border-radius: var(--sodek-gb-radius-sm);
+}
+
+.sodek-gb-date-month {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sodek-gb-date-day {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.sodek-gb-date-weekday {
+    display: block;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.sodek-gb-date-year {
+    display: block;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.sodek-gb-booking-info {
+    flex: 1;
+}
+
+.sodek-gb-booking-service {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.sodek-gb-booking-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.sodek-gb-booking-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--sodek-gb-text-light);
+}
+
+.sodek-gb-booking-meta svg {
+    flex-shrink: 0;
+}
+
+.sodek-gb-booking-addons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.sodek-gb-addon-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    background: var(--sodek-gb-bg-light);
+    color: var(--sodek-gb-text-light);
+    border-radius: 20px;
+}
+
+.sodek-gb-booking-status-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sodek-gb-status {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+    text-transform: capitalize;
+}
+
+.sodek-gb-status-pending {
+    background: rgba(253, 203, 110, 0.2);
+    color: #B7950B;
+}
+
+.sodek-gb-status-confirmed {
+    background: rgba(0, 184, 148, 0.1);
+    color: var(--sodek-gb-success);
+}
+
+.sodek-gb-status-completed {
+    background: rgba(99, 110, 114, 0.1);
+    color: var(--sodek-gb-text-light);
+}
+
+.sodek-gb-status-cancelled {
+    background: rgba(214, 48, 49, 0.1);
+    color: var(--sodek-gb-danger);
+}
+
+.sodek-gb-balance-due {
+    font-size: 13px;
+    color: var(--sodek-gb-danger);
+    font-weight: 500;
+}
+
+.sodek-gb-booking-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Past Bookings */
+.sodek-gb-past-booking {
+    opacity: 0.8;
+}
+
+.sodek-gb-past-booking .sodek-gb-booking-date {
+    background: var(--sodek-gb-text-light);
+}
+
+.sodek-gb-booking-price {
+    font-weight: 600;
+    color: var(--sodek-gb-accent);
+}
+
+/* =============================================
+   Empty State
+   ============================================= */
+.sodek-gb-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.sodek-gb-empty-state svg {
+    color: var(--sodek-gb-text-muted);
+    margin-bottom: 20px;
+}
+
+.sodek-gb-empty-state h3 {
+    font-size: 20px;
+    margin: 0 0 8px;
+}
+
+.sodek-gb-empty-state p {
+    color: var(--sodek-gb-text-light);
+    margin: 0 0 24px;
+}
+
+/* =============================================
+   Profile Sections
+   ============================================= */
+.sodek-gb-profile-sections {
+    display: grid;
+    gap: 24px;
+}
+
+.sodek-gb-profile-section {
+    background: var(--sodek-gb-bg);
+    border-radius: var(--sodek-gb-radius);
+    padding: 30px;
+    box-shadow: var(--sodek-gb-shadow);
+}
+
+.sodek-gb-profile-section h3 {
+    font-size: 18px;
+    margin: 0 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--sodek-gb-border);
+}
+
+.sodek-gb-profile-form .sodek-gb-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.sodek-gb-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.sodek-gb-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.sodek-gb-checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--sodek-gb-accent);
+}
+
+/* Cards List */
+.sodek-gb-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sodek-gb-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--sodek-gb-bg-light);
+    border-radius: var(--sodek-gb-radius-sm);
+}
+
+.sodek-gb-card-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sodek-gb-card-brand {
+    font-weight: 500;
+}
+
+.sodek-gb-card-number {
+    font-family: monospace;
+}
+
+.sodek-gb-card-expiry {
+    color: var(--sodek-gb-text-light);
+    font-size: 13px;
+}
+
+.sodek-gb-card-default {
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--sodek-gb-success);
+    color: white;
+    border-radius: 10px;
+}
+
+.sodek-gb-card-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.sodek-gb-empty-message {
+    color: var(--sodek-gb-text-light);
+    font-style: italic;
+}
+
+/* =============================================
+   Login Page
+   ============================================= */
+.sodek-gb-portal-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sodek-gb-bg-light);
+    padding: 40px 20px;
+}
+
+.sodek-gb-login-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--sodek-gb-bg);
+    border-radius: var(--sodek-gb-radius);
+    box-shadow: var(--sodek-gb-shadow-lg);
+    padding: 40px;
+}
+
+.sodek-gb-login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sodek-gb-login-header h1 {
+    font-size: 24px;
+    margin: 0 0 8px;
+}
+
+.sodek-gb-login-header p {
+    color: var(--sodek-gb-text-light);
+    margin: 0;
+}
+
+.sodek-gb-login-step {
+    display: none;
+}
+
+.sodek-gb-login-step.active {
+    display: block;
+}
+
+/* Verification Code Input */
+.sodek-gb-verification-sent {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.sodek-gb-verification-sent svg {
+    color: var(--sodek-gb-success);
+    margin-bottom: 12px;
+}
+
+.sodek-gb-code-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.sodek-gb-code-input {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    border: 2px solid var(--sodek-gb-border);
+    border-radius: var(--sodek-gb-radius-sm);
+    transition: var(--sodek-gb-transition);
+}
+
+.sodek-gb-code-input:focus {
+    outline: none;
+    border-color: var(--sodek-gb-accent);
+}
+
+.sodek-gb-resend-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.sodek-gb-resend-section p {
+    color: var(--sodek-gb-text-light);
+    font-size: 14px;
+    margin: 0 0 8px;
+}
+
+.sodek-gb-btn-back {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Divider */
+.sodek-gb-login-divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.sodek-gb-login-divider::before,
+.sodek-gb-login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--sodek-gb-border);
+}
+
+.sodek-gb-login-divider span {
+    padding: 0 16px;
+    color: var(--sodek-gb-text-light);
+    font-size: 14px;
+}
+
+.sodek-gb-magic-link-section {
+    text-align: center;
+}
+
+.sodek-gb-magic-link-section p {
+    color: var(--sodek-gb-text-light);
+    font-size: 14px;
+    margin: 0 0 16px;
+}
+
+.sodek-gb-login-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid var(--sodek-gb-border);
+}
+
+.sodek-gb-login-footer p {
+    color: var(--sodek-gb-text-light);
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+/* =============================================
+   Modals
+   ============================================= */
+.sodek-gb-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 20px;
+}
+
+.sodek-gb-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.sodek-gb-modal-content {
+    position: relative;
+    background: var(--sodek-gb-bg);
+    border-radius: var(--sodek-gb-radius);
+    box-shadow: var(--sodek-gb-shadow-lg);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sodek-gb-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--sodek-gb-border);
+}
+
+.sodek-gb-modal-header h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.sodek-gb-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--sodek-gb-text-light);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.sodek-gb-modal-close:hover {
+    color: var(--sodek-gb-text);
+}
+
+.sodek-gb-modal-body {
+    padding: 24px;
+}
+
+.sodek-gb-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid var(--sodek-gb-border);
+    background: var(--sodek-gb-bg-light);
+}
+
+/* Cancel Modal */
+.sodek-gb-cancel-warning {
+    text-align: center;
+}
+
+.sodek-gb-cancel-warning svg {
+    color: var(--sodek-gb-warning);
+    margin-bottom: 16px;
+}
+
+.sodek-gb-cancel-warning p {
+    margin: 0 0 12px;
+}
+
+.sodek-gb-cancel-policy {
+    font-size: 14px;
+    color: var(--sodek-gb-text-light);
+    background: var(--sodek-gb-bg-light);
+    padding: 12px;
+    border-radius: var(--sodek-gb-radius-sm);
+}
+
+.sodek-gb-btn-danger {
+    background: var(--sodek-gb-danger);
+    color: white;
+}
+
+.sodek-gb-btn-danger:hover:not(:disabled) {
+    background: #C0392B;
+}
+
+/* Pay Modal */
+.sodek-gb-pay-amount {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--sodek-gb-bg-light);
+    border-radius: var(--sodek-gb-radius-sm);
+    margin-bottom: 20px;
+}
+
+.sodek-gb-pay-amount .sodek-gb-amount {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--sodek-gb-accent);
+}
+
+.sodek-gb-saved-cards-select {
+    margin-bottom: 20px;
+}
+
+.sodek-gb-saved-cards-select label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Mini Calendar in Modal */
+.sodek-gb-mini-calendar {
+    margin-bottom: 20px;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-calendar-header {
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    border-radius: 50%;
+    cursor: default;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-available {
+    cursor: pointer;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-available:hover {
+    background: var(--sodek-gb-accent);
+    color: white;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-selected {
+    background: var(--sodek-gb-accent);
+    color: white;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-past {
+    color: var(--sodek-gb-text-muted);
+}
+
+.sodek-gb-times-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.sodek-gb-time-btn {
+    padding: 10px;
+    border: 1px solid var(--sodek-gb-border);
+    border-radius: var(--sodek-gb-radius-sm);
+    background: var(--sodek-gb-bg);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--sodek-gb-transition);
+}
+
+.sodek-gb-time-btn:hover {
+    border-color: var(--sodek-gb-accent);
+}
+
+.sodek-gb-time-btn.sodek-gb-selected {
+    background: var(--sodek-gb-accent);
+    border-color: var(--sodek-gb-accent);
+    color: white;
+}
+
+.sodek-gb-no-times {
+    text-align: center;
+    color: var(--sodek-gb-text-light);
+    padding: 20px;
+}
+
+/* =============================================
+   Toast Notifications
+   ============================================= */
+.sodek-gb-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    background: var(--sodek-gb-text);
+    color: white;
+    border-radius: var(--sodek-gb-radius-sm);
+    box-shadow: var(--sodek-gb-shadow-lg);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 100000;
+}
+
+.sodek-gb-toast.sodek-gb-show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.sodek-gb-toast-success {
+    background: var(--sodek-gb-success);
+}
+
+.sodek-gb-toast-error {
+    background: var(--sodek-gb-danger);
+}
+
+/* =============================================
+   Responsive Styles
+   ============================================= */
+@media (max-width: 768px) {
+    .sodek-gb-portal-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sodek-gb-portal-actions {
+        flex-direction: column;
+    }
+
+    .sodek-gb-booking-card {
+        flex-direction: column;
+    }
+
+    .sodek-gb-booking-date {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px 16px;
+    }
+
+    .sodek-gb-date-month,
+    .sodek-gb-date-day,
+    .sodek-gb-date-weekday {
+        display: inline;
+    }
+
+    .sodek-gb-date-day {
+        font-size: 20px;
+    }
+
+    .sodek-gb-booking-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .sodek-gb-booking-actions .sodek-gb-btn {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .sodek-gb-profile-form .sodek-gb-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-login-card {
+        padding: 30px 24px;
+    }
+
+    .sodek-gb-code-input {
+        width: 40px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .sodek-gb-modal-footer {
+        flex-direction: column;
+    }
+
+    .sodek-gb-times-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-portal {
+        padding: 20px 15px;
+    }
+
+    .sodek-gb-tab {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .sodek-gb-profile-section {
+        padding: 24px 20px;
+    }
+
+    .sodek-gb-card-info {
+        flex-wrap: wrap;
+    }
+}
+
+/* =============================================
+   Portal Polish Overrides
+   ============================================= */
+.sodek-gb-portal,
+.sodek-gb-portal-login {
+    --sodek-gb-portal-display: 'Cormorant Garamond', Georgia, serif;
+    --sodek-gb-portal-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--sodek-gb-portal-body);
+    color: #201915;
+}
+
+.sodek-gb-portal *,
+.sodek-gb-portal-login * {
+    box-sizing: border-box;
+}
+
+.sodek-gb-portal-login h1,
+.sodek-gb-portal-login h2,
+.sodek-gb-portal-login h3,
+.sodek-gb-portal-login p,
+.sodek-gb-portal-login label {
+    max-width: none;
+}
+
+.sodek-gb-portal-login img {
+    max-width: 100%;
+    height: auto;
+}
+
+.sodek-gb-portal {
+    background:
+        radial-gradient(circle at top right, rgba(255, 243, 233, 0.88), transparent 30%),
+        linear-gradient(180deg, rgba(252, 248, 244, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+    padding: 48px 22px 64px;
+}
+
+.sodek-gb-portal .sodek-gb-container,
+.sodek-gb-portal-login .sodek-gb-container {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.sodek-gb-portal-login .sodek-gb-container {
+    width: min(100%, 1120px);
+}
+
+.sodek-gb-portal-header {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 28px 30px;
+    border-radius: 26px;
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    background:
+        radial-gradient(circle at top right, rgba(255, 245, 236, 0.92), transparent 38%),
+        linear-gradient(180deg, rgba(255, 252, 249, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+    box-shadow: 0 26px 46px rgba(89, 59, 37, 0.07);
+}
+
+.sodek-gb-portal-kicker,
+.sodek-gb-login-kicker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(176, 137, 104, 0.1);
+    color: #8a6445;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.sodek-gb-portal-welcome h1 {
+    font-family: var(--sodek-gb-portal-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin: 0 0 6px;
+}
+
+.sodek-gb-portal-welcome p {
+    max-width: 48ch;
+    color: #62544b;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.sodek-gb-portal-account-state {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.sodek-gb-portal-account-state small {
+    color: #7a6a5f;
+    line-height: 1.6;
+    max-width: 62ch;
+}
+
+.sodek-gb-portal-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.sodek-gb-portal-stat {
+    padding: 18px 20px;
+    border-radius: 18px;
+    border: 1px solid rgba(197, 168, 141, 0.14);
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 16px 30px rgba(89, 59, 37, 0.05);
+}
+
+.sodek-gb-portal-stat-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9a7a60;
+}
+
+.sodek-gb-portal-stat-value {
+    display: block;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: #201915;
+}
+
+.sodek-gb-portal-stat-value-text {
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+
+.sodek-gb-status-account-wordpress {
+    background: rgba(37, 99, 235, 0.12);
+    color: #1d4ed8;
+}
+
+.sodek-gb-status-account-portal {
+    background: rgba(182, 120, 49, 0.14);
+    color: #9a5b00;
+}
+
+.sodek-gb-status-account-guest {
+    background: rgba(99, 110, 114, 0.12);
+    color: #5b6168;
+}
+
+.sodek-gb-portal-tabs {
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 10px;
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 18px 32px rgba(89, 59, 37, 0.04);
+    border-bottom: none;
+}
+
+.sodek-gb-tab {
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: 999px;
+    margin-bottom: 0;
+    font-weight: 600;
+    border-bottom: none;
+}
+
+.sodek-gb-tab.active {
+    color: #201915;
+    background: linear-gradient(135deg, rgba(255, 244, 236, 0.98) 0%, rgba(248, 231, 220, 0.98) 100%);
+    box-shadow: inset 0 0 0 1px rgba(176, 137, 104, 0.18);
+}
+
+.sodek-gb-badge {
+    background: #201915;
+    color: #fff4ec;
+}
+
+.sodek-gb-booking-card,
+.sodek-gb-profile-section,
+.sodek-gb-login-card,
+.sodek-gb-modal-content {
+    border-radius: 24px;
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(251, 247, 243, 0.98) 100%);
+    box-shadow: 0 24px 42px rgba(89, 59, 37, 0.06);
+}
+
+.sodek-gb-booking-card {
+    padding: 26px;
+    gap: 22px;
+}
+
+.sodek-gb-booking-date {
+    width: 82px;
+    padding: 14px 10px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(33, 28, 24, 0.95) 0%, rgba(86, 63, 49, 0.95) 100%);
+    box-shadow: 0 16px 30px rgba(32, 25, 21, 0.14);
+}
+
+.sodek-gb-booking-service {
+    margin: 0 0 10px;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.sodek-gb-booking-meta {
+    gap: 12px 18px;
+    margin-bottom: 14px;
+}
+
+.sodek-gb-addon-tag {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 245, 237, 0.96);
+    color: #7d6048;
+    border: 1px solid rgba(176, 137, 104, 0.14);
+}
+
+.sodek-gb-status {
+    padding: 6px 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.sodek-gb-booking-actions {
+    gap: 10px;
+}
+
+.sodek-gb-booking-actions .sodek-gb-btn {
+    min-width: 140px;
+}
+
+.sodek-gb-empty-state {
+    padding: 68px 24px;
+    border-radius: 24px;
+    border: 1px dashed rgba(197, 168, 141, 0.22);
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.sodek-gb-profile-sections {
+    gap: 20px;
+}
+
+.sodek-gb-profile-section {
+    padding: 28px;
+}
+
+.sodek-gb-profile-section h3 {
+    margin: 0 0 20px;
+    padding-bottom: 14px;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    border-bottom: 1px solid rgba(197, 168, 141, 0.16);
+}
+
+.sodek-gb-form-group label,
+.sodek-gb-saved-cards-select label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7c685b;
+}
+
+.sodek-gb-input,
+.sodek-gb-select,
+.sodek-gb-textarea,
+.sodek-gb-code-input {
+    border-radius: 14px;
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.sodek-gb-input:focus,
+.sodek-gb-select:focus,
+.sodek-gb-textarea:focus,
+.sodek-gb-code-input:focus {
+    outline: none;
+    border-color: rgba(176, 137, 104, 0.46);
+    box-shadow: 0 0 0 4px rgba(176, 137, 104, 0.08);
+}
+
+.sodek-gb-card-item {
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(197, 168, 141, 0.14);
+}
+
+.sodek-gb-portal-login {
+    min-height: auto;
+    padding: 52px 20px 64px;
+    background:
+        radial-gradient(circle at top center, rgba(255, 243, 233, 0.8), transparent 32%),
+        linear-gradient(180deg, rgba(252, 248, 244, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.sodek-gb-portal-login-shell {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: clamp(16px, 3vw, 28px);
+    border-radius: 32px;
+    border: 1px solid rgba(197, 168, 141, 0.14);
+    background:
+        radial-gradient(circle at top center, rgba(255, 245, 236, 0.78), transparent 36%),
+        linear-gradient(180deg, rgba(255, 252, 249, 0.92) 0%, rgba(255, 255, 255, 0.96) 100%);
+    box-shadow: 0 24px 48px rgba(89, 59, 37, 0.05);
+}
+
+.sodek-gb-login-card {
+    width: min(100%, 560px);
+    max-width: 560px;
+    padding: 34px 34px 28px;
+}
+
+.sodek-gb-login-header {
+    margin-bottom: 26px;
+}
+
+.sodek-gb-login-header h1 {
+    font-family: var(--sodek-gb-portal-display);
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin: 0 0 8px;
+}
+
+.sodek-gb-login-header p,
+.sodek-gb-magic-link-section p,
+.sodek-gb-login-footer p,
+.sodek-gb-form-help,
+.sodek-gb-resend-section p {
+    color: #62544b;
+    line-height: 1.7;
+}
+
+.sodek-gb-verification-sent {
+    padding: 18px 16px;
+    border-radius: 18px;
+    background: rgba(255, 250, 246, 0.92);
+    border: 1px solid rgba(197, 168, 141, 0.14);
+}
+
+.sodek-gb-login-trust {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(197, 168, 141, 0.14);
+    text-align: center;
+    color: #7a6a5f;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.sodek-gb-login-account-note {
+    margin-top: 22px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255, 250, 246, 0.92);
+    border: 1px solid rgba(197, 168, 141, 0.14);
+}
+
+.sodek-gb-login-account-note strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9a7a60;
+}
+
+.sodek-gb-login-account-note p {
+    margin: 0;
+    color: #62544b;
+    line-height: 1.7;
+}
+
+.sodek-gb-modal-backdrop {
+    background:
+        radial-gradient(circle at top, rgba(255, 242, 231, 0.35), transparent 48%),
+        rgba(21, 18, 15, 0.62);
+    backdrop-filter: blur(14px);
+}
+
+.sodek-gb-modal-content {
+    overflow: hidden;
+    max-width: 760px;
+    box-shadow: 0 30px 90px rgba(26, 22, 18, 0.18);
+}
+
+.sodek-gb-modal-header {
+    padding: 28px 32px 22px;
+    background:
+        linear-gradient(135deg, rgba(255, 247, 240, 0.92), rgba(255, 255, 255, 0.96));
+}
+
+.sodek-gb-modal-header h2 {
+    font-family: var(--sodek-gb-portal-display);
+    font-size: clamp(1.85rem, 2vw, 2.35rem);
+    letter-spacing: -0.035em;
+}
+
+.sodek-gb-modal-kicker,
+.sodek-gb-modal-panel-kicker {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: #b67c45;
+}
+
+.sodek-gb-modal-close {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(199, 153, 94, 0.22);
+    background: rgba(255, 255, 255, 0.78);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.sodek-gb-modal-close:hover {
+    transform: rotate(90deg);
+    border-color: rgba(199, 153, 94, 0.45);
+    background: rgba(255, 248, 241, 0.98);
+}
+
+.sodek-gb-modal-body {
+    padding: 30px 32px 34px;
+    background:
+        linear-gradient(180deg, rgba(255, 250, 246, 0.92) 0%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.sodek-gb-modal-intro {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.sodek-gb-modal-summary {
+    padding: 20px 22px;
+    border-radius: 24px;
+    border: 1px solid rgba(199, 153, 94, 0.18);
+    background:
+        linear-gradient(135deg, rgba(255, 244, 235, 0.95), rgba(255, 255, 255, 0.98));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.sodek-gb-modal-summary-danger {
+    border-color: rgba(179, 74, 57, 0.22);
+    background:
+        linear-gradient(135deg, rgba(255, 242, 239, 0.95), rgba(255, 255, 255, 0.98));
+}
+
+.sodek-gb-modal-summary-label {
+    display: inline-flex;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #a56f3b;
+}
+
+.sodek-gb-modal-summary h3 {
+    margin: 0;
+    font-family: var(--sodek-gb-portal-display);
+    font-size: clamp(1.45rem, 1.6vw, 1.95rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #221b15;
+}
+
+.sodek-gb-modal-summary p {
+    margin: 10px 0 0;
+    color: #6e6258;
+    font-size: 0.98rem;
+}
+
+.sodek-gb-modal-helper {
+    margin: 0;
+    color: #6f665d;
+    font-size: 0.96rem;
+    line-height: 1.6;
+}
+
+.sodek-gb-reschedule-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 18px;
+}
+
+.sodek-gb-modal-panel {
+    padding: 22px;
+    border-radius: 24px;
+    border: 1px solid rgba(199, 153, 94, 0.14);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 20px 40px rgba(35, 27, 20, 0.06);
+}
+
+.sodek-gb-modal-panel-header {
+    margin-bottom: 16px;
+}
+
+.sodek-gb-modal-panel-header h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+    color: #241d17;
+}
+
+.sodek-gb-modal-feedback {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border: 1px solid transparent;
+}
+
+.sodek-gb-modal-feedback-error {
+    border-color: rgba(179, 74, 57, 0.16);
+    background: rgba(255, 243, 240, 0.94);
+    color: #8d3f33;
+}
+
+.sodek-gb-modal-feedback-success {
+    border-color: rgba(79, 128, 90, 0.16);
+    background: rgba(241, 249, 243, 0.94);
+    color: #2b6742;
+}
+
+.sodek-gb-modal-footer {
+    padding: 22px 32px 28px;
+    background: rgba(255, 249, 244, 0.98);
+    border-top: 1px solid rgba(199, 153, 94, 0.14);
+}
+
+.sodek-gb-cancel-warning {
+    padding: 26px;
+    border-radius: 24px;
+    border: 1px solid rgba(179, 74, 57, 0.16);
+    background: linear-gradient(180deg, rgba(255, 247, 244, 0.96), rgba(255, 255, 255, 0.98));
+}
+
+.sodek-gb-cancel-warning svg {
+    color: #b54a39;
+    margin-bottom: 18px;
+}
+
+.sodek-gb-cancel-copy {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.sodek-gb-cancel-title {
+    margin: 0;
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #231d19;
+}
+
+.sodek-gb-cancel-description {
+    margin: 0;
+    color: #6f665d;
+    line-height: 1.6;
+}
+
+.sodek-gb-cancel-policy {
+    text-align: left;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    border-radius: 18px;
+    border: 1px solid rgba(179, 74, 57, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    padding: 16px 18px;
+}
+
+.sodek-gb-pay-amount {
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    border-radius: 24px;
+    border: 1px solid rgba(199, 153, 94, 0.16);
+    background: linear-gradient(135deg, rgba(255, 244, 235, 0.95), rgba(255, 255, 255, 0.99));
+}
+
+.sodek-gb-pay-label {
+    display: inline-flex;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #a56f3b;
+}
+
+.sodek-gb-pay-note {
+    margin: 0;
+    color: #6f665d;
+    line-height: 1.55;
+}
+
+.sodek-gb-pay-amount .sodek-gb-amount {
+    font-family: var(--sodek-gb-portal-display);
+    font-size: clamp(2rem, 2.4vw, 2.75rem);
+    font-weight: 600;
+    color: #231b16;
+    letter-spacing: -0.04em;
+}
+
+.sodek-gb-saved-cards-select label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #8f7e70;
+}
+
+.sodek-gb-new-card-form,
+.sodek-gb-saved-cards-select {
+    margin-top: 20px;
+}
+
+#sodek-gb-pay-card-container {
+    min-height: 78px;
+    padding: 18px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(199, 153, 94, 0.16);
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.sodek-gb-pay-security {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(79, 128, 90, 0.14);
+    background: rgba(244, 250, 245, 0.92);
+}
+
+.sodek-gb-pay-security-badge {
+    display: inline-flex;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #3f7451;
+}
+
+.sodek-gb-pay-security p {
+    margin: 0;
+    color: #55715e;
+    line-height: 1.55;
+}
+
+.sodek-gb-mini-calendar {
+    margin-bottom: 0;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-calendar-header {
+    margin-bottom: 12px;
+    font-family: var(--sodek-gb-portal-display);
+    font-size: 1.45rem;
+    color: #231c16;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-calendar-days span {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.68rem;
+    color: #9b8f84;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date {
+    min-height: 42px;
+    border-radius: 16px;
+    font-weight: 600;
+    color: #85796f;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-available {
+    background: rgba(255, 248, 241, 0.88);
+    color: #2d231c;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-available:hover,
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-selected {
+    background: #1f1f1f;
+    color: #fff;
+}
+
+.sodek-gb-mini-calendar .sodek-gb-date.sodek-gb-past {
+    background: rgba(244, 240, 235, 0.62);
+    color: #b4aa9f;
+}
+
+.sodek-gb-time-slots {
+    min-height: 130px;
+}
+
+.sodek-gb-times-grid {
+    gap: 10px;
+}
+
+.sodek-gb-time-btn {
+    padding: 14px 12px;
+    border-radius: 16px;
+    background: rgba(255, 248, 241, 0.74);
+    font-weight: 600;
+    color: #281f18;
+}
+
+.sodek-gb-time-btn:hover {
+    border-color: rgba(199, 153, 94, 0.4);
+    background: rgba(255, 241, 229, 0.94);
+}
+
+.sodek-gb-time-btn.sodek-gb-selected {
+    background: #1f1f1f;
+    border-color: #1f1f1f;
+    box-shadow: 0 16px 28px rgba(31, 31, 31, 0.16);
+}
+
+.sodek-gb-loading,
+.sodek-gb-no-times,
+.sodek-gb-error {
+    margin: 0;
+    padding: 18px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.sodek-gb-loading,
+.sodek-gb-no-times {
+    background: rgba(255, 249, 243, 0.92);
+    color: #706559;
+}
+
+.sodek-gb-error {
+    background: rgba(255, 243, 240, 0.92);
+    color: #934637;
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-portal {
+        padding: 34px 16px 46px;
+    }
+
+    .sodek-gb-portal-header,
+    .sodek-gb-login-card,
+    .sodek-gb-booking-card,
+    .sodek-gb-profile-section {
+        padding: 22px;
+    }
+
+    .sodek-gb-portal-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-reschedule-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-modal-header,
+    .sodek-gb-modal-body,
+    .sodek-gb-modal-footer {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .sodek-gb-pay-amount {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-portal-login {
+        padding: 32px 14px 42px;
+    }
+
+    .sodek-gb-portal-login-shell {
+        padding: 10px;
+        border-radius: 24px;
+    }
+
+    .sodek-gb-login-card {
+        padding: 24px 18px 22px;
+    }
+
+    .sodek-gb-code-inputs {
+        gap: 8px;
+    }
+
+    .sodek-gb-code-input {
+        width: 42px;
+        height: 52px;
+        font-size: 22px;
+    }
+
+    .sodek-gb-modal-header,
+    .sodek-gb-modal-body,
+    .sodek-gb-modal-footer {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .sodek-gb-modal-panel,
+    .sodek-gb-cancel-warning,
+    .sodek-gb-pay-amount {
+        padding: 18px;
+    }
+
+    .sodek-gb-times-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

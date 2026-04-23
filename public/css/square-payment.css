@@ -1,0 +1,234 @@
+/**
+ * GlowBook Square Payment Form Styles
+ *
+ * @package GlowBook
+ * @since   1.1.0
+ */
+
+/* ==========================================================================
+   Square Card Container
+   ========================================================================== */
+
+.sodek-gb-standalone-payment {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--sodek-gb-radius-md, 8px);
+}
+
+.sodek-gb-card-container {
+    min-height: 89px;
+    position: relative;
+}
+
+.sodek-gb-card-container.is-focused {
+    /* Visual feedback when focused */
+}
+
+.sodek-gb-card-container.has-error {
+    /* Error state */
+}
+
+/* Square Card Frame Styling */
+#sodek-gb-square-card-container {
+    background: #ffffff;
+    border-radius: var(--sodek-gb-radius-md, 8px);
+    padding: 0;
+}
+
+/* Loading state - only show when .loading class is present */
+.sodek-gb-card-container.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e2e8f0;
+    border-top-color: var(--sodek-gb-color-primary, #2271b1);
+    border-radius: 50%;
+    animation: sodek-gb-spin 0.8s linear infinite;
+    z-index: 1;
+}
+
+/* Hide loader when iframe is mounted or error occurred */
+.sodek-gb-card-container.sq-card-iframe-container::before,
+.sodek-gb-card-container:not(.loading)::before {
+    display: none;
+}
+
+@keyframes sodek-gb-spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   Payment Form Label
+   ========================================================================== */
+
+.sodek-gb-payment-label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #344054;
+}
+
+.sodek-gb-payment-label svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    color: #667085;
+}
+
+/* ==========================================================================
+   Error Display
+   ========================================================================== */
+
+.sodek-gb-payment-errors {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    border-radius: var(--sodek-gb-radius-sm, 6px);
+    color: #b42318;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.sodek-gb-payment-errors[aria-hidden="false"] {
+    display: block;
+}
+
+.sodek-gb-error-icon {
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: #d92d20;
+}
+
+/* ==========================================================================
+   Secure Badge
+   ========================================================================== */
+
+.sodek-gb-secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    color: #667085;
+}
+
+.sodek-gb-secure-badge svg {
+    width: 14px;
+    height: 14px;
+    color: #12b76a;
+}
+
+/* ==========================================================================
+   Card Brand Icons
+   ========================================================================== */
+
+.sodek-gb-card-brands {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    opacity: 0.6;
+}
+
+.sodek-gb-card-brands img {
+    height: 24px;
+    width: auto;
+}
+
+/* ==========================================================================
+   Processing State
+   ========================================================================== */
+
+.sodek-gb-standalone-payment.is-processing {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.sodek-gb-standalone-payment.is-processing::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: inherit;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    .sodek-gb-standalone-payment {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .sodek-gb-card-container {
+        min-height: 100px;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Only apply if theme supports dark mode */
+    .dark .sodek-gb-standalone-payment,
+    [data-theme="dark"] .sodek-gb-standalone-payment {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .dark #sodek-gb-square-card-container,
+    [data-theme="dark"] #sodek-gb-square-card-container {
+        background: #0f172a;
+    }
+
+    .dark .sodek-gb-payment-label,
+    [data-theme="dark"] .sodek-gb-payment-label {
+        color: #e2e8f0;
+    }
+
+    .dark .sodek-gb-secure-badge,
+    [data-theme="dark"] .sodek-gb-secure-badge {
+        color: #94a3b8;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .sodek-gb-card-container::before {
+        animation: none;
+    }
+
+    .sodek-gb-payment-errors {
+        transition: none;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .sodek-gb-standalone-payment {
+        display: none;
+    }
+}

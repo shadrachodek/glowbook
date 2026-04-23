@@ -1,0 +1,2488 @@
+/**
+ * GlowBook Standalone Booking Styles
+ *
+ * Refined, elegant booking interface inspired by Square Appointments
+ * Typography: Cormorant Garamond (display) + DM Sans (body)
+ *
+ * @package GlowBook
+ * @since   2.0.0
+ */
+
+/* =============================================
+   Font Import
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+/* =============================================
+   Variables
+   ============================================= */
+:root {
+    /* Colors */
+    --gb-primary: #1a1a1a;
+    --gb-primary-hover: #000;
+    --gb-text: #1a1a1a;
+    --gb-text-secondary: #4a4a4a;
+    --gb-text-muted: #8a8a8a;
+    --gb-border: #e8e8e8;
+    --gb-border-hover: #d0d0d0;
+    --gb-bg: #fff;
+    --gb-bg-subtle: #fafafa;
+    --gb-bg-warm: #fdf8f6;
+    --gb-accent-warm: #f5ebe6;
+    --gb-accent-peach: #fef2ed;
+
+    /* Typography */
+    --gb-font-display: 'Cormorant Garamond', Georgia, serif;
+    --gb-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Spacing */
+    --gb-radius: 8px;
+    --gb-radius-lg: 12px;
+    --gb-shadow-subtle: 0 1px 3px rgba(0,0,0,0.04);
+    --gb-shadow-card: 0 2px 8px rgba(0,0,0,0.06);
+
+    /* Transitions */
+    --gb-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================
+   Base Container
+   ============================================= */
+.sodek-gb-booking {
+    max-width: 960px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 40px 48px;
+    font-family: var(--gb-font-body);
+    font-size: 15px;
+    color: var(--gb-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Steps */
+.sodek-gb-step {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.sodek-gb-step.active {
+    display: block;
+}
+
+/* Hide all steps during initial load to prevent flash */
+.sodek-gb-booking.loading .sodek-gb-step {
+    display: none !important;
+}
+
+.sodek-gb-booking.loading .sodek-gb-step.active {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================
+   Step Header - Inline Layout
+   ============================================= */
+.sodek-gb-step-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 34px;
+    position: relative;
+    min-height: 44px;
+    padding: 4px 0 14px;
+}
+
+.sodek-gb-step-header::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(160px, 36vw);
+    height: 1px;
+    background: linear-gradient(90deg, rgba(197, 168, 141, 0) 0%, rgba(197, 168, 141, 0.4) 50%, rgba(197, 168, 141, 0) 100%);
+}
+
+.sodek-gb-step-title {
+    font-family: var(--gb-font-display);
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--gb-text);
+    text-wrap: balance;
+}
+
+.sodek-gb-step-title svg {
+    display: none;
+}
+
+/* Back Link - Aligned left */
+.sodek-gb-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid transparent;
+    font-family: var(--gb-font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--gb-text-secondary);
+    cursor: pointer;
+    padding: 9px 12px;
+    margin: 0;
+    text-transform: uppercase;
+    transition: color var(--gb-transition), background var(--gb-transition), border-color var(--gb-transition), transform var(--gb-transition);
+    white-space: nowrap;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 999px;
+}
+
+.sodek-gb-back-link:hover {
+    color: var(--gb-primary);
+    background: rgba(255, 248, 242, 0.8);
+    border-color: rgba(197, 168, 141, 0.24);
+    transform: translateY(-50%) translateX(-1px);
+}
+
+.sodek-gb-back-link svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+}
+
+/* Labels */
+.sodek-gb-label {
+    display: block;
+    font-family: var(--gb-font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gb-text-muted);
+    margin-bottom: 14px;
+}
+
+/* =============================================
+   Buttons
+   ============================================= */
+.sodek-gb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-family: var(--gb-font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: var(--gb-radius);
+    cursor: pointer;
+    transition: all var(--gb-transition);
+}
+
+.sodek-gb-btn-select {
+    background: var(--gb-primary);
+    color: #fff;
+    min-width: 88px;
+}
+
+.sodek-gb-btn-select:hover {
+    background: var(--gb-primary-hover);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-btn-primary {
+    background: var(--gb-primary);
+    color: #fff;
+    padding: 16px 36px;
+    font-size: 13px;
+    border-radius: var(--gb-radius);
+}
+
+.sodek-gb-btn-primary:hover {
+    background: var(--gb-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.sodek-gb-btn-primary:disabled {
+    background: #d0d0d0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.sodek-gb-btn-block {
+    width: 100%;
+}
+
+/* =============================================
+   Category List (Step 1)
+   ============================================= */
+.sodek-gb-category-list {
+    background: var(--gb-bg);
+    border: 1px solid var(--gb-border);
+    border-radius: var(--gb-radius-lg);
+    overflow: hidden;
+}
+
+.sodek-gb-category-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--gb-border);
+    cursor: pointer;
+    transition: background var(--gb-transition);
+}
+
+.sodek-gb-category-row:last-child {
+    border-bottom: none;
+}
+
+.sodek-gb-category-row:hover {
+    background: var(--gb-bg-subtle);
+}
+
+.sodek-gb-category-row.is-loading {
+    background: linear-gradient(135deg, rgba(110, 78, 56, 0.12), rgba(224, 186, 112, 0.12));
+    pointer-events: none;
+}
+
+.sodek-gb-category-row.is-loading .sodek-gb-btn-select {
+    opacity: 0.7;
+}
+
+.sodek-gb-category-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.sodek-gb-category-name {
+    font-family: var(--gb-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--gb-text);
+}
+
+.sodek-gb-category-description {
+    font-family: var(--gb-font-body);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gb-text-muted);
+    line-height: 1.4;
+}
+
+/* =============================================
+   Service List (Step 2)
+   ============================================= */
+.sodek-gb-step-service {
+    position: relative;
+}
+
+.sodek-gb-service-loading {
+    display: none;
+    position: relative;
+    background:
+        linear-gradient(135deg, rgba(110, 78, 56, 0.06), rgba(255, 255, 255, 0.92)),
+        linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(224, 186, 112, 0.22) 50%, rgba(255,255,255,0) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.22);
+    border-radius: var(--gb-radius-lg);
+    padding: 24px 26px;
+    margin-bottom: 18px;
+    box-shadow: 0 18px 36px rgba(48, 31, 16, 0.08);
+    overflow: hidden;
+}
+
+.sodek-gb-service-loading::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0) 100%);
+    transform: translateX(-100%);
+    animation: sodek-gb-service-loading-sheen 1.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.sodek-gb-service-loading-kicker,
+.sodek-gb-service-loading-title,
+.sodek-gb-service-loading-copy {
+    position: relative;
+    z-index: 1;
+    display: block;
+}
+
+.sodek-gb-service-loading-kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gb-accent-strong);
+    margin-bottom: 10px;
+}
+
+.sodek-gb-service-loading-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gb-text);
+    margin-bottom: 8px;
+}
+
+.sodek-gb-service-loading-copy {
+    max-width: 520px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gb-text-muted);
+}
+
+.sodek-gb-step-service.is-loading .sodek-gb-service-loading {
+    display: block;
+}
+
+.sodek-gb-step-service.is-loading .sodek-gb-selected-category-name,
+.sodek-gb-step-service.is-loading .sodek-gb-service-list {
+    opacity: 0.22;
+    pointer-events: none;
+}
+
+.sodek-gb-selected-category-name {
+    font-family: var(--gb-font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--gb-text-muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.sodek-gb-service-list {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(251, 248, 245, 0.98) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    border-radius: var(--gb-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 26px 46px rgba(89, 59, 37, 0.05);
+}
+
+.sodek-gb-service-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(197, 168, 141, 0.14);
+    cursor: pointer;
+    transition: background var(--gb-transition), transform var(--gb-transition), box-shadow var(--gb-transition);
+    position: relative;
+}
+
+.sodek-gb-service-row:last-child {
+    border-bottom: none;
+}
+
+.sodek-gb-service-row:hover {
+    background: linear-gradient(180deg, rgba(255, 250, 246, 0.96) 0%, rgba(255, 255, 255, 0.98) 100%);
+    box-shadow: inset 4px 0 0 rgba(176, 137, 104, 0.34);
+}
+
+.sodek-gb-service-thumb {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: var(--gb-radius);
+    overflow: hidden;
+    background: var(--gb-bg-subtle);
+    position: relative;
+    cursor: zoom-in;
+}
+
+.sodek-gb-service-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.sodek-gb-service-thumb:hover img {
+    transform: scale(1.05);
+}
+
+/* Zoom indicator on hover */
+.sodek-gb-service-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3Cline x1='11' y1='8' x2='11' y2='14'/%3E%3Cline x1='8' y1='11' x2='14' y2='11'/%3E%3C/svg%3E") center center no-repeat;
+    opacity: 0;
+    transition: all 0.2s ease;
+    border-radius: var(--gb-radius);
+}
+
+.sodek-gb-service-thumb:hover::after {
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 1;
+}
+
+.sodek-gb-service-info {
+    flex: 1;
+    min-width: 0;
+    padding-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sodek-gb-service-name {
+    font-family: var(--gb-font-body);
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0;
+    color: var(--gb-text);
+    line-height: 1.45;
+}
+
+.sodek-gb-service-pricing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+.sodek-gb-service-pricing.is-empty {
+    display: none;
+}
+
+.sodek-gb-service-price {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    font-family: var(--gb-font-body);
+    font-size: 14px;
+    font-weight: 700;
+    color: #7c5c42;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(176, 137, 104, 0.14);
+}
+
+.sodek-gb-service-deposit {
+    font-size: 12px;
+    color: var(--gb-primary);
+    background: rgba(var(--gb-primary-rgb, 34, 113, 177), 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.sodek-gb-service-desc {
+    font-size: 14px;
+    color: var(--gb-text-muted);
+    margin: 0;
+    line-height: 1.6;
+    max-width: 62ch;
+}
+
+.sodek-gb-service-row .sodek-gb-btn-select {
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+    min-width: 96px;
+    box-shadow: 0 12px 24px rgba(24, 18, 15, 0.14);
+}
+
+@keyframes sodek-gb-service-loading-sheen {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive: smaller image on mobile */
+@media (max-width: 600px) {
+    .sodek-gb-service-thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .sodek-gb-service-row {
+        padding: 16px;
+        gap: 12px;
+    }
+}
+
+/* =============================================
+   Appointment Card (Step 3)
+   ============================================= */
+.sodek-gb-appointment-card {
+    background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.68), transparent 32%),
+        linear-gradient(135deg, rgba(249, 236, 227, 0.96) 0%, rgba(246, 227, 214, 0.92) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.22);
+    box-shadow: 0 20px 50px rgba(89, 59, 37, 0.08);
+    border-radius: var(--gb-radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+}
+
+.sodek-gb-appointment-card .sodek-gb-label {
+    margin-bottom: 12px;
+    color: #b08968;
+}
+
+.sodek-gb-appointment-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.sodek-gb-appointment-thumb {
+    width: 88px;
+    height: 88px;
+    display: none;
+    flex-shrink: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(176, 137, 104, 0.16);
+    box-shadow: 0 14px 26px rgba(89, 59, 37, 0.08);
+    position: relative;
+    cursor: zoom-in;
+}
+
+.sodek-gb-appointment-thumb.is-visible {
+    display: block;
+}
+
+.sodek-gb-appointment-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+
+.sodek-gb-appointment-thumb:hover img {
+    transform: scale(1.06);
+}
+
+.sodek-gb-appointment-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3Cline x1='11' y1='8' x2='11' y2='14'/%3E%3Cline x1='8' y1='11' x2='14' y2='11'/%3E%3C/svg%3E") center center no-repeat;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.sodek-gb-appointment-thumb:hover::after {
+    background-color: rgba(0, 0, 0, 0.28);
+    opacity: 1;
+}
+
+.sodek-gb-appointment-details {
+    flex: 1;
+}
+
+.sodek-gb-appointment-title {
+    font-family: var(--gb-font-body);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--gb-text);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
+
+.sodek-gb-appointment-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 12px;
+    font-family: var(--gb-font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: #7c5c42;
+    margin: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(176, 137, 104, 0.14);
+}
+
+.sodek-gb-appointment-desc {
+    font-size: 14px;
+    color: var(--gb-text-secondary);
+    margin: 12px 0 0;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sodek-gb-appointment-desc:empty {
+    display: none;
+}
+
+.sodek-gb-appointment-remove {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--gb-text-muted);
+    flex-shrink: 0;
+    transition: color var(--gb-transition);
+    margin-left: auto;
+}
+
+.sodek-gb-appointment-remove:hover {
+    color: var(--gb-text);
+}
+
+.sodek-gb-appointment-remove svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.5;
+}
+
+/* =============================================
+   Add-ons Section
+   ============================================= */
+.sodek-gb-addons-section {
+    margin-bottom: 28px;
+}
+
+.sodek-gb-addons-section > .sodek-gb-label {
+    margin-bottom: 12px;
+    color: #aa8161;
+}
+
+.sodek-gb-addons-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.sodek-gb-addon-loading {
+    grid-column: 1 / -1;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(255, 250, 246, 0.96) 0%, rgba(255, 255, 255, 0.98) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.22);
+    border-radius: var(--gb-radius);
+}
+
+.sodek-gb-addon-loading-head {
+    margin-bottom: 14px;
+}
+
+.sodek-gb-addon-loading-title {
+    display: block;
+    font-family: var(--gb-font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gb-text);
+    margin-bottom: 4px;
+}
+
+.sodek-gb-addon-loading-copy {
+    display: block;
+    font-size: 12px;
+    color: var(--gb-text-muted);
+}
+
+.sodek-gb-addon-feedback {
+    grid-column: 1 / -1;
+    padding: 16px 18px;
+    border-radius: var(--gb-radius);
+    border: 1px solid var(--gb-border);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.sodek-gb-addon-feedback.is-error {
+    border-color: rgba(176, 117, 92, 0.3);
+    background: rgba(255, 248, 245, 0.96);
+}
+
+.sodek-gb-addon-feedback-title {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gb-text);
+    margin-bottom: 4px;
+}
+
+.sodek-gb-addon-feedback-copy {
+    display: block;
+    font-size: 12px;
+    color: var(--gb-text-muted);
+}
+
+.sodek-gb-addon-skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.sodek-gb-addon-skeleton-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid var(--gb-border);
+    border-radius: var(--gb-radius);
+}
+
+.sodek-gb-addon-skeleton-check,
+.sodek-gb-addon-skeleton-line {
+    position: relative;
+    overflow: hidden;
+    background: #efe5dc;
+}
+
+.sodek-gb-addon-skeleton-check::after,
+.sodek-gb-addon-skeleton-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.75) 50%, transparent 100%);
+    animation: sodek-gb-skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+.sodek-gb-addon-skeleton-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.sodek-gb-addon-skeleton-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.sodek-gb-addon-skeleton-line {
+    display: block;
+    height: 12px;
+    border-radius: 999px;
+}
+
+.sodek-gb-addon-skeleton-line.is-title {
+    width: 82%;
+    margin-bottom: 10px;
+}
+
+.sodek-gb-addon-skeleton-line.is-meta {
+    width: 58%;
+}
+
+@keyframes sodek-gb-skeleton-shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.sodek-gb-addon-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--gb-bg);
+    border: 1px solid var(--gb-border);
+    border-radius: var(--gb-radius);
+    cursor: pointer;
+    transition: all var(--gb-transition);
+    min-height: 102px;
+    animation: sodek-gb-addon-fade-in 0.24s ease;
+}
+
+.sodek-gb-addon-pending {
+    display: none !important;
+}
+
+.sodek-gb-addon-row:hover {
+    border-color: var(--gb-border-hover);
+    box-shadow: 0 18px 30px rgba(74, 49, 28, 0.08);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-addon-row.is-selected {
+    border-color: rgba(176, 137, 104, 0.45);
+    background: linear-gradient(180deg, rgba(255, 250, 246, 0.98) 0%, rgba(255, 244, 238, 0.98) 100%);
+    box-shadow: 0 16px 28px rgba(176, 137, 104, 0.12);
+}
+
+.sodek-gb-addon-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    accent-color: var(--gb-primary);
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.sodek-gb-addon-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sodek-gb-addon-name {
+    display: block;
+    font-family: var(--gb-font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gb-text);
+    margin-bottom: 6px;
+    line-height: 1.45;
+}
+
+.sodek-gb-addon-meta {
+    font-size: 12px;
+    color: var(--gb-text-muted);
+    line-height: 1.45;
+}
+
+/* Addon thumbnail */
+.sodek-gb-addon-thumb {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--gb-bg-subtle);
+    position: relative;
+    cursor: zoom-in;
+    order: -1;
+}
+
+.sodek-gb-addon-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.sodek-gb-addon-thumb:hover img {
+    transform: scale(1.08);
+}
+
+.sodek-gb-addon-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3Cline x1='11' y1='8' x2='11' y2='14'/%3E%3Cline x1='8' y1='11' x2='14' y2='11'/%3E%3C/svg%3E") center center no-repeat;
+    opacity: 0;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.sodek-gb-addon-thumb:hover::after {
+    background-color: rgba(0, 0, 0, 0.35);
+    opacity: 1;
+}
+
+.sodek-gb-addon-hidden {
+    display: none !important;
+}
+
+.sodek-gb-show-all-addons {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    background: none;
+    border: none;
+    font-family: var(--gb-font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gb-text-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: color var(--gb-transition);
+}
+
+.sodek-gb-show-all-addons:hover {
+    color: var(--gb-text);
+}
+
+/* =============================================
+   Calendar & Time Grid
+   ============================================= */
+.sodek-gb-datetime-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 320px) 1fr;
+    gap: 48px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(251, 248, 245, 0.98) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    border-radius: var(--gb-radius-lg);
+    padding: 32px;
+    box-shadow: 0 24px 44px rgba(89, 59, 37, 0.05);
+}
+
+/* Calendar */
+.sodek-gb-calendar {
+    min-width: 280px;
+    padding: 4px 4px 4px 0;
+}
+
+.sodek-gb-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 0 6px 0 2px;
+}
+
+.sodek-gb-calendar-month {
+    font-family: var(--gb-font-body);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--gb-text);
+}
+
+.sodek-gb-calendar-nav {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--gb-text-secondary);
+    border-radius: 50%;
+    transition: all var(--gb-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sodek-gb-calendar-nav:hover {
+    background: rgba(176, 137, 104, 0.08);
+    color: var(--gb-text);
+}
+
+.sodek-gb-calendar-nav svg {
+    width: 18px;
+    height: 18px;
+}
+
+.sodek-gb-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(197, 168, 141, 0.14);
+    padding-bottom: 12px;
+}
+
+.sodek-gb-calendar-weekdays span {
+    font-family: var(--gb-font-body);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gb-text-muted);
+    padding: 4px 0;
+}
+
+.sodek-gb-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.sodek-gb-calendar.is-loading .sodek-gb-calendar-nav {
+    opacity: 0.55;
+}
+
+.sodek-gb-calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--gb-font-body);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--gb-transition);
+    color: var(--gb-text);
+}
+
+.sodek-gb-calendar-day.empty {
+    cursor: default;
+}
+
+.sodek-gb-calendar-day.disabled {
+    color: var(--gb-text-muted);
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.sodek-gb-calendar-day.is-loading-day {
+    background: rgba(190, 162, 134, 0.08);
+    color: rgba(102, 81, 64, 0.45);
+    animation: gbCalendarPulse 1.2s ease-in-out infinite;
+}
+
+.sodek-gb-calendar-day.available:hover {
+    background: rgba(176, 137, 104, 0.1);
+    color: #5b4332;
+}
+
+.sodek-gb-calendar-day.selected {
+    background: linear-gradient(135deg, rgba(24, 18, 15, 0.96) 0%, rgba(84, 56, 38, 0.94) 100%);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 14px 22px rgba(36, 27, 22, 0.16);
+}
+
+@keyframes gbCalendarPulse {
+    0%, 100% {
+        opacity: 0.35;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Time Slots */
+.sodek-gb-timeslots-section {
+    min-width: 0;
+    padding-left: 12px;
+}
+
+.sodek-gb-selected-date {
+    margin-bottom: 18px;
+    padding: 8px 4px 18px;
+    border-bottom: 1px solid rgba(197, 168, 141, 0.14);
+}
+
+.sodek-gb-date-display {
+    display: block;
+    font-family: var(--gb-font-display);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--gb-text);
+    margin-bottom: 8px;
+}
+
+.sodek-gb-timezone {
+    font-size: 11px;
+    color: var(--gb-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sodek-gb-timezone .sodek-gb-label {
+    display: inline;
+    margin-bottom: 0;
+    font-size: 10px;
+}
+
+.sodek-gb-timezone-link {
+    color: var(--gb-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* =============================================
+   Confirmation Page
+   ============================================= */
+.sodek-gb-confirmation {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 56px 24px 72px;
+    font-family: var(--gb-font-body);
+    color: var(--gb-text);
+}
+
+.sodek-gb-confirmation .sodek-gb-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.sodek-gb-confirmation-header {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 40px 32px 34px;
+    margin-bottom: 28px;
+    border-radius: 28px;
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    background:
+        radial-gradient(circle at top center, rgba(255, 243, 232, 0.88), transparent 34%),
+        linear-gradient(180deg, rgba(255, 252, 249, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+    box-shadow: 0 26px 46px rgba(89, 59, 37, 0.07);
+}
+
+.sodek-gb-success-icon {
+    width: 94px;
+    height: 94px;
+    margin: 0 auto 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #1d6b49;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(222, 246, 232, 0.98));
+    box-shadow: 0 18px 36px rgba(29, 107, 73, 0.14);
+}
+
+.sodek-gb-success-icon svg {
+    width: 42px;
+    height: 42px;
+}
+
+.sodek-gb-confirmation-header h1 {
+    margin: 0 0 10px;
+    font-family: var(--gb-font-display);
+    font-size: clamp(2.3rem, 5vw, 3.5rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+}
+
+.sodek-gb-confirmation-subtitle {
+    margin: 0 auto;
+    max-width: 54ch;
+    color: var(--gb-text-secondary);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.sodek-gb-confirmation-subtitle strong {
+    color: var(--gb-text);
+}
+
+.sodek-gb-confirmation-meta {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.sodek-gb-confirmation-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(32, 25, 20, 0.94);
+    color: #fff4ec;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.sodek-gb-confirmation-pill.is-soft {
+    background: rgba(255, 248, 242, 0.96);
+    color: #7c5c42;
+    border: 1px solid rgba(176, 137, 104, 0.16);
+}
+
+.sodek-gb-confirmation-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.sodek-gb-confirmation-side {
+    display: grid;
+    gap: 22px;
+}
+
+.sodek-gb-confirmation-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(251, 247, 243, 0.98) 100%);
+    box-shadow: 0 24px 42px rgba(89, 59, 37, 0.06);
+}
+
+.sodek-gb-confirmation-card-primary {
+    padding: 28px;
+}
+
+.sodek-gb-confirmation-card-secondary,
+.sodek-gb-confirmation-payment {
+    padding: 24px;
+}
+
+.sodek-gb-confirmation-section-head {
+    margin-bottom: 18px;
+}
+
+.sodek-gb-confirmation-section-head h2,
+.sodek-gb-confirmation-section-head h3 {
+    margin: 0;
+    font-family: var(--gb-font-body);
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.sodek-gb-section-kicker {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a48367;
+}
+
+.sodek-gb-confirmation-details {
+    display: grid;
+    gap: 14px;
+}
+
+.sodek-gb-detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(197, 168, 141, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.sodek-gb-detail-label {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gb-text-muted);
+}
+
+.sodek-gb-detail-value {
+    text-align: right;
+    color: var(--gb-text);
+    line-height: 1.6;
+}
+
+.sodek-gb-booking-id {
+    font-weight: 700;
+    color: #8b6443;
+}
+
+.sodek-gb-payment-lines {
+    display: grid;
+    gap: 10px;
+}
+
+.sodek-gb-payment-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--gb-text-secondary);
+}
+
+.sodek-gb-payment-line span:last-child {
+    flex-shrink: 0;
+    color: var(--gb-text);
+    font-weight: 600;
+}
+
+.sodek-gb-payment-line.sodek-gb-total {
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(197, 168, 141, 0.18);
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.sodek-gb-payment-line.sodek-gb-balance {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255, 248, 226, 0.96) 0%, rgba(255, 242, 196, 0.96) 100%);
+    border: 1px solid rgba(232, 183, 72, 0.28);
+}
+
+.sodek-gb-receipt-link {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #8b6443;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.sodek-gb-calendar-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.sodek-gb-calendar-buttons .sodek-gb-btn {
+    min-height: 54px;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 16px;
+}
+
+.sodek-gb-location-section {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(197, 168, 141, 0.18);
+}
+
+.sodek-gb-location-section h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.sodek-gb-location-info {
+    color: var(--gb-text-secondary);
+    line-height: 1.7;
+}
+
+.sodek-gb-location-info p {
+    margin: 0 0 8px;
+}
+
+.sodek-gb-location-info a {
+    color: inherit;
+}
+
+.sodek-gb-confirmation-actions,
+.sodek-gb-confirmation-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 26px;
+}
+
+.sodek-gb-confirmation-footer {
+    padding-top: 6px;
+}
+
+.sodek-gb-timeslots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-height: 392px;
+    overflow-y: auto;
+    padding: 2px 10px 4px 0;
+}
+
+/* Custom scrollbar */
+.sodek-gb-timeslots-grid::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sodek-gb-timeslots-grid::-webkit-scrollbar-track {
+    background: var(--gb-bg-subtle);
+    border-radius: 2px;
+}
+
+.sodek-gb-timeslots-grid::-webkit-scrollbar-thumb {
+    background: var(--gb-border-hover);
+    border-radius: 2px;
+}
+
+.sodek-gb-timeslot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 12px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all var(--gb-transition);
+    text-align: center;
+    min-height: 74px;
+    box-shadow: 0 10px 18px rgba(89, 59, 37, 0.03);
+}
+
+.sodek-gb-timeslot:hover:not(.disabled) {
+    border-color: rgba(176, 137, 104, 0.36);
+    transform: translateY(-1px);
+    box-shadow: 0 18px 28px rgba(89, 59, 37, 0.08);
+}
+
+.sodek-gb-timeslot.selected {
+    border-color: rgba(36, 27, 22, 0.74);
+    border-width: 2px;
+    background: linear-gradient(180deg, rgba(251, 238, 231, 0.98) 0%, rgba(246, 227, 214, 0.98) 100%);
+    box-shadow: 0 20px 30px rgba(89, 59, 37, 0.12);
+}
+
+.sodek-gb-timeslot.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.sodek-gb-timeslot.disabled .sodek-gb-timeslot-time {
+    text-decoration: line-through;
+}
+
+.sodek-gb-timeslot-time {
+    font-family: var(--gb-font-body);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gb-text);
+    line-height: 1.2;
+}
+
+.sodek-gb-timeslot-spots {
+    font-family: var(--gb-font-body);
+    font-size: 11px;
+    color: #c97a4a;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.sodek-gb-select-date-msg {
+    color: var(--gb-text-muted);
+    text-align: center;
+    padding: 60px 20px;
+    margin: 0;
+    font-style: italic;
+}
+
+.sodek-gb-loading {
+    color: var(--gb-text-muted);
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.sodek-gb-no-slots {
+    color: var(--gb-text-muted);
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--gb-bg-subtle);
+    border-radius: var(--gb-radius);
+    font-size: 14px;
+}
+
+/* =============================================
+   Customer Details (Step 4)
+   ============================================= */
+.sodek-gb-booking-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 16px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(250, 246, 242, 0.98) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.2);
+    box-shadow: 0 24px 44px rgba(89, 59, 37, 0.06);
+    border-radius: 18px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    line-height: 1.7;
+    position: relative;
+    overflow: hidden;
+}
+
+.sodek-gb-booking-summary::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(197, 168, 141, 0.12) 0%, rgba(197, 168, 141, 0.45) 50%, rgba(197, 168, 141, 0.12) 100%);
+}
+
+.sodek-gb-booking-summary > div {
+    margin-bottom: 0;
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(197, 168, 141, 0.12);
+    border-radius: calc(var(--gb-radius) + 2px);
+    backdrop-filter: blur(8px);
+}
+
+.sodek-gb-booking-summary > div:last-child {
+    background: linear-gradient(135deg, rgba(34, 26, 22, 0.96) 0%, rgba(84, 56, 38, 0.94) 100%);
+    border-color: transparent;
+    color: #fff3ec;
+}
+
+.sodek-gb-summary-kicker {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #a48367;
+}
+
+.sodek-gb-summary-value {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gb-text);
+    line-height: 1.5;
+}
+
+.sodek-gb-summary-value.is-service {
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.sodek-gb-summary-meta {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--gb-text-muted);
+}
+
+.sodek-gb-summary-addon-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 0;
+    font-size: 13px;
+    color: var(--gb-text-secondary);
+}
+
+.sodek-gb-summary-addon-item strong {
+    flex-shrink: 0;
+    color: var(--gb-text);
+}
+
+.sodek-gb-summary-total .sodek-gb-summary-kicker {
+    color: rgba(255, 230, 214, 0.72);
+}
+
+.sodek-gb-summary-total-value {
+    display: block;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: #fff;
+}
+
+/* Customer Form */
+.sodek-gb-customer-form {
+    max-width: 620px;
+    padding: 26px 28px;
+    border-radius: 18px;
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    background:
+        radial-gradient(circle at top right, rgba(255, 244, 236, 0.7), transparent 36%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 248, 244, 0.98) 100%);
+    box-shadow: 0 22px 42px rgba(89, 59, 37, 0.05);
+}
+
+.sodek-gb-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 0;
+}
+
+.sodek-gb-form-group {
+    margin-bottom: 20px;
+}
+
+.sodek-gb-form-group label {
+    display: block;
+    font-family: var(--gb-font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 9px;
+    color: var(--gb-text);
+}
+
+.sodek-gb-form-group .required {
+    color: #c44;
+}
+
+.sodek-gb-form-group input,
+.sodek-gb-form-group textarea {
+    width: 100%;
+    padding: 15px 16px;
+    font-family: var(--gb-font-body);
+    font-size: 15px;
+    color: var(--gb-text);
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: border-color var(--gb-transition), box-shadow var(--gb-transition), transform var(--gb-transition), background var(--gb-transition);
+    box-sizing: border-box;
+}
+
+.sodek-gb-form-group input:focus,
+.sodek-gb-form-group textarea:focus {
+    outline: none;
+    border-color: rgba(176, 137, 104, 0.44);
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 4px rgba(176, 137, 104, 0.08), 0 12px 20px rgba(89, 59, 37, 0.04);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-payment-section {
+    margin-top: 32px;
+    padding: 28px;
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    border-radius: var(--gb-radius-lg);
+    background:
+        radial-gradient(circle at top right, rgba(255, 245, 236, 0.9), transparent 42%),
+        linear-gradient(180deg, rgba(255, 252, 249, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+    box-shadow: 0 20px 38px rgba(89, 59, 37, 0.06);
+}
+
+.sodek-gb-payment-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.sodek-gb-payment-kicker {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(176, 137, 104, 0.1);
+    color: #8a6445;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.sodek-gb-payment-section h3,
+.sodek-gb-deposit-section h3 {
+    font-family: var(--gb-font-body);
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.sodek-gb-payment-copy {
+    margin: 0;
+    max-width: 58ch;
+    color: var(--gb-text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.sodek-gb-booking-notice {
+    margin: 20px 0 24px;
+    padding: 22px 22px 18px;
+    border: 1px solid rgba(197, 168, 141, 0.2);
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at top left, rgba(255, 247, 238, 0.88), transparent 46%),
+        linear-gradient(180deg, rgba(255, 252, 249, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+    box-shadow: 0 16px 32px rgba(89, 59, 37, 0.05);
+}
+
+.sodek-gb-booking-notice-kicker {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(176, 137, 104, 0.1);
+    color: #8a6445;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.sodek-gb-booking-notice-copy {
+    color: var(--gb-text);
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.sodek-gb-booking-notice-copy p {
+    margin: 0 0 12px;
+}
+
+.sodek-gb-booking-notice-copy p:last-child {
+    margin-bottom: 0;
+}
+
+.sodek-gb-booking-notice-prep {
+    background:
+        radial-gradient(circle at top left, rgba(255, 249, 241, 0.92), transparent 48%),
+        linear-gradient(180deg, rgba(255, 253, 250, 0.99) 0%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.sodek-gb-booking-notice-compact {
+    margin-top: 12px;
+}
+
+.sodek-gb-booking-terms {
+    margin-top: 28px;
+}
+
+.sodek-gb-payment-shell {
+    padding: 18px;
+    border-radius: calc(var(--gb-radius-lg) - 4px);
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 248, 244, 0.98) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.sodek-gb-payment-shell-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.sodek-gb-payment-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 248, 242, 0.95);
+    border: 1px solid rgba(176, 137, 104, 0.16);
+    color: #7c5c42;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.sodek-gb-payment-supported {
+    color: var(--gb-text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#sodek-gb-square-card-container.sodek-gb-card-container,
+#sodek-gb-card-container {
+    min-height: 102px;
+    padding: 18px;
+    border: 1px solid rgba(195, 201, 211, 0.95);
+    border-radius: calc(var(--gb-radius) + 2px);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 22px rgba(89, 59, 37, 0.04);
+    margin-bottom: 0;
+    transition: border-color var(--gb-transition), box-shadow var(--gb-transition), transform var(--gb-transition);
+}
+
+#sodek-gb-square-card-container.sodek-gb-card-container.is-focused,
+#sodek-gb-card-container.is-focused {
+    border-color: rgba(176, 137, 104, 0.48);
+    box-shadow: 0 0 0 4px rgba(176, 137, 104, 0.08), 0 16px 28px rgba(89, 59, 37, 0.08);
+    transform: translateY(-1px);
+}
+
+#sodek-gb-square-card-container.sodek-gb-card-container.has-error,
+#sodek-gb-card-container.has-error {
+    border-color: rgba(217, 45, 32, 0.4);
+    box-shadow: 0 0 0 4px rgba(217, 45, 32, 0.08);
+}
+
+.sodek-gb-payment-trust {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    color: #7b746d;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.sodek-gb-payment-trust svg {
+    color: #9a6d49;
+    flex-shrink: 0;
+}
+
+.sodek-gb-payment-error {
+    padding: 14px 16px;
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    border-radius: 12px;
+    color: #b42318;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.sodek-gb-card-errors {
+    color: #c44;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.sodek-gb-btn-book {
+    margin-top: 30px;
+    min-height: 58px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(24, 20, 18, 1) 0%, rgba(54, 39, 30, 1) 100%);
+    box-shadow: 0 18px 30px rgba(24, 20, 18, 0.18);
+}
+
+.sodek-gb-btn-book:hover {
+    box-shadow: 0 22px 34px rgba(24, 20, 18, 0.24);
+}
+
+/* =============================================
+   Deposit Section
+   ============================================= */
+.sodek-gb-deposit-section {
+    margin-top: 32px;
+    padding: 24px;
+    background:
+        linear-gradient(180deg, rgba(255, 250, 246, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+    border: 1px solid rgba(197, 168, 141, 0.18);
+    border-radius: var(--gb-radius-lg);
+    box-shadow: 0 18px 34px rgba(89, 59, 37, 0.05);
+}
+
+.sodek-gb-deposit-description {
+    font-size: 13px;
+    color: var(--gb-text-muted);
+    margin: 0 0 22px;
+    line-height: 1.5;
+    max-width: 42ch;
+}
+
+.sodek-gb-customer-payment-status {
+    margin: -10px 0 16px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #8b6443;
+}
+
+.sodek-gb-deposit-summary {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    border-radius: calc(var(--gb-radius) + 2px);
+    padding: 16px 18px;
+    margin-bottom: 20px;
+}
+
+.sodek-gb-deposit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+    gap: 12px;
+}
+
+.sodek-gb-deposit-row:first-child {
+    padding-top: 0;
+}
+
+.sodek-gb-deposit-row:last-child {
+    padding-bottom: 0;
+    border-top: 1px solid var(--gb-border);
+    margin-top: 8px;
+    padding-top: 12px;
+}
+
+.sodek-gb-service-total,
+.sodek-gb-min-deposit {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.sodek-gb-deposit-input-wrap {
+    margin-bottom: 16px;
+}
+
+.sodek-gb-deposit-input-wrap label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: var(--gb-text);
+}
+
+.sodek-gb-deposit-input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(197, 168, 141, 0.24);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.sodek-gb-deposit-input-group:focus-within {
+    border-color: rgba(176, 137, 104, 0.55);
+    box-shadow: 0 0 0 4px rgba(176, 137, 104, 0.1);
+    transform: translateY(-1px);
+}
+
+.sodek-gb-currency-symbol {
+    padding: 16px 0 16px 18px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gb-text);
+}
+
+.sodek-gb-deposit-input {
+    flex: 1;
+    border: none;
+    padding: 16px 18px 16px 10px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--gb-text);
+    background: transparent;
+    outline: none;
+    min-width: 0;
+}
+
+.sodek-gb-deposit-input::-webkit-outer-spin-button,
+.sodek-gb-deposit-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.sodek-gb-deposit-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.sodek-gb-deposit-quick-options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(197, 168, 141, 0.16);
+    border-radius: 16px;
+}
+
+.sodek-gb-deposit-option {
+    min-width: 0;
+    padding: 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--gb-text);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: left;
+}
+
+.sodek-gb-deposit-option-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.sodek-gb-deposit-option-amount {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.sodek-gb-deposit-option:hover {
+    background: rgba(176, 137, 104, 0.08);
+}
+
+.sodek-gb-deposit-option.active {
+    background: linear-gradient(135deg, rgba(36, 27, 22, 0.96) 0%, rgba(85, 58, 39, 0.92) 100%);
+    color: #fff8f3;
+    box-shadow: 0 10px 20px rgba(36, 27, 22, 0.2);
+}
+
+.sodek-gb-deposit-option.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+}
+
+.sodek-gb-deposit-balance {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, rgba(255, 248, 226, 0.96) 0%, rgba(255, 242, 196, 0.96) 100%);
+    border: 1px solid rgba(232, 183, 72, 0.34);
+    border-radius: 16px;
+    font-size: 14px;
+}
+
+.sodek-gb-balance-display {
+    font-size: 24px;
+    line-height: 1;
+    color: #9d6a00;
+    letter-spacing: -0.03em;
+}
+
+@keyframes sodek-gb-addon-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =============================================
+   No Items Message
+   ============================================= */
+.sodek-gb-no-items {
+    text-align: center;
+    padding: 60px 40px;
+    color: var(--gb-text-muted);
+    font-size: 15px;
+    font-style: italic;
+}
+
+/* =============================================
+   Responsive - Tablet
+   ============================================= */
+@media (max-width: 1024px) {
+    .sodek-gb-booking {
+        max-width: 100%;
+        padding: 32px 28px;
+    }
+
+    .sodek-gb-datetime-grid {
+        gap: 36px;
+        grid-template-columns: minmax(280px, 320px) 1fr;
+    }
+
+    .sodek-gb-timeslots-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* =============================================
+   Responsive - Mobile
+   ============================================= */
+@media (max-width: 768px) {
+    .sodek-gb-booking {
+        padding: 24px 16px;
+    }
+
+    .sodek-gb-step-header {
+        flex-direction: column;
+        gap: 8px;
+        min-height: auto;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+
+    .sodek-gb-back-link {
+        position: static;
+        transform: none !important;
+        order: -1;
+        padding: 0;
+        align-self: flex-start;
+        border-radius: 0;
+        background: none;
+        border-color: transparent;
+    }
+
+    .sodek-gb-step-title {
+        font-size: 26px;
+        text-align: left;
+    }
+
+    .sodek-gb-category-row {
+        padding: 20px;
+    }
+
+    .sodek-gb-btn {
+        padding: 12px 20px;
+    }
+
+    .sodek-gb-service-row {
+        padding: 20px;
+        gap: 16px;
+    }
+
+    .sodek-gb-service-row .sodek-gb-btn-select {
+        min-width: 84px;
+    }
+
+    .sodek-gb-service-thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .sodek-gb-addons-list {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-datetime-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 24px;
+    }
+
+    .sodek-gb-timeslots-section {
+        padding-left: 0;
+    }
+
+    .sodek-gb-calendar {
+        min-width: 100%;
+        padding-right: 0;
+    }
+
+    .sodek-gb-timeslots-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-height: 280px;
+    }
+
+    .sodek-gb-form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .sodek-gb-customer-form {
+        max-width: 100%;
+        padding: 22px 20px;
+    }
+
+    .sodek-gb-appointment-card {
+        padding: 18px 20px;
+    }
+
+    .sodek-gb-appointment-title {
+        font-size: 16px;
+    }
+}
+
+/* =============================================
+   Responsive - Small Mobile
+   ============================================= */
+@media (max-width: 480px) {
+    .sodek-gb-booking {
+        padding: 20px 14px;
+    }
+
+    .sodek-gb-step-title {
+        font-size: 20px;
+    }
+
+    .sodek-gb-category-row,
+    .sodek-gb-service-row {
+        padding: 16px;
+    }
+
+    .sodek-gb-category-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .sodek-gb-service-thumb {
+        width: 56px;
+        height: 56px;
+    }
+
+    .sodek-gb-service-name {
+        font-size: 14px;
+    }
+
+    .sodek-gb-customer-form {
+        padding: 18px 16px;
+        border-radius: 16px;
+    }
+
+    .sodek-gb-timeslots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .sodek-gb-timeslot {
+        padding: 14px 8px;
+        min-height: 64px;
+    }
+
+    .sodek-gb-timeslot-time {
+        font-size: 13px;
+    }
+
+    .sodek-gb-datetime-grid {
+        padding: 18px;
+    }
+
+    .sodek-gb-calendar-day {
+        font-size: 13px;
+    }
+
+    .sodek-gb-btn-select {
+        min-width: 72px;
+        padding: 10px 16px;
+        font-size: 11px;
+    }
+
+    .sodek-gb-addon-row {
+        padding: 14px;
+    }
+
+    .sodek-gb-addon-skeleton-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-service-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .sodek-gb-service-row .sodek-gb-btn-select {
+        align-self: stretch;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .sodek-gb-category-row .sodek-gb-btn-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .sodek-gb-form-group input,
+    .sodek-gb-form-group textarea {
+        padding: 12px 14px;
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+
+    .sodek-gb-booking-summary {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .sodek-gb-deposit-quick-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sodek-gb-deposit-section,
+    .sodek-gb-payment-section {
+        padding: 18px;
+    }
+
+    .sodek-gb-booking-notice {
+        padding: 18px 18px 14px;
+        border-radius: 16px;
+    }
+
+    .sodek-gb-payment-shell-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sodek-gb-payment-shell {
+        padding: 16px;
+    }
+
+    #sodek-gb-square-card-container.sodek-gb-card-container,
+    #sodek-gb-card-container {
+        min-height: 110px;
+        padding: 16px;
+    }
+
+    .sodek-gb-deposit-balance {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sodek-gb-date-display {
+        font-size: 18px;
+    }
+
+    .sodek-gb-selected-date {
+        padding: 4px 0 16px;
+    }
+
+    .sodek-gb-timeslots-section {
+        padding-left: 0;
+    }
+
+    .sodek-gb-addon-thumb {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sodek-gb-confirmation {
+        padding: 36px 18px 52px;
+    }
+
+    .sodek-gb-confirmation-header {
+        padding: 30px 22px 26px;
+        border-radius: 24px;
+    }
+
+    .sodek-gb-confirmation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-confirmation-card-primary,
+    .sodek-gb-confirmation-card-secondary,
+    .sodek-gb-confirmation-payment {
+        padding: 22px;
+    }
+
+    .sodek-gb-calendar-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .sodek-gb-confirmation {
+        padding: 28px 14px 40px;
+    }
+
+    .sodek-gb-confirmation-header h1 {
+        font-size: 2rem;
+    }
+
+    .sodek-gb-detail-row {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .sodek-gb-detail-value {
+        text-align: left;
+    }
+}
+
+/* =============================================
+   Image Lightbox
+   ============================================= */
+.sodek-gb-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.92);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: zoom-out;
+    padding: 24px;
+}
+
+.sodek-gb-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sodek-gb-lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sodek-gb-lightbox.active .sodek-gb-lightbox-content {
+    transform: scale(1);
+}
+
+.sodek-gb-lightbox img {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.sodek-gb-lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.sodek-gb-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.sodek-gb-lightbox-close svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.sodek-gb-lightbox-caption {
+    position: absolute;
+    bottom: -36px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: var(--gb-font-body);
+    font-size: 14px;
+    font-weight: 500;
+}
