@@ -344,8 +344,8 @@ class Sodek_GB_REST_Staff {
         $date = $request->get_param( 'date' );
         $service_id = $request->get_param( 'service_id' );
 
-        // Validate date
-        if ( strtotime( $date ) < strtotime( 'today' ) ) {
+        // Validate date against the configured business timezone.
+        if ( $date < Sodek_GB_Availability::current_date( 'Y-m-d' ) ) {
             return new WP_Error(
                 'invalid_date',
                 __( 'Cannot get availability for past dates.', 'glowbook' ),
@@ -541,12 +541,14 @@ class Sodek_GB_REST_Staff {
             );
         }
 
+        $addon_ids = self::parse_addon_ids_from_request( $request );
+
         if ( $staff_id ) {
             // Get slots for specific staff
-            $slots = Sodek_GB_Staff_Availability::get_available_slots( $staff_id, $date, $service_id );
+            $slots = Sodek_GB_Staff_Availability::get_available_slots( $staff_id, $date, $service_id, $addon_ids );
         } else {
             // Get combined slots from all staff
-            $slots = Sodek_GB_Staff_Availability::get_combined_available_slots( $service_id, $date );
+            $slots = Sodek_GB_Staff_Availability::get_combined_available_slots( $service_id, $date, $addon_ids );
         }
 
         if ( is_wp_error( $slots ) ) {
@@ -608,6 +610,43 @@ class Sodek_GB_REST_Staff {
         }
 
         return $data;
+    }
+
+    /**
+     * Parse add-on IDs from a REST request.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return array
+     */
+    private static function parse_addon_ids_from_request( $request ) {
+        $raw_addon_ids = $request->get_param( 'addon_ids' );
+
+        if ( empty( $raw_addon_ids ) ) {
+            return array();
+        }
+
+        if ( is_string( $raw_addon_ids ) ) {
+            $decoded = json_decode( wp_unslash( $raw_addon_ids ), true );
+
+            if ( is_array( $decoded ) ) {
+                $raw_addon_ids = $decoded;
+            } else {
+                $raw_addon_ids = array_filter(
+                    array_map( 'trim', explode( ',', $raw_addon_ids ) ),
+                    'strlen'
+                );
+            }
+        }
+
+        if ( ! is_array( $raw_addon_ids ) ) {
+            return array();
+        }
+
+        return array_values(
+            array_filter(
+                array_map( 'absint', $raw_addon_ids )
+            )
+        );
     }
 
     /**

@@ -46,9 +46,6 @@ class Sodek_GB_Standalone_Booking {
         add_action( 'template_redirect', array( $instance, 'handle_page_requests' ) );
 
         // Register AJAX handlers
-        add_action( 'wp_ajax_sodek_gb_standalone_booking', array( $instance, 'handle_booking_submission' ) );
-        add_action( 'wp_ajax_nopriv_sodek_gb_standalone_booking', array( $instance, 'handle_booking_submission' ) );
-
         add_action( 'wp_ajax_sodek_gb_get_staff_slots', array( $instance, 'get_staff_available_slots' ) );
         add_action( 'wp_ajax_nopriv_sodek_gb_get_staff_slots', array( $instance, 'get_staff_available_slots' ) );
         add_action( 'wp_ajax_sodek_gb_get_service_addons', array( $instance, 'get_service_addons' ) );
@@ -205,23 +202,27 @@ class Sodek_GB_Standalone_Booking {
      * Enqueue booking page specific assets.
      */
     private function enqueue_booking_assets() {
-        // Staff selector
-        wp_enqueue_script(
-            'sodek-gb-staff-selector',
-            SODEK_GB_PLUGIN_URL . 'public/js/staff-selector.js',
-            array( 'jquery', 'sodek-gb-standalone' ),
-            SODEK_GB_VERSION,
-            true
-        );
+        $staff_selector_path = SODEK_GB_PLUGIN_DIR . 'public/js/staff-selector.js';
+        if ( file_exists( $staff_selector_path ) ) {
+            wp_enqueue_script(
+                'sodek-gb-staff-selector',
+                SODEK_GB_PLUGIN_URL . 'public/js/staff-selector.js',
+                array( 'jquery', 'sodek-gb-standalone' ),
+                SODEK_GB_VERSION,
+                true
+            );
+        }
 
-        // Phone verification
-        wp_enqueue_script(
-            'sodek-gb-phone-verification',
-            SODEK_GB_PLUGIN_URL . 'public/js/phone-verification.js',
-            array( 'jquery', 'sodek-gb-standalone' ),
-            SODEK_GB_VERSION,
-            true
-        );
+        $phone_verification_path = SODEK_GB_PLUGIN_DIR . 'public/js/phone-verification.js';
+        if ( file_exists( $phone_verification_path ) ) {
+            wp_enqueue_script(
+                'sodek-gb-phone-verification',
+                SODEK_GB_PLUGIN_URL . 'public/js/phone-verification.js',
+                array( 'jquery', 'sodek-gb-standalone' ),
+                SODEK_GB_VERSION,
+                true
+            );
+        }
 
         // Square payment SDK
         if ( Sodek_GB_Payment_Manager::is_standalone_mode() ) {
@@ -560,8 +561,25 @@ class Sodek_GB_Standalone_Booking {
         check_ajax_referer( 'sodek_gb_standalone_booking', 'nonce' );
 
         $service_id = isset( $_POST['service_id'] ) ? absint( $_POST['service_id'] ) : 0;
-        $staff_id = isset( $_POST['staff_id'] ) ? absint( $_POST['staff_id'] ) : 0;
-        $date = isset( $_POST['date'] ) ? sanitize_text_field( wp_unslash( $_POST['date'] ) ) : '';
+        $staff_id   = isset( $_POST['staff_id'] ) ? absint( $_POST['staff_id'] ) : 0;
+        $date       = isset( $_POST['date'] ) ? sanitize_text_field( wp_unslash( $_POST['date'] ) ) : '';
+        $addon_ids  = array();
+
+        if ( ! empty( $_POST['addon_ids'] ) ) {
+            $raw_addon_ids = wp_unslash( $_POST['addon_ids'] );
+            if ( is_string( $raw_addon_ids ) ) {
+                $decoded = json_decode( $raw_addon_ids, true );
+                if ( is_array( $decoded ) ) {
+                    $addon_ids = array_map( 'absint', $decoded );
+                } else {
+                    $addon_ids = array_filter(
+                        array_map( 'absint', array_map( 'trim', explode( ',', $raw_addon_ids ) ) )
+                    );
+                }
+            } elseif ( is_array( $raw_addon_ids ) ) {
+                $addon_ids = array_map( 'absint', $raw_addon_ids );
+            }
+        }
 
         if ( ! $service_id || ! $date ) {
             wp_send_json_error( array( 'message' => __( 'Missing required parameters.', 'glowbook' ) ) );
@@ -569,10 +587,10 @@ class Sodek_GB_Standalone_Booking {
 
         if ( $staff_id ) {
             // Get slots for specific staff
-            $slots = Sodek_GB_Staff_Availability::get_available_slots( $staff_id, $date, $service_id );
+            $slots = Sodek_GB_Staff_Availability::get_available_slots( $staff_id, $date, $service_id, $addon_ids );
         } else {
             // Get combined slots from all staff
-            $slots = Sodek_GB_Staff_Availability::get_combined_available_slots( $service_id, $date );
+            $slots = Sodek_GB_Staff_Availability::get_combined_available_slots( $service_id, $date, $addon_ids );
         }
 
         wp_send_json_success( array(

@@ -152,10 +152,20 @@ $service = $booking['service'] ?? array();
                         </div>
 
                         <?php if ( $deposit_paid ) : ?>
+                            <?php $payment_exceeds_total = floatval( $booking['deposit_amount'] ) > floatval( $booking['total_price'] ); ?>
                             <div class="sodek-gb-payment-line sodek-gb-paid">
-                                <span><?php esc_html_e( 'Paid Today', 'glowbook' ); ?></span>
+                                <span>
+                                    <?php
+                                    echo esc_html(
+                                        $payment_exceeds_total
+                                            ? __( 'Booking Payment Collected', 'glowbook' )
+                                            : __( 'Paid Today', 'glowbook' )
+                                    );
+                                    ?>
+                                </span>
                                 <span class="sodek-gb-text-success">
-                                    -<?php echo wp_kses_post( Sodek_GB_Booking_Page::format_price( $booking['deposit_amount'] ) ); ?>
+                                    <?php if ( ! $payment_exceeds_total ) : ?>-<?php endif; ?>
+                                    <?php echo wp_kses_post( Sodek_GB_Booking_Page::format_price( $booking['deposit_amount'] ) ); ?>
                                 </span>
                             </div>
                         <?php endif; ?>

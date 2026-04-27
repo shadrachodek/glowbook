@@ -329,7 +329,7 @@ class Sodek_GB_Confirmation_Page {
             return __( 'Booking Not Found', 'glowbook' );
         } );
 
-        get_header();
+        self::render_page_start();
         ?>
         <div class="sodek-gb-confirmation sodek-gb-not-found">
             <div class="sodek-gb-container">
@@ -343,7 +343,7 @@ class Sodek_GB_Confirmation_Page {
             </div>
         </div>
         <?php
-        get_footer();
+        self::render_page_end();
     }
 
     /**
@@ -369,13 +369,49 @@ class Sodek_GB_Confirmation_Page {
         // Extract data for template
         extract( $data );
 
-        // Load header
-        get_header();
+        self::render_page_start();
 
         // Include template
         include $template_path;
 
-        // Load footer
+        self::render_page_end();
+    }
+
+    /**
+     * Render the standalone page shell start.
+     */
+    private static function render_page_start() {
+        if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            ?>
+            <!DOCTYPE html>
+            <html <?php language_attributes(); ?>>
+            <head>
+                <meta charset="<?php bloginfo( 'charset' ); ?>" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <?php wp_head(); ?>
+            </head>
+            <body <?php body_class(); ?>>
+            <?php
+            wp_body_open();
+            return;
+        }
+
+        get_header();
+    }
+
+    /**
+     * Render the standalone page shell end.
+     */
+    private static function render_page_end() {
+        if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            wp_footer();
+            ?>
+            </body>
+            </html>
+            <?php
+            return;
+        }
+
         get_footer();
     }
 }

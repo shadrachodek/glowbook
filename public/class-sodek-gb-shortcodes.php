@@ -97,14 +97,16 @@ class Sodek_GB_Shortcodes {
             true
         );
 
-        // Staff selector
-        wp_enqueue_script(
-            'sodek-gb-staff-selector',
-            SODEK_GB_PLUGIN_URL . 'public/js/staff-selector.js',
-            array( 'jquery', 'sodek-gb-standalone' ),
-            SODEK_GB_VERSION,
-            true
-        );
+        $staff_selector_path = SODEK_GB_PLUGIN_DIR . 'public/js/staff-selector.js';
+        if ( file_exists( $staff_selector_path ) ) {
+            wp_enqueue_script(
+                'sodek-gb-staff-selector',
+                SODEK_GB_PLUGIN_URL . 'public/js/staff-selector.js',
+                array( 'jquery', 'sodek-gb-standalone' ),
+                SODEK_GB_VERSION,
+                true
+            );
+        }
 
         // Localize script
         $booking_slug = get_option( 'sodek_gb_booking_slug', 'book' );

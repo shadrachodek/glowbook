@@ -2,7 +2,7 @@
 
 Premium standalone booking system for beauty salons, hair braiders, and service businesses. GlowBook helps salons manage services, add-ons, availability, customer profiles, deposits/retainers, Square payments, confirmations, and customer self-service from one polished WordPress plugin.
 
-![Version](https://img.shields.io/badge/version-2.3.17-gold)
+![Version](https://img.shields.io/badge/version-2.3.18-gold)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-blue)
 ![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-blue)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple)
@@ -103,6 +103,16 @@ Availability includes:
 
 GlowBook includes booking confirmation, cancellation, reschedule, reminder, and admin notification support. Email delivery depends on the WordPress mail environment, so production sites should use a reliable SMTP/mail provider.
 
+## Version 2.3.18
+
+This release tightens the standalone production path:
+
+- Hardened overlap locks so in-progress checkouts block overlapping times across services.
+- Fixed timezone-sensitive booking and portal reschedule time calculations.
+- Made staff availability add-on aware across AJAX and REST paths.
+- Removed missing standalone asset enqueues and disabled the retired legacy standalone booking endpoint.
+- Cleaned standalone page rendering for block themes and disabled public debug output in site config.
+
 ## Version 2.3.17
 
 This release packages the production-ready standalone booking flow work:
@@ -146,4 +156,3 @@ This project is licensed under GPL v2 or later.
 ## Credits
 
 Built by [Shadrach Odekhiran](https://shadrachodek.com).
-

@@ -498,9 +498,8 @@ class Sodek_GB_Availability {
         $min_datetime = clone $now;
         $min_datetime->modify( "+{$min_notice} hours" );
         $today = self::current_date( 'Y-m-d' );
-        $date_timestamp = strtotime( $date );
 
-        if ( $date_timestamp < strtotime( $min_datetime->format( 'Y-m-d' ) ) ) {
+        if ( $date < $min_datetime->format( 'Y-m-d' ) ) {
             // Allow same-day if time is still valid
             if ( $today !== $date ) {
                 return array();
@@ -540,8 +539,8 @@ class Sodek_GB_Availability {
 
         // Generate available slots
         $slots = array();
-        $current_time = strtotime( $date . ' ' . $hours['start_time'] );
-        $end_time = strtotime( $date . ' ' . $hours['end_time'] );
+        $current_time = self::create_datetime( $date . ' ' . $hours['start_time'] )->getTimestamp();
+        $end_time     = self::create_datetime( $date . ' ' . $hours['end_time'] )->getTimestamp();
 
         // Adjust for buffer before
         $service_start_offset = $buffer_before * 60;
@@ -562,7 +561,7 @@ class Sodek_GB_Availability {
             if ( ! self::slot_conflicts( $date, $current_time, $slot_duration, $booked ) ) {
                 // Check minimum booking notice for today
                 if ( $today === $date ) {
-                    $slot_timestamp = strtotime( $date . ' ' . $slot_start );
+                    $slot_timestamp = self::create_datetime( $date . ' ' . $slot_start )->getTimestamp();
                     if ( $slot_timestamp > $min_datetime->getTimestamp() ) {
                         $slots[] = array(
                             'start' => $slot_start,
@@ -913,7 +912,7 @@ class Sodek_GB_Availability {
         self::cleanup_expired_locks();
 
         if ( $end_time ) {
-            return ! empty( self::get_overlapping_lock( $date, $start_time, $end_time, $service_id ) );
+            return ! empty( self::get_overlapping_lock( $date, $start_time, $end_time ) );
         }
 
         $count = $wpdb->get_var(
@@ -959,7 +958,7 @@ class Sodek_GB_Availability {
         // Clean up expired locks
         self::cleanup_expired_locks();
 
-        $existing = self::get_overlapping_lock( $date, $start_time, $end_time, $service_id );
+        $existing = self::get_overlapping_lock( $date, $start_time, $end_time );
         if ( $existing ) {
             if ( $existing['reference_id'] === $reference_id ) {
                 // Extend our own lock
@@ -1051,10 +1050,9 @@ class Sodek_GB_Availability {
      * @param string $date       Date (Y-m-d).
      * @param string $start_time Requested start time.
      * @param string $end_time   Requested end time.
-     * @param int    $service_id Service ID.
      * @return array|null
      */
-    private static function get_overlapping_lock( $date, $start_time, $end_time, $service_id ) {
+    private static function get_overlapping_lock( $date, $start_time, $end_time ) {
         global $wpdb;
 
         $table = $wpdb->prefix . 'sodek_gb_slot_locks';

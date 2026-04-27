@@ -340,9 +340,10 @@ class Sodek_GB_Staff_Availability {
      * @param int    $staff_id   Staff user ID.
      * @param string $date       Date (Y-m-d).
      * @param int    $service_id Service ID.
+     * @param array  $addon_ids  Selected add-on IDs.
      * @return array
      */
-    public static function get_available_slots( $staff_id, $date, $service_id ) {
+    public static function get_available_slots( $staff_id, $date, $service_id, $addon_ids = array() ) {
         if ( Sodek_GB_Availability::is_day_fully_booked( $date ) ) {
             return array();
         }
@@ -373,8 +374,10 @@ class Sodek_GB_Staff_Availability {
         // Get booked slots for this staff on this date
         $booked = self::get_staff_booked_slots( $staff_id, $date );
 
-        // Calculate slot duration
-        $slot_duration = $service['duration'] + $service['buffer_before'] + $service['buffer_after'];
+        $addon_ids       = Sodek_GB_Addon::validate_addons_for_service( array_map( 'absint', (array) $addon_ids ), $service_id );
+        $addons_duration = Sodek_GB_Availability::get_addons_duration( $addon_ids );
+        $booking_duration = (int) $service['duration'] + $addons_duration;
+        $slot_duration    = $booking_duration + (int) $service['buffer_before'] + (int) $service['buffer_after'];
         $interval = (int) get_option( 'sodek_gb_time_slot_interval', 30 );
 
         // Generate available slots
@@ -389,7 +392,7 @@ class Sodek_GB_Staff_Availability {
             $slot_start_dt->setTimezone( $tz );
             $slot_start = $slot_start_dt->format( 'H:i' );
 
-            $slot_end_dt = new DateTime( '@' . ( $current_time + $service_start_offset + ( $service['duration'] * 60 ) ) );
+            $slot_end_dt = new DateTime( '@' . ( $current_time + $service_start_offset + ( $booking_duration * 60 ) ) );
             $slot_end_dt->setTimezone( $tz );
             $slot_end = $slot_end_dt->format( 'H:i' );
 
@@ -496,15 +499,16 @@ class Sodek_GB_Staff_Availability {
      * @param int    $service_id Service ID.
      * @param string $date       Date (Y-m-d).
      * @param string $time       Time (H:i).
+     * @param array  $addon_ids  Selected add-on IDs.
      * @return array Staff user IDs.
      */
-    public static function get_available_staff_for_slot( $service_id, $date, $time ) {
+    public static function get_available_staff_for_slot( $service_id, $date, $time, $addon_ids = array() ) {
         // Get all staff who can perform this service
         $staff_list = Sodek_GB_Staff::get_staff_for_service( $service_id );
         $available = array();
 
         foreach ( $staff_list as $staff ) {
-            $slots = self::get_available_slots( $staff['id'], $date, $service_id );
+            $slots = self::get_available_slots( $staff['id'], $date, $service_id, $addon_ids );
 
             foreach ( $slots as $slot ) {
                 if ( $slot['start'] === $time ) {
@@ -524,10 +528,11 @@ class Sodek_GB_Staff_Availability {
      * @param int    $service_id Service ID.
      * @param string $date       Date (Y-m-d).
      * @param string $time       Time (H:i).
+     * @param array  $addon_ids  Selected add-on IDs.
      * @return bool
      */
-    public static function is_staff_available_for_slot( $staff_id, $service_id, $date, $time ) {
-        $slots = self::get_available_slots( $staff_id, $date, $service_id );
+    public static function is_staff_available_for_slot( $staff_id, $service_id, $date, $time, $addon_ids = array() ) {
+        $slots = self::get_available_slots( $staff_id, $date, $service_id, $addon_ids );
 
         foreach ( $slots as $slot ) {
             if ( $slot['start'] === $time ) {
@@ -545,14 +550,15 @@ class Sodek_GB_Staff_Availability {
      * @param string $date       Date (Y-m-d).
      * @param string $time       Time (H:i).
      * @param string $mode       Selection mode: round-robin, least-busy, first-available.
+     * @param array  $addon_ids  Selected add-on IDs.
      * @return int|null Staff user ID or null.
      */
-    public static function get_auto_assigned_staff( $service_id, $date, $time, $mode = '' ) {
+    public static function get_auto_assigned_staff( $service_id, $date, $time, $mode = '', $addon_ids = array() ) {
         if ( ! $mode ) {
             $mode = get_option( 'sodek_gb_default_staff_assignment', 'round-robin' );
         }
 
-        $available_staff = self::get_available_staff_for_slot( $service_id, $date, $time );
+        $available_staff = self::get_available_staff_for_slot( $service_id, $date, $time, $addon_ids );
 
         if ( empty( $available_staff ) ) {
             return null;
@@ -630,9 +636,10 @@ class Sodek_GB_Staff_Availability {
      *
      * @param int    $service_id Service ID.
      * @param string $date       Date (Y-m-d).
+     * @param array  $addon_ids  Selected add-on IDs.
      * @return array Unique time slots.
      */
-    public static function get_combined_available_slots( $service_id, $date ) {
+    public static function get_combined_available_slots( $service_id, $date, $addon_ids = array() ) {
         $staff_list = Sodek_GB_Staff::get_staff_for_service( $service_id );
 
         if ( empty( $staff_list ) ) {
@@ -643,7 +650,7 @@ class Sodek_GB_Staff_Availability {
         $all_slots = array();
 
         foreach ( $staff_list as $staff ) {
-            $slots = self::get_available_slots( $staff['id'], $date, $service_id );
+            $slots = self::get_available_slots( $staff['id'], $date, $service_id, $addon_ids );
 
             foreach ( $slots as $slot ) {
                 $key = $slot['start'];

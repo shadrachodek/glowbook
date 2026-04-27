@@ -406,6 +406,8 @@ class Sodek_GB_Standalone_Checkout {
         ) );
 
         if ( ! $transaction_id ) {
+            Sodek_GB_Availability::release_slot_lock( $reference_id );
+
             wp_send_json_error( array(
                 'message' => __( 'Failed to create transaction record.', 'glowbook' ),
                 'code'    => 'transaction_create_failed',

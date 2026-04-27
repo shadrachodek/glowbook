@@ -578,20 +578,25 @@ class Sodek_GB_Customer_Portal {
         // Validate new slot is available
         $staff_id = $booking['staff_id'];
         $service_id = $booking['service']['id'];
+        $addon_ids = ! empty( $booking['addon_ids'] ) && is_array( $booking['addon_ids'] )
+            ? array_map( 'absint', $booking['addon_ids'] )
+            : array();
 
         if ( $staff_id ) {
-            $is_available = Sodek_GB_Staff_Availability::is_staff_available_for_slot( $staff_id, $service_id, $new_date, $new_time );
+            $is_available = Sodek_GB_Staff_Availability::is_staff_available_for_slot( $staff_id, $service_id, $new_date, $new_time, $addon_ids );
         } else {
-            $is_available = Sodek_GB_Availability::is_slot_available( $new_date, $new_time, $service_id );
+            $is_available = Sodek_GB_Availability::is_slot_available( $new_date, $new_time, $service_id, $addon_ids );
         }
 
         if ( ! $is_available ) {
             wp_send_json_error( array( 'message' => __( 'This time slot is not available.', 'glowbook' ) ) );
         }
 
-        // Calculate new end time
-        $duration = $booking['service']['duration'] + ( $booking['addons_duration'] ?? 0 );
-        $new_end_time = gmdate( 'H:i', strtotime( $new_time ) + ( $duration * 60 ) );
+        // Calculate new end time in the business timezone.
+        $duration     = $booking['service']['duration'] + ( $booking['addons_duration'] ?? 0 );
+        $new_end_time = Sodek_GB_Availability::create_datetime( $new_date . ' ' . $new_time )
+            ->modify( '+' . (int) $duration . ' minutes' )
+            ->format( 'H:i' );
 
         // Store old info for notification
         $old_date = $booking['booking_date'];
@@ -1519,13 +1524,49 @@ class Sodek_GB_Customer_Portal {
         // Extract data for template
         extract( $data );
 
-        // Load header
-        get_header();
+        self::render_page_start();
 
         // Include template
         include $template_path;
 
-        // Load footer
+        self::render_page_end();
+    }
+
+    /**
+     * Render the standalone page shell start.
+     */
+    private static function render_page_start() {
+        if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            ?>
+            <!DOCTYPE html>
+            <html <?php language_attributes(); ?>>
+            <head>
+                <meta charset="<?php bloginfo( 'charset' ); ?>" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <?php wp_head(); ?>
+            </head>
+            <body <?php body_class(); ?>>
+            <?php
+            wp_body_open();
+            return;
+        }
+
+        get_header();
+    }
+
+    /**
+     * Render the standalone page shell end.
+     */
+    private static function render_page_end() {
+        if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            wp_footer();
+            ?>
+            </body>
+            </html>
+            <?php
+            return;
+        }
+
         get_footer();
     }
 }

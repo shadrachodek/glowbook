@@ -143,13 +143,49 @@ class Sodek_GB_Booking_Page {
         // Extract data for template
         extract( $data );
 
-        // Load header
-        get_header();
+        self::render_page_start();
 
         // Include template
         include $template_path;
 
-        // Load footer
+        self::render_page_end();
+    }
+
+    /**
+     * Render the standalone page shell start.
+     */
+    private static function render_page_start() {
+        if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            ?>
+            <!DOCTYPE html>
+            <html <?php language_attributes(); ?>>
+            <head>
+                <meta charset="<?php bloginfo( 'charset' ); ?>" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <?php wp_head(); ?>
+            </head>
+            <body <?php body_class(); ?>>
+            <?php
+            wp_body_open();
+            return;
+        }
+
+        get_header();
+    }
+
+    /**
+     * Render the standalone page shell end.
+     */
+    private static function render_page_end() {
+        if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+            wp_footer();
+            ?>
+            </body>
+            </html>
+            <?php
+            return;
+        }
+
         get_footer();
     }
 
@@ -207,17 +243,19 @@ class Sodek_GB_Booking_Page {
      * @return array
      */
     public static function get_available_dates( $service_id, $staff_id, $year, $month ) {
-        $dates = array();
+        $dates         = array();
         $days_in_month = cal_days_in_month( CAL_GREGORIAN, $month, $year );
-        $max_advance = (int) get_option( 'sodek_gb_max_booking_advance', 60 );
-        $max_date = strtotime( "+{$max_advance} days" );
+        $max_advance   = (int) get_option( 'sodek_gb_max_booking_advance', 60 );
+        $today         = Sodek_GB_Availability::current_date( 'Y-m-d' );
+        $max_dt        = Sodek_GB_Availability::create_datetime( 'now' );
+        $max_dt->modify( "+{$max_advance} days" );
+        $max_date = $max_dt->format( 'Y-m-d' );
 
         for ( $day = 1; $day <= $days_in_month; $day++ ) {
             $date = sprintf( '%d-%02d-%02d', $year, $month, $day );
-            $timestamp = strtotime( $date );
 
             // Skip past dates and dates beyond max advance
-            if ( $timestamp < strtotime( 'today' ) || $timestamp > $max_date ) {
+            if ( $date < $today || $date > $max_date ) {
                 continue;
             }
 
