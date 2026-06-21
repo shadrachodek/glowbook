@@ -157,6 +157,84 @@ $default_booking_terms_text = "If you need help with anything not covered here, 
                     <p class="description"><?php esc_html_e( 'Displayed on the booking page before checkout so customers can review your inquiry, booking, and non-refundable payment terms.', 'glowbook' ); ?></p>
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_enabled"><?php esc_html_e( 'Booking Policy Popup', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="hidden" name="sodek_gb_booking_gate_enabled" value="0">
+                    <label>
+                        <input type="checkbox" id="sodek_gb_booking_gate_enabled" name="sodek_gb_booking_gate_enabled" value="1" <?php checked( get_option( 'sodek_gb_booking_gate_enabled', 0 ), 1 ); ?>>
+                        <?php esc_html_e( 'Require customers to accept a popup before they can start booking.', 'glowbook' ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'This popup appears once per browser session before category selection.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr class="sodek-gb-booking-gate-row">
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_content_type"><?php esc_html_e( 'Popup Content Type', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <select id="sodek_gb_booking_gate_content_type" name="sodek_gb_booking_gate_content_type">
+                        <option value="text" <?php selected( get_option( 'sodek_gb_booking_gate_content_type', 'text' ), 'text' ); ?>><?php esc_html_e( 'Text', 'glowbook' ); ?></option>
+                        <option value="image" <?php selected( get_option( 'sodek_gb_booking_gate_content_type', 'text' ), 'image' ); ?>><?php esc_html_e( 'Image', 'glowbook' ); ?></option>
+                    </select>
+                    <p class="description"><?php esc_html_e( 'Choose text for a simple notice or an image for a branded booking policy poster.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr class="sodek-gb-booking-gate-row sodek-gb-booking-gate-text-row">
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_text"><?php esc_html_e( 'Popup Text', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <textarea id="sodek_gb_booking_gate_text" name="sodek_gb_booking_gate_text" rows="8" cols="50" class="large-text"><?php echo esc_textarea( get_option( 'sodek_gb_booking_gate_text', $default_booking_terms_text ) ); ?></textarea>
+                    <p class="description"><?php esc_html_e( 'Shown in the popup when Text is selected.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr class="sodek-gb-booking-gate-row sodek-gb-booking-gate-image-row">
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_image_url"><?php esc_html_e( 'Popup Image', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="hidden" id="sodek_gb_booking_gate_image_id" name="sodek_gb_booking_gate_image_id" value="<?php echo esc_attr( get_option( 'sodek_gb_booking_gate_image_id', 0 ) ); ?>">
+                    <input type="hidden" id="sodek_gb_booking_gate_image_url" name="sodek_gb_booking_gate_image_url" value="<?php echo esc_attr( get_option( 'sodek_gb_booking_gate_image_url', '' ) ); ?>">
+                    <div class="sodek-gb-booking-gate-image-preview" style="margin-bottom:12px;">
+                        <?php if ( get_option( 'sodek_gb_booking_gate_image_url', '' ) ) : ?>
+                            <img src="<?php echo esc_url( get_option( 'sodek_gb_booking_gate_image_url', '' ) ); ?>" alt="<?php esc_attr_e( 'Booking policy preview', 'glowbook' ); ?>" style="max-width:320px;width:100%;height:auto;border:1px solid #dde3ea;border-radius:12px;display:block;">
+                        <?php endif; ?>
+                    </div>
+                    <button type="button" class="button sodek-gb-booking-gate-upload"><?php esc_html_e( 'Choose Image', 'glowbook' ); ?></button>
+                    <button type="button" class="button sodek-gb-booking-gate-remove" <?php echo get_option( 'sodek_gb_booking_gate_image_url', '' ) ? '' : 'style="display:none;"'; ?>><?php esc_html_e( 'Remove Image', 'glowbook' ); ?></button>
+                    <p class="description"><?php esc_html_e( 'Best for a portrait poster or flyer that customers should review before booking.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr class="sodek-gb-booking-gate-row">
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_accept_label"><?php esc_html_e( 'Accept Button Label', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="text" id="sodek_gb_booking_gate_accept_label" name="sodek_gb_booking_gate_accept_label" value="<?php echo esc_attr( get_option( 'sodek_gb_booking_gate_accept_label', 'I Accept' ) ); ?>" class="regular-text">
+                    <p class="description"><?php esc_html_e( 'Short label for the required acceptance button.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr class="sodek-gb-booking-gate-row">
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_button_bg"><?php esc_html_e( 'Accept Button Background', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="color" id="sodek_gb_booking_gate_button_bg" name="sodek_gb_booking_gate_button_bg" value="<?php echo esc_attr( get_option( 'sodek_gb_booking_gate_button_bg', '#1f1f1f' ) ); ?>">
+                    <p class="description"><?php esc_html_e( 'Background color for the popup accept button.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr class="sodek-gb-booking-gate-row">
+                <th scope="row">
+                    <label for="sodek_gb_booking_gate_button_text"><?php esc_html_e( 'Accept Button Text Color', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="color" id="sodek_gb_booking_gate_button_text" name="sodek_gb_booking_gate_button_text" value="<?php echo esc_attr( get_option( 'sodek_gb_booking_gate_button_text', '#ffffff' ) ); ?>">
+                    <p class="description"><?php esc_html_e( 'Text color for the popup accept button.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
         </table>
         </section>
 
@@ -217,6 +295,70 @@ $default_booking_terms_text = "If you need help with anything not covered here, 
 
             $customerPaymentRules.on('change', toggleCustomerPaymentRules);
             toggleCustomerPaymentRules();
+
+            var $bookingGateEnabled = $('#sodek_gb_booking_gate_enabled');
+            var $bookingGateContentType = $('#sodek_gb_booking_gate_content_type');
+            var mediaFrame = null;
+
+            function renderBookingGateImagePreview(url) {
+                var $preview = $('.sodek-gb-booking-gate-image-preview');
+
+                if (!url) {
+                    $preview.empty();
+                    $('.sodek-gb-booking-gate-remove').hide();
+                    return;
+                }
+
+                $preview.html('<img src="' + url + '" alt="<?php echo esc_js( __( 'Booking policy preview', 'glowbook' ) ); ?>" style="max-width:320px;width:100%;height:auto;border:1px solid #dde3ea;border-radius:12px;display:block;">');
+                $('.sodek-gb-booking-gate-remove').show();
+            }
+
+            function toggleBookingGateFields() {
+                var enabled = $bookingGateEnabled.is(':checked');
+                var contentType = $bookingGateContentType.val();
+
+                $('.sodek-gb-booking-gate-row').toggle(enabled);
+                $('.sodek-gb-booking-gate-text-row').toggle(enabled && contentType === 'text');
+                $('.sodek-gb-booking-gate-image-row').toggle(enabled && contentType === 'image');
+            }
+
+            $bookingGateEnabled.on('change', toggleBookingGateFields);
+            $bookingGateContentType.on('change', toggleBookingGateFields);
+
+            $('.sodek-gb-booking-gate-upload').on('click', function(e) {
+                e.preventDefault();
+
+                if (mediaFrame) {
+                    mediaFrame.open();
+                    return;
+                }
+
+                mediaFrame = wp.media({
+                    title: '<?php echo esc_js( __( 'Choose booking policy image', 'glowbook' ) ); ?>',
+                    button: {
+                        text: '<?php echo esc_js( __( 'Use this image', 'glowbook' ) ); ?>'
+                    },
+                    multiple: false
+                });
+
+                mediaFrame.on('select', function() {
+                    var attachment = mediaFrame.state().get('selection').first().toJSON();
+                    $('#sodek_gb_booking_gate_image_id').val(attachment.id || '');
+                    $('#sodek_gb_booking_gate_image_url').val(attachment.url);
+                    renderBookingGateImagePreview(attachment.url);
+                });
+
+                mediaFrame.open();
+            });
+
+            $('.sodek-gb-booking-gate-remove').on('click', function(e) {
+                e.preventDefault();
+                $('#sodek_gb_booking_gate_image_id').val('');
+                $('#sodek_gb_booking_gate_image_url').val('');
+                renderBookingGateImagePreview('');
+            });
+
+            toggleBookingGateFields();
 
             // Test connection button
             $('.sodek-gb-test-square-connection').on('click', function() {

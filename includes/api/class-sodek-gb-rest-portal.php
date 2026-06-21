@@ -699,6 +699,20 @@ class Sodek_GB_REST_Portal {
             );
         }
 
+        // Check if already cancelled (idempotency - return success instead of error)
+        if ( 'cancelled' === $booking['status'] ) {
+            return rest_ensure_response(
+                array(
+                    'success'     => true,
+                    'message'     => __( 'This appointment has already been cancelled.', 'glowbook' ),
+                    'refund_info' => array(
+                        'type'          => 'already_cancelled',
+                        'refund_amount' => 0,
+                    ),
+                )
+            );
+        }
+
         if ( ! Sodek_GB_Customer_Portal::customer_can_cancel_booking( $booking ) ) {
             return new WP_Error(
                 'cancellation_not_allowed',
@@ -707,19 +721,24 @@ class Sodek_GB_REST_Portal {
             );
         }
 
-        // Update booking status
-        $result = Sodek_GB_Booking::update_booking(
-            $booking_id,
-            array(
-                'status' => 'cancelled',
-            )
-        );
+        // Use idempotent cancel to prevent race conditions
+        $was_cancelled = Sodek_GB_Booking::cancel_booking_idempotent( $booking_id );
 
-        if ( is_wp_error( $result ) ) {
-            return $result;
+        // If another request already cancelled, return success without duplicate notifications
+        if ( ! $was_cancelled ) {
+            return rest_ensure_response(
+                array(
+                    'success'     => true,
+                    'message'     => __( 'Your appointment has been cancelled.', 'glowbook' ),
+                    'refund_info' => array(
+                        'type'          => 'already_cancelled',
+                        'refund_amount' => 0,
+                    ),
+                )
+            );
         }
 
-        // Store cancellation reason
+        // Store cancellation reason (only if we actually cancelled it)
         if ( $reason ) {
             update_post_meta( $booking_id, '_sodek_gb_cancellation_reason', $reason );
         }
@@ -797,111 +816,131 @@ class Sodek_GB_REST_Portal {
             );
         }
 
-        $balance = (float) get_post_meta( $booking_id, '_sodek_gb_balance_amount', true );
+        $customer = $this->get_current_customer();
+        $lock_token = wp_generate_uuid4();
 
-        if ( $balance <= 0 ) {
+        if ( ! $this->acquire_balance_payment_lock( (int) $booking_id, $lock_token ) ) {
             return new WP_Error(
-                'no_balance',
-                __( 'There is no balance due for this booking.', 'glowbook' ),
-                array( 'status' => 400 )
+                'balance_payment_in_progress',
+                __( 'A balance payment is already being processed for this booking. Please wait a moment and refresh.', 'glowbook' ),
+                array( 'status' => 409 )
             );
         }
 
-        $customer = $this->get_current_customer();
+        try {
+            $balance = (float) get_post_meta( $booking_id, '_sodek_gb_balance_amount', true );
 
-        $source_id = '';
-        $payment_method = 'online_card';
-
-        if ( $card_id ) {
-            $saved_card = Sodek_GB_Customer::get_card( absint( $card_id ), $customer['id'] );
-
-            if ( ! $saved_card || empty( $saved_card['card_id'] ) ) {
+            if ( $balance <= 0 ) {
                 return new WP_Error(
-                    'saved_card_not_found',
-                    __( 'The selected saved card is no longer available.', 'glowbook' ),
+                    'no_balance',
+                    __( 'There is no balance due for this booking.', 'glowbook' ),
                     array( 'status' => 400 )
                 );
             }
 
-            $source_id = sanitize_text_field( $saved_card['card_id'] );
-            $payment_method = 'saved_card';
-        } elseif ( ! empty( $card_nonce ) ) {
-            $source_id = sanitize_text_field( $card_nonce );
-        }
+            $source_id = '';
+            $payment_method = 'online_card';
 
-        if ( empty( $source_id ) ) {
-            return new WP_Error(
-                'missing_payment_source',
-                __( 'Please choose a saved card or enter a new card to continue.', 'glowbook' ),
-                array( 'status' => 400 )
-            );
-        }
+            if ( $card_id ) {
+                $saved_card = Sodek_GB_Customer::get_card( absint( $card_id ), $customer['id'] );
 
-        $square_gateway = Sodek_GB_Payment_Manager::get_gateway( 'square' );
-        $environment    = $square_gateway && method_exists( $square_gateway, 'get_environment' )
-            ? $square_gateway->get_environment()
-            : get_option( 'sodek_gb_square_environment', 'sandbox' );
-        $currency       = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : get_option( 'sodek_gb_currency', 'USD' );
+                if ( ! $saved_card || empty( $saved_card['card_id'] ) ) {
+                    return new WP_Error(
+                        'saved_card_not_found',
+                        __( 'The selected saved card is no longer available.', 'glowbook' ),
+                        array( 'status' => 400 )
+                    );
+                }
 
-        $transaction_id = Sodek_GB_Transaction::create(
-            array(
-                'gateway'          => 'square',
-                'environment'      => $environment,
-                'amount'           => $balance,
-                'currency'         => $currency,
-                'transaction_type' => Sodek_GB_Transaction::TYPE_PAYMENT,
-                'status'           => Sodek_GB_Transaction::STATUS_PENDING,
-                'customer_email'   => $booking['customer_email'] ?? '',
-                'customer_name'    => $booking['customer_name'] ?? '',
-                'booking_id'       => $booking_id,
-                'request_data'     => array(
-                    'booking_id'          => $booking_id,
-                    'customer_id'         => $customer['id'],
-                    'payment_context'     => 'portal_balance_rest',
-                    'saved_card_selected' => 'saved_card' === $payment_method,
-                ),
-            )
-        );
+                $source_id = sanitize_text_field( $saved_card['card_id'] );
+                $payment_method = 'saved_card';
+            } elseif ( ! empty( $card_nonce ) ) {
+                $source_id = sanitize_text_field( $card_nonce );
+            }
 
-        $payment_result = Sodek_GB_Payment_Manager::process_payment(
-            'square',
-            $balance,
-            array(
-                'source_id'          => $source_id,
-                'customer_email'     => $booking['customer_email'] ?? '',
-                'verification_token' => ! empty( $verification_token ) ? sanitize_text_field( $verification_token ) : '',
-                'reference_id'       => 'GB-BAL-' . $booking_id,
-                'note'               => sprintf( __( 'Balance payment for booking #%d', 'glowbook' ), $booking_id ),
-                'metadata'           => array(
-                    'booking_id'      => (string) $booking_id,
-                    'customer_id'     => (string) $customer['id'],
-                    'payment_context' => 'portal_balance_rest',
-                    'balance_amount'  => (string) $balance,
-                ),
-            )
-        );
-
-        if ( empty( $payment_result['success'] ) ) {
-            if ( $transaction_id ) {
-                Sodek_GB_Transaction::update(
-                    $transaction_id,
-                    array(
-                        'status'        => Sodek_GB_Transaction::STATUS_FAILED,
-                        'error_code'    => $payment_result['error']['code'] ?? 'payment_failed',
-                        'error_message' => $payment_result['error']['message'] ?? __( 'Payment failed.', 'glowbook' ),
-                    )
+            if ( empty( $source_id ) ) {
+                return new WP_Error(
+                    'missing_payment_source',
+                    __( 'Please choose a saved card or enter a new card to continue.', 'glowbook' ),
+                    array( 'status' => 400 )
                 );
             }
 
-            return new WP_Error(
-                $payment_result['error']['code'] ?? 'payment_failed',
-                $payment_result['error']['message'] ?? __( 'Payment failed.', 'glowbook' ),
-                array( 'status' => 400 )
-            );
-        }
+            $square_gateway = Sodek_GB_Payment_Manager::get_gateway( 'square' );
+            $environment    = $square_gateway && method_exists( $square_gateway, 'get_environment' )
+                ? $square_gateway->get_environment()
+                : get_option( 'sodek_gb_square_environment', 'sandbox' );
+            $currency       = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : get_option( 'sodek_gb_currency', 'USD' );
+            $transaction_uuid = wp_generate_uuid4();
 
-        if ( $transaction_id ) {
-            Sodek_GB_Transaction::update(
+            $transaction_id = Sodek_GB_Transaction::create(
+                array(
+                    'transaction_id'   => $transaction_uuid,
+                    'gateway'          => 'square',
+                    'environment'      => $environment,
+                    'amount'           => $balance,
+                    'currency'         => $currency,
+                    'transaction_type' => Sodek_GB_Transaction::TYPE_PAYMENT,
+                    'status'           => Sodek_GB_Transaction::STATUS_PENDING,
+                    'customer_email'   => $booking['customer_email'] ?? '',
+                    'customer_name'    => $booking['customer_name'] ?? '',
+                    'booking_id'       => $booking_id,
+                    'request_data'     => array(
+                        'booking_id'          => $booking_id,
+                        'customer_id'         => $customer['id'],
+                        'payment_context'     => 'portal_balance_rest',
+                        'saved_card_selected' => 'saved_card' === $payment_method,
+                    ),
+                )
+            );
+
+            if ( ! $transaction_id ) {
+                return new WP_Error(
+                    'transaction_create_failed',
+                    __( 'We could not prepare your payment record. Please try again.', 'glowbook' ),
+                    array( 'status' => 500 )
+                );
+            }
+
+            $payment_result = Sodek_GB_Payment_Manager::process_payment(
+                'square',
+                $balance,
+                array(
+                    'source_id'          => $source_id,
+                    'customer_email'     => $booking['customer_email'] ?? '',
+                    'verification_token' => ! empty( $verification_token ) ? sanitize_text_field( $verification_token ) : '',
+                    'reference_id'       => 'GB-BAL-' . $booking_id,
+                    'idempotency_key'    => 'gb_bal_' . substr( hash( 'sha256', $transaction_uuid . '|' . $booking_id . '|' . number_format( $balance, 2, '.', '' ) ), 0, 38 ),
+                    'note'               => sprintf( __( 'Balance payment for booking #%d', 'glowbook' ), $booking_id ),
+                    'metadata'           => array(
+                        'booking_id'      => (string) $booking_id,
+                        'customer_id'     => (string) $customer['id'],
+                        'payment_context' => 'portal_balance_rest',
+                        'balance_amount'  => (string) $balance,
+                    ),
+                )
+            );
+
+            if ( empty( $payment_result['success'] ) ) {
+                if ( $transaction_id ) {
+                    Sodek_GB_Transaction::update(
+                        $transaction_id,
+                        array(
+                            'status'        => Sodek_GB_Transaction::STATUS_FAILED,
+                            'error_code'    => $payment_result['error']['code'] ?? 'payment_failed',
+                            'error_message' => $payment_result['error']['message'] ?? __( 'Payment failed.', 'glowbook' ),
+                        )
+                    );
+                }
+
+                return new WP_Error(
+                    $payment_result['error']['code'] ?? 'payment_failed',
+                    $payment_result['error']['message'] ?? __( 'Payment failed.', 'glowbook' ),
+                    array( 'status' => 400 )
+                );
+            }
+
+            $transaction_updated = Sodek_GB_Transaction::update(
                 $transaction_id,
                 array(
                     'status'             => Sodek_GB_Transaction::STATUS_COMPLETED,
@@ -913,27 +952,104 @@ class Sodek_GB_REST_Portal {
                     'booking_id'         => $booking_id,
                 )
             );
+
+            if ( ! $transaction_updated ) {
+                update_post_meta( $booking_id, '_sodek_gb_balance_payment_pending_review', '1' );
+                update_post_meta( $booking_id, '_sodek_gb_balance_payment_id_pending_review', $payment_result['data']['payment_id'] ?? '' );
+                update_post_meta( $booking_id, '_sodek_gb_balance_receipt_pending_review', $payment_result['data']['receipt_url'] ?? '' );
+
+                return new WP_Error(
+                    'balance_payment_record_failed',
+                    __( 'Your card was charged, but we could not finalize the payment record automatically. Our team has been notified to review it right away.', 'glowbook' ),
+                    array( 'status' => 500 )
+                );
+            }
+
+            // Update balance
+            update_post_meta( $booking_id, '_sodek_gb_balance_amount', 0 );
+            update_post_meta( $booking_id, '_sodek_gb_balance_paid', '1' );
+            update_post_meta( $booking_id, '_sodek_gb_balance_paid_at', current_time( 'mysql' ) );
+            update_post_meta( $booking_id, '_sodek_gb_balance_payment_id', $payment_result['data']['payment_id'] ?? '' );
+            update_post_meta( $booking_id, '_sodek_gb_balance_payment_method', $payment_method );
+            update_post_meta( $booking_id, '_sodek_gb_balance_received_by', 'customer_portal' );
+            update_post_meta( $booking_id, '_sodek_gb_balance_receipt_url', $payment_result['data']['receipt_url'] ?? '' );
+            delete_post_meta( $booking_id, '_sodek_gb_balance_payment_pending_review' );
+            delete_post_meta( $booking_id, '_sodek_gb_balance_payment_id_pending_review' );
+            delete_post_meta( $booking_id, '_sodek_gb_balance_receipt_pending_review' );
+
+            // Send receipt
+            do_action( 'sodek_gb_balance_paid', $booking_id, $balance, $customer );
+
+            return rest_ensure_response(
+                array(
+                    'success'     => true,
+                    'message'     => __( 'Payment successful! Thank you.', 'glowbook' ),
+                    'receipt_url' => $payment_result['data']['receipt_url'] ?? '',
+                )
+            );
+        } finally {
+            $this->release_balance_payment_lock( (int) $booking_id, $lock_token );
         }
+    }
 
-        // Update balance
-        update_post_meta( $booking_id, '_sodek_gb_balance_amount', 0 );
-        update_post_meta( $booking_id, '_sodek_gb_balance_paid', '1' );
-        update_post_meta( $booking_id, '_sodek_gb_balance_paid_at', current_time( 'mysql' ) );
-        update_post_meta( $booking_id, '_sodek_gb_balance_payment_id', $payment_result['data']['payment_id'] ?? '' );
-        update_post_meta( $booking_id, '_sodek_gb_balance_payment_method', $payment_method );
-        update_post_meta( $booking_id, '_sodek_gb_balance_received_by', 'customer_portal' );
-        update_post_meta( $booking_id, '_sodek_gb_balance_receipt_url', $payment_result['data']['receipt_url'] ?? '' );
-
-        // Send receipt
-        do_action( 'sodek_gb_balance_paid', $booking_id, $balance, $customer );
-
-        return rest_ensure_response(
+    /**
+     * Acquire a short-lived lock for balance payments on a booking.
+     *
+     * @param int    $booking_id  Booking ID.
+     * @param string $lock_token  Unique lock token.
+     * @return bool
+     */
+    private function acquire_balance_payment_lock( int $booking_id, string $lock_token ): bool {
+        $option_name = $this->get_balance_payment_lock_option_name( $booking_id );
+        $expires_at  = time() + MINUTE_IN_SECONDS * 5;
+        $payload     = wp_json_encode(
             array(
-                'success'     => true,
-                'message'     => __( 'Payment successful! Thank you.', 'glowbook' ),
-                'receipt_url' => $payment_result['data']['receipt_url'] ?? '',
+                'token'   => $lock_token,
+                'expires' => $expires_at,
             )
         );
+
+        if ( add_option( $option_name, $payload, '', false ) ) {
+            return true;
+        }
+
+        $existing = get_option( $option_name );
+        $decoded  = json_decode( (string) $existing, true );
+        $expired  = empty( $decoded['expires'] ) || (int) $decoded['expires'] < time();
+
+        if ( $expired ) {
+            delete_option( $option_name );
+            return add_option( $option_name, $payload, '', false );
+        }
+
+        return false;
+    }
+
+    /**
+     * Release the balance payment lock for a booking.
+     *
+     * @param int    $booking_id Booking ID.
+     * @param string $lock_token Lock token.
+     * @return void
+     */
+    private function release_balance_payment_lock( int $booking_id, string $lock_token ): void {
+        $option_name = $this->get_balance_payment_lock_option_name( $booking_id );
+        $existing    = get_option( $option_name );
+        $decoded     = json_decode( (string) $existing, true );
+
+        if ( is_array( $decoded ) && isset( $decoded['token'] ) && hash_equals( (string) $decoded['token'], $lock_token ) ) {
+            delete_option( $option_name );
+        }
+    }
+
+    /**
+     * Get the option name used to lock balance payments for a booking.
+     *
+     * @param int $booking_id Booking ID.
+     * @return string
+     */
+    private function get_balance_payment_lock_option_name( int $booking_id ): string {
+        return 'sodek_gb_balance_lock_' . absint( $booking_id );
     }
 
     /**
@@ -1125,6 +1241,17 @@ class Sodek_GB_REST_Portal {
      */
     private function process_cancellation_refund( $booking ) {
         $booking_id = $booking['id'];
+
+        // Check if already refunded (idempotency check)
+        $existing_refund = get_post_meta( $booking_id, '_sodek_gb_refund_amount', true );
+        if ( ! empty( $existing_refund ) && floatval( $existing_refund ) > 0 ) {
+            return array(
+                'refunded' => true,
+                'amount'   => floatval( $existing_refund ),
+                'reason'   => 'already_refunded',
+            );
+        }
+
         $deposit_amount = (float) get_post_meta( $booking_id, '_sodek_gb_deposit_amount', true );
 
         if ( $deposit_amount <= 0 ) {

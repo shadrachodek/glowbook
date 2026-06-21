@@ -38,21 +38,21 @@ defined( 'ABSPATH' ) || exit;
                             );
                         ?>
                         <tr>
-                            <td><strong><?php echo esc_html( $day_name ); ?></strong></td>
-                            <td>
+                            <td data-colname="<?php esc_attr_e( 'Day', 'glowbook' ); ?>"><strong><?php echo esc_html( $day_name ); ?></strong></td>
+                            <td data-colname="<?php esc_attr_e( 'Open', 'glowbook' ); ?>">
                                 <input type="checkbox"
                                     name="schedule[<?php echo esc_attr( $day_num ); ?>][is_available]"
                                     value="1"
                                     <?php checked( $day_schedule['is_available'], true ); ?>
                                     class="sodek-gb-day-toggle">
                             </td>
-                            <td>
+                            <td data-colname="<?php esc_attr_e( 'Start Time', 'glowbook' ); ?>">
                                 <input type="time"
                                     name="schedule[<?php echo esc_attr( $day_num ); ?>][start_time]"
                                     value="<?php echo esc_attr( substr( $day_schedule['start_time'], 0, 5 ) ); ?>"
                                     class="sodek-gb-time-input">
                             </td>
-                            <td>
+                            <td data-colname="<?php esc_attr_e( 'End Time', 'glowbook' ); ?>">
                                 <input type="time"
                                     name="schedule[<?php echo esc_attr( $day_num ); ?>][end_time]"
                                     value="<?php echo esc_attr( substr( $day_schedule['end_time'], 0, 5 ) ); ?>"
@@ -98,8 +98,8 @@ defined( 'ABSPATH' ) || exit;
                     <tbody>
                         <?php foreach ( $days as $day_num => $day_name ) : ?>
                             <tr>
-                                <td><strong><?php echo esc_html( $day_name ); ?></strong></td>
-                                <td>
+                                <td data-colname="<?php esc_attr_e( 'Day', 'glowbook' ); ?>"><strong><?php echo esc_html( $day_name ); ?></strong></td>
+                                <td data-colname="<?php esc_attr_e( 'Daily Limit', 'glowbook' ); ?>">
                                     <input type="number"
                                         name="daily_limits[<?php echo esc_attr( $day_num ); ?>]"
                                         min="0"
@@ -198,9 +198,9 @@ defined( 'ABSPATH' ) || exit;
                     <tbody>
                         <?php foreach ( $blocked_dates as $date => $reason ) : ?>
                         <tr>
-                            <td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $date ) ) ); ?></td>
-                            <td><?php echo esc_html( $reason ); ?></td>
-                            <td>
+                            <td data-colname="<?php esc_attr_e( 'Date', 'glowbook' ); ?>"><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $date ) ) ); ?></td>
+                            <td data-colname="<?php esc_attr_e( 'Reason', 'glowbook' ); ?>"><?php echo esc_html( $reason ); ?></td>
+                            <td data-colname="<?php esc_attr_e( 'Actions', 'glowbook' ); ?>">
                                 <button type="button" class="button button-small sodek-gb-remove-block" data-date="<?php echo esc_attr( $date ); ?>">
                                     <?php esc_html_e( 'Remove', 'glowbook' ); ?>
                                 </button>

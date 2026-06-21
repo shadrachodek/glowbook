@@ -68,6 +68,49 @@
         return `${baseUrl}${path}${query ? separator + query : ''}`;
     }
 
+    function getBookingGateStorageKey() {
+        return config.bookingGate?.storageKey || 'sodek_gb_booking_gate_accepted';
+    }
+
+    function hasBookingGateMarkup() {
+        return !!($container && $container.find('.sodek-gb-booking-gate').length);
+    }
+
+    function shouldShowBookingGate() {
+        if (!hasBookingGateMarkup()) {
+            return false;
+        }
+
+        try {
+            return window.sessionStorage.getItem(getBookingGateStorageKey()) !== '1';
+        } catch (error) {
+            return true;
+        }
+    }
+
+    function showBookingGate() {
+        const $gate = $container.find('.sodek-gb-booking-gate');
+        if (!$gate.length) {
+            return;
+        }
+
+        $gate.removeAttr('hidden').attr('aria-hidden', 'false').addClass('is-active');
+        $('body').addClass('sodek-gb-booking-gate-open');
+        window.setTimeout(() => {
+            $gate.find('.sodek-gb-booking-gate-accept').trigger('focus');
+        }, 0);
+    }
+
+    function hideBookingGate() {
+        const $gate = $container.find('.sodek-gb-booking-gate');
+        if (!$gate.length) {
+            return;
+        }
+
+        $gate.attr('hidden', 'hidden').attr('aria-hidden', 'true').removeClass('is-active');
+        $('body').removeClass('sodek-gb-booking-gate-open');
+    }
+
     /**
      * Initialize
      */
@@ -85,6 +128,9 @@
         if (preselected && preselected.service_id) {
             handlePreselectedService(preselected.service_id);
             $container.removeClass('loading');
+            if (shouldShowBookingGate()) {
+                showBookingGate();
+            }
             return;
         }
 
@@ -98,6 +144,10 @@
 
         // Remove loading class to reveal the correct step
         $container.removeClass('loading');
+
+        if (shouldShowBookingGate()) {
+            showBookingGate();
+        }
 
         // Listen for browser back/forward
         $(window).on('hashchange', function() {
@@ -232,7 +282,8 @@
             imageFull: $row.find('.sodek-gb-service-thumb').data('lightbox-src') || $row.find('.sodek-gb-service-thumb img').attr('src') || '',
             deposit_type: $row.data('deposit-type') || 'fixed',
             deposit_value: parseFloat($row.data('deposit-value')) || 0,
-            deposit_amount: depositAmount
+            deposit_amount: depositAmount,
+            customer_payment_rule: $row.data('customer-payment-rule') || 'global'
         };
 
         // Clear addons and load service-specific add-ons from the backend
@@ -302,6 +353,15 @@
         // Back navigation
         $container.on('click', '.sodek-gb-back-link', function() {
             goToStep($(this).data('back'));
+        });
+
+        $container.on('click', '.sodek-gb-booking-gate-accept', function() {
+            try {
+                window.sessionStorage.setItem(getBookingGateStorageKey(), '1');
+            } catch (error) {
+                // Ignore storage errors and continue to unblock the booking flow.
+            }
+            hideBookingGate();
         });
 
         // Remove appointment (X button)
@@ -560,7 +620,8 @@
             imageFull: $row.find('.sodek-gb-service-thumb').data('lightbox-src') || $row.find('.sodek-gb-service-thumb img').attr('src') || '',
             deposit_type: $row.data('deposit-type') || 'fixed',
             deposit_value: parseFloat($row.data('deposit-value')) || 0,
-            deposit_amount: depositAmount
+            deposit_amount: depositAmount,
+            customer_payment_rule: $row.data('customer-payment-rule') || 'global'
         };
 
         // Clear addons
@@ -1548,7 +1609,24 @@
     }
 
     function areCustomerPaymentRulesEnabled() {
-        return CUSTOMER_PAYMENT_RULES_ENABLED;
+        if (!CUSTOMER_PAYMENT_RULES_ENABLED) {
+            return false;
+        }
+
+        if (!state.service) {
+            return true;
+        }
+
+        const override = state.service.customer_payment_rule || 'global';
+        if (override === 'enable') {
+            return true;
+        }
+
+        if (override === 'disable') {
+            return false;
+        }
+
+        return true;
     }
 
     function shouldEnforceCustomerPaymentType() {

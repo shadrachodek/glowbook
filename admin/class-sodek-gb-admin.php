@@ -57,6 +57,11 @@ class Sodek_GB_Admin {
         add_filter( 'submenu_file', array( __CLASS__, 'fix_submenu_highlight' ) );
         add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_class' ) );
         add_filter( 'login_redirect', array( __CLASS__, 'login_redirect' ), 10, 3 );
+
+        // Hide WordPress chrome for booking admin users
+        add_action( 'admin_bar_menu', array( __CLASS__, 'cleanup_admin_bar' ), 999 );
+        add_action( 'admin_head', array( __CLASS__, 'hide_admin_chrome' ) );
+        add_filter( 'screen_options_show_screen', array( __CLASS__, 'hide_screen_options' ) );
     }
 
     /**
@@ -251,7 +256,6 @@ class Sodek_GB_Admin {
      * Add admin menu pages.
      */
     public static function add_menu_pages() {
-        $capability         = self::get_capability();
         $booking_capability = self::get_booking_admin_capability();
 
         // Main menu
@@ -289,7 +293,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Services', 'glowbook' ),
             __( 'Services', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'edit.php?post_type=sodek_gb_service'
         );
 
@@ -298,7 +302,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Service Categories', 'glowbook' ),
             __( 'Categories', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'edit-tags.php?taxonomy=sodek_gb_service_cat&post_type=sodek_gb_service'
         );
 
@@ -307,7 +311,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Service Add-ons', 'glowbook' ),
             __( 'Add-ons', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'edit.php?post_type=sodek_gb_addon'
         );
 
@@ -336,7 +340,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Staff', 'glowbook' ),
             __( 'Staff', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'sodek-gb-staff',
             array( __CLASS__, 'render_staff_page' )
         );
@@ -356,7 +360,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Transactions', 'glowbook' ),
             __( 'Transactions', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'sodek-gb-transactions',
             array( __CLASS__, 'render_transactions_page' )
         );
@@ -376,7 +380,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Import / Export', 'glowbook' ),
             __( 'Import / Export', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'sodek-gb-import-export',
             array( __CLASS__, 'render_import_export_page' )
         );
@@ -386,7 +390,7 @@ class Sodek_GB_Admin {
             'sodek-gb-dashboard',
             __( 'Settings', 'glowbook' ),
             __( 'Settings', 'glowbook' ),
-            $capability,
+            $booking_capability,
             'sodek-gb-settings',
             array( __CLASS__, 'render_settings_page' )
         );
@@ -448,6 +452,10 @@ class Sodek_GB_Admin {
             SODEK_GB_VERSION,
             true
         );
+
+        if ( 'glowbook_page_sodek-gb-settings' === $hook || 'sodek-gb-dashboard_page_sodek-gb-settings' === $hook ) {
+            wp_enqueue_media();
+        }
 
         wp_localize_script( 'sodek-gb-admin', 'sodekGbAdmin', array(
             'apiUrl'     => rest_url( 'sodek-gb/v1/' ),
@@ -560,19 +568,39 @@ class Sodek_GB_Admin {
         global $pagenow;
 
         $dashboard_url = admin_url( 'admin.php?page=sodek-gb-dashboard' );
+
+        // All GlowBook admin pages
         $allowed_pages = array(
             'sodek-gb-dashboard',
             'sodek-gb-calendar',
             'sodek-gb-availability',
             'sodek-gb-reports',
             'sodek-gb-customers',
+            'sodek-gb-staff',
+            'sodek-gb-transactions',
+            'sodek-gb-import-export',
+            'sodek-gb-settings',
         );
 
+        // All GlowBook post types
+        $allowed_post_types = array(
+            'sodek_gb_booking',
+            'sodek_gb_service',
+            'sodek_gb_addon',
+        );
+
+        // All GlowBook taxonomies
+        $allowed_taxonomies = array(
+            'sodek_gb_service_cat',
+        );
+
+        // Redirect WordPress dashboard to GlowBook dashboard
         if ( 'index.php' === $pagenow ) {
             wp_safe_redirect( $dashboard_url );
             exit;
         }
 
+        // Check admin.php pages
         if ( 'admin.php' === $pagenow ) {
             $page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
             if ( ! in_array( $page, $allowed_pages, true ) ) {
@@ -581,22 +609,72 @@ class Sodek_GB_Admin {
             }
         }
 
+        // Redirect profile page
         if ( 'profile.php' === $pagenow ) {
             wp_safe_redirect( $dashboard_url );
             exit;
         }
 
+        // Check post type screens (list, edit, new)
         if ( in_array( $pagenow, array( 'edit.php', 'post.php', 'post-new.php' ), true ) ) {
             $post_type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : '';
 
+            // Check GET parameter first (for viewing/editing)
             if ( empty( $post_type ) && ! empty( $_GET['post'] ) ) {
                 $post_type = get_post_type( (int) $_GET['post'] );
             }
 
-            if ( Sodek_GB_Booking::POST_TYPE !== $post_type ) {
+            // Also check POST parameter (for form submissions)
+            if ( empty( $post_type ) && ! empty( $_POST['post_ID'] ) ) {
+                $post_type = get_post_type( (int) $_POST['post_ID'] );
+            }
+
+            if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
                 wp_safe_redirect( $dashboard_url );
                 exit;
             }
+        }
+
+        // Check taxonomy screens
+        if ( 'edit-tags.php' === $pagenow || 'term.php' === $pagenow ) {
+            $taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_key( wp_unslash( $_GET['taxonomy'] ) ) : '';
+
+            if ( ! in_array( $taxonomy, $allowed_taxonomies, true ) ) {
+                wp_safe_redirect( $dashboard_url );
+                exit;
+            }
+        }
+
+        // Allow media library for service images
+        if ( 'upload.php' === $pagenow || 'media-new.php' === $pagenow ) {
+            return; // Allow access
+        }
+
+        // Block all other admin pages
+        $blocked_pages = array(
+            'options-general.php',
+            'options-writing.php',
+            'options-reading.php',
+            'options-discussion.php',
+            'options-media.php',
+            'options-permalink.php',
+            'options-privacy.php',
+            'themes.php',
+            'plugins.php',
+            'users.php',
+            'tools.php',
+            'import.php',
+            'export.php',
+            'site-health.php',
+            'edit-comments.php',
+            'nav-menus.php',
+            'widgets.php',
+            'customize.php',
+        );
+
+        if ( in_array( $pagenow, $blocked_pages, true ) ) {
+            wp_safe_redirect( $dashboard_url );
+            exit;
         }
     }
 
@@ -612,6 +690,123 @@ class Sodek_GB_Admin {
         }
 
         return $classes;
+    }
+
+    /**
+     * Clean up the admin bar for booking admin users.
+     *
+     * @param WP_Admin_Bar $wp_admin_bar Admin bar instance.
+     */
+    public static function cleanup_admin_bar( $wp_admin_bar ) {
+        if ( ! self::is_booking_admin_user() ) {
+            return;
+        }
+
+        // Remove WordPress logo and its submenus
+        $wp_admin_bar->remove_node( 'wp-logo' );
+
+        // Remove comments link
+        $wp_admin_bar->remove_node( 'comments' );
+
+        // Remove new content menu
+        $wp_admin_bar->remove_node( 'new-content' );
+
+        // Remove edit site link (for block themes)
+        $wp_admin_bar->remove_node( 'site-editor' );
+
+        // Remove customize link
+        $wp_admin_bar->remove_node( 'customize' );
+
+        // Remove search
+        $wp_admin_bar->remove_node( 'search' );
+
+        // Remove updates notification
+        $wp_admin_bar->remove_node( 'updates' );
+
+        // Keep: site-name (frontend link), my-account (user menu)
+    }
+
+    /**
+     * Hide additional WordPress chrome elements for booking admin users.
+     */
+    public static function hide_admin_chrome() {
+        if ( ! self::is_booking_admin_user() ) {
+            return;
+        }
+
+        // Remove help tab
+        $screen = get_current_screen();
+        if ( $screen ) {
+            $screen->remove_help_tabs();
+        }
+
+        // Additional CSS to hide remaining chrome
+        ?>
+        <style>
+            /* Hide screen options and help links */
+            body.sodek-gb-booking-admin #screen-meta,
+            body.sodek-gb-booking-admin #screen-meta-links,
+            body.sodek-gb-booking-admin #contextual-help-link-wrap,
+            body.sodek-gb-booking-admin #screen-options-link-wrap {
+                display: none !important;
+            }
+
+            /* Hide WordPress footer */
+            body.sodek-gb-booking-admin #wpfooter {
+                display: none !important;
+            }
+
+            /* Hide admin notices that aren't from GlowBook */
+            body.sodek-gb-booking-admin .notice:not(.sodek-gb-notice),
+            body.sodek-gb-booking-admin .update-nag,
+            body.sodek-gb-booking-admin .updated:not(.sodek-gb-notice) {
+                display: none !important;
+            }
+
+            /* Ensure admin bar is cleaner */
+            body.sodek-gb-booking-admin #wpadminbar #wp-admin-bar-wp-logo,
+            body.sodek-gb-booking-admin #wpadminbar #wp-admin-bar-comments,
+            body.sodek-gb-booking-admin #wpadminbar #wp-admin-bar-new-content,
+            body.sodek-gb-booking-admin #wpadminbar #wp-admin-bar-updates {
+                display: none !important;
+            }
+
+            /* Style the admin bar for branding consistency */
+            body.sodek-gb-booking-admin #wpadminbar {
+                background: #2a1f19;
+            }
+
+            body.sodek-gb-booking-admin #wpadminbar .ab-item,
+            body.sodek-gb-booking-admin #wpadminbar a.ab-item,
+            body.sodek-gb-booking-admin #wpadminbar > #wp-toolbar span.ab-label,
+            body.sodek-gb-booking-admin #wpadminbar > #wp-toolbar span.noticon {
+                color: #f4efe8;
+            }
+
+            body.sodek-gb-booking-admin #wpadminbar .ab-top-menu > li.hover > .ab-item,
+            body.sodek-gb-booking-admin #wpadminbar .ab-top-menu > li > .ab-item:focus,
+            body.sodek-gb-booking-admin #wpadminbar.nojq .quicklinks .ab-top-menu > li > .ab-item:focus,
+            body.sodek-gb-booking-admin #wpadminbar:not(.mobile) .ab-top-menu > li:hover > .ab-item,
+            body.sodek-gb-booking-admin #wpadminbar:not(.mobile) .ab-top-menu > li > .ab-item:focus {
+                background: #4e3729;
+                color: #fff;
+            }
+        </style>
+        <?php
+    }
+
+    /**
+     * Hide screen options for booking admin users.
+     *
+     * @param bool $show_screen Whether to show screen options.
+     * @return bool
+     */
+    public static function hide_screen_options( $show_screen ) {
+        if ( self::is_booking_admin_user() ) {
+            return false;
+        }
+
+        return $show_screen;
     }
 
     /**
@@ -657,6 +852,46 @@ class Sodek_GB_Admin {
     }
 
     /**
+     * Get service post capabilities for booking admin.
+     *
+     * @return array
+     */
+    private static function get_service_post_caps() {
+        return array_fill_keys(
+            array(
+                'edit_post',
+                'edit_posts',
+                'edit_others_posts',
+                'edit_published_posts',
+                'publish_posts',
+                'delete_post',
+                'delete_posts',
+                'delete_others_posts',
+                'delete_published_posts',
+                'read_private_posts',
+            ),
+            true
+        );
+    }
+
+    /**
+     * Get taxonomy capabilities for booking admin.
+     *
+     * @return array
+     */
+    private static function get_taxonomy_caps() {
+        return array_fill_keys(
+            array(
+                'manage_categories',
+                'edit_categories',
+                'delete_categories',
+                'assign_categories',
+            ),
+            true
+        );
+    }
+
+    /**
      * Get the capability map for the booking admin role.
      *
      * @return array
@@ -666,8 +901,14 @@ class Sodek_GB_Admin {
             array(
                 'read'                            => true,
                 self::BOOKING_ADMIN_ACCESS_CAP    => true,
+                // Media library access for service images
+                'upload_files'                    => true,
+                // Settings page access
+                'manage_glowbook_settings'        => true,
             ),
-            self::get_booking_post_caps()
+            self::get_booking_post_caps(),
+            self::get_service_post_caps(),
+            self::get_taxonomy_caps()
         );
     }
 
@@ -756,6 +997,46 @@ class Sodek_GB_Admin {
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_textarea_field',
             'default'           => '',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_enabled', array(
+            'type'              => 'integer',
+            'sanitize_callback' => 'absint',
+            'default'           => 0,
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_content_type', array(
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => 'text',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_text', array(
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'default'           => '',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_image_url', array(
+            'type'              => 'string',
+            'sanitize_callback' => 'esc_url_raw',
+            'default'           => '',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_image_id', array(
+            'type'              => 'integer',
+            'sanitize_callback' => 'absint',
+            'default'           => 0,
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_accept_label', array(
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default'           => 'I Accept',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_button_bg', array(
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'default'           => '#1f1f1f',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_booking_gate_button_text', array(
+            'type'              => 'string',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'default'           => '#ffffff',
         ) );
 
         // Square Settings
@@ -1827,6 +2108,7 @@ class Sodek_GB_Admin {
                 'enable_staff_selection' => ! empty( $service['enable_staff_selection'] ),
                 'show_image_override'    => $service['show_image_override'] ?? 'global',
                 'show_deposit_override'  => $service['show_deposit_override'] ?? 'global',
+                'customer_payment_rule_override' => $service['customer_payment_rule_override'] ?? 'global',
             );
         }
 
@@ -2278,6 +2560,7 @@ class Sodek_GB_Admin {
             update_post_meta( $post_id, '_sodek_gb_enable_staff_selection', ! empty( $item['enable_staff_selection'] ) ? 'yes' : 'no' );
             update_post_meta( $post_id, '_sodek_gb_show_image_override', sanitize_key( $item['show_image_override'] ?? 'global' ) );
             update_post_meta( $post_id, '_sodek_gb_show_deposit_override', sanitize_key( $item['show_deposit_override'] ?? 'global' ) );
+            update_post_meta( $post_id, '_sodek_gb_customer_payment_rule_override', sanitize_key( $item['customer_payment_rule_override'] ?? 'global' ) );
             update_post_meta( $post_id, self::IMPORT_SOURCE_META_KEY, $source_key );
 
             $term_ids = array();

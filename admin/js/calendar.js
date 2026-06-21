@@ -188,9 +188,11 @@
         var completeBtn = document.getElementById('sodek-gb-modal-complete');
         var cancelBtn = document.getElementById('sodek-gb-modal-cancel');
 
-        confirmBtn.style.display = props.status === 'pending' ? '' : 'none';
+        // Show confirm for pending or expired (in case payment came through late)
+        confirmBtn.style.display = (props.status === 'pending' || props.status === 'expired') ? '' : 'none';
         completeBtn.style.display = props.status === 'confirmed' ? '' : 'none';
-        cancelBtn.style.display = (props.status === 'pending' || props.status === 'confirmed') ? '' : 'none';
+        // Show cancel for pending, confirmed, or expired
+        cancelBtn.style.display = (props.status === 'pending' || props.status === 'confirmed' || props.status === 'expired') ? '' : 'none';
 
         // Show modal
         document.getElementById('sodek-gb-booking-modal').style.display = 'flex';

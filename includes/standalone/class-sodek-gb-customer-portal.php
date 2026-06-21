@@ -652,6 +652,17 @@ class Sodek_GB_Customer_Portal {
             wp_send_json_error( array( 'message' => __( 'Booking not found.', 'glowbook' ) ) );
         }
 
+        // Check if already cancelled (idempotency)
+        if ( 'cancelled' === $booking['status'] ) {
+            wp_send_json_success( array(
+                'message'     => __( 'This appointment has already been cancelled.', 'glowbook' ),
+                'refund_info' => array(
+                    'type'          => 'already_cancelled',
+                    'refund_amount' => 0,
+                ),
+            ) );
+        }
+
         if ( ! self::can_cancel( $booking ) ) {
             wp_send_json_error( array( 'message' => __( 'This booking cannot be cancelled.', 'glowbook' ) ) );
         }
@@ -659,17 +670,26 @@ class Sodek_GB_Customer_Portal {
         // Get cancellation info
         $cancellation_info = self::get_cancellation_info( $booking );
 
-        // Update booking status
-        Sodek_GB_Booking::update_status( $booking_id, 'cancelled' );
+        // Update booking status with idempotent check
+        $cancelled = Sodek_GB_Booking::cancel_booking_idempotent( $booking_id );
 
-        // Record cancellation details
+        // If another request already cancelled, return success without duplicate notifications
+        if ( ! $cancelled ) {
+            wp_send_json_success( array(
+                'message'     => __( 'Your appointment has been cancelled.', 'glowbook' ),
+                'refund_info' => $cancellation_info,
+            ) );
+            return;
+        }
+
+        // Record cancellation details (only if we actually cancelled it)
         update_post_meta( $booking_id, '_sodek_gb_cancelled_at', current_time( 'mysql' ) );
         update_post_meta( $booking_id, '_sodek_gb_cancelled_by', 'customer' );
         update_post_meta( $booking_id, '_sodek_gb_cancellation_type', $cancellation_info['type'] );
         update_post_meta( $booking_id, '_sodek_gb_refund_type', $cancellation_info['refund_type'] );
         update_post_meta( $booking_id, '_sodek_gb_refund_amount', $cancellation_info['refund_amount'] );
 
-        // Notify waitlist
+        // Notify waitlist (only if we actually cancelled it)
         $staff_id = $booking['staff_id'];
         $service_id = $booking['service']['id'];
         Sodek_GB_Waitlist::notify_for_slot( $booking['booking_date'], $booking['start_time'], $service_id, $staff_id );

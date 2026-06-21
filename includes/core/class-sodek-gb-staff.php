@@ -364,4 +364,75 @@ class Sodek_GB_Staff {
 
         return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) );
     }
+
+    /**
+     * Get booking counts for multiple staff members in a single query.
+     *
+     * @param array  $user_ids Array of user IDs.
+     * @param string $period   Period: 'today', 'week', 'month', 'all'.
+     * @return array Associative array of user_id => count.
+     */
+    public static function get_bookings_count_batch( $user_ids, $period = 'all' ) {
+        global $wpdb;
+
+        if ( empty( $user_ids ) ) {
+            return array();
+        }
+
+        // Initialize all counts to 0
+        $counts = array_fill_keys( array_map( 'intval', $user_ids ), 0 );
+
+        $placeholders = implode( ',', array_fill( 0, count( $user_ids ), '%d' ) );
+        $params = array_map( 'intval', $user_ids );
+
+        $date_condition = '';
+        if ( 'today' === $period ) {
+            $date_condition = $wpdb->prepare(
+                " AND pm2.meta_key = '_sodek_gb_booking_date' AND pm2.meta_value = %s",
+                current_time( 'Y-m-d' )
+            );
+        } elseif ( 'week' === $period ) {
+            $week_start = gmdate( 'Y-m-d', strtotime( 'monday this week' ) );
+            $week_end = gmdate( 'Y-m-d', strtotime( 'sunday this week' ) );
+            $date_condition = $wpdb->prepare(
+                " AND pm2.meta_key = '_sodek_gb_booking_date' AND pm2.meta_value BETWEEN %s AND %s",
+                $week_start,
+                $week_end
+            );
+        } elseif ( 'month' === $period ) {
+            $month_start = gmdate( 'Y-m-01' );
+            $month_end = gmdate( 'Y-m-t' );
+            $date_condition = $wpdb->prepare(
+                " AND pm2.meta_key = '_sodek_gb_booking_date' AND pm2.meta_value BETWEEN %s AND %s",
+                $month_start,
+                $month_end
+            );
+        }
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is safe
+        $sql = $wpdb->prepare(
+            "SELECT CAST(pm1.meta_value AS UNSIGNED) as staff_id, COUNT(DISTINCT p.ID) as booking_count
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id
+            INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id
+            WHERE p.post_type = 'sodek_gb_booking'
+            AND p.post_status = 'publish'
+            AND pm1.meta_key = '_sodek_gb_staff_id'
+            AND pm1.meta_value IN ($placeholders)
+            $date_condition
+            GROUP BY pm1.meta_value",
+            ...$params
+        );
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Already prepared above
+        $results = $wpdb->get_results( $sql );
+
+        if ( $results ) {
+            foreach ( $results as $row ) {
+                $counts[ (int) $row->staff_id ] = (int) $row->booking_count;
+            }
+        }
+
+        return $counts;
+    }
 }

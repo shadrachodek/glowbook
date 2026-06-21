@@ -332,6 +332,7 @@ class Sodek_GB_Service {
         $enable_staff_selection = get_post_meta( $post->ID, '_sodek_gb_enable_staff_selection', true );
         $show_image_override    = get_post_meta( $post->ID, '_sodek_gb_show_image_override', true ) ?: 'global';
         $show_deposit_override  = get_post_meta( $post->ID, '_sodek_gb_show_deposit_override', true ) ?: 'global';
+        $customer_payment_rule_override = get_post_meta( $post->ID, '_sodek_gb_customer_payment_rule_override', true ) ?: 'global';
         ?>
         <p>
             <label>
@@ -368,6 +369,15 @@ class Sodek_GB_Service {
                 <option value="global" <?php selected( $show_deposit_override, 'global' ); ?>><?php esc_html_e( 'Use global setting', 'glowbook' ); ?></option>
                 <option value="show" <?php selected( $show_deposit_override, 'show' ); ?>><?php esc_html_e( 'Show', 'glowbook' ); ?></option>
                 <option value="hide" <?php selected( $show_deposit_override, 'hide' ); ?>><?php esc_html_e( 'Hide', 'glowbook' ); ?></option>
+            </select>
+        </p>
+
+        <p>
+            <label for="sodek_gb_customer_payment_rule_override"><?php esc_html_e( 'Customer Payment Rules', 'glowbook' ); ?></label><br>
+            <select name="sodek_gb_customer_payment_rule_override" id="sodek_gb_customer_payment_rule_override" style="width: 100%;">
+                <option value="global" <?php selected( $customer_payment_rule_override, 'global' ); ?>><?php esc_html_e( 'Use global setting', 'glowbook' ); ?></option>
+                <option value="enable" <?php selected( $customer_payment_rule_override, 'enable' ); ?>><?php esc_html_e( 'Use returning/new customer amounts', 'glowbook' ); ?></option>
+                <option value="disable" <?php selected( $customer_payment_rule_override, 'disable' ); ?>><?php esc_html_e( 'Disable and use normal deposit', 'glowbook' ); ?></option>
             </select>
         </p>
         <p class="description"><?php esc_html_e( 'Override global display settings for this service.', 'glowbook' ); ?></p>
@@ -565,6 +575,12 @@ class Sodek_GB_Service {
                 update_post_meta( $post_id, '_sodek_gb_show_deposit_override', $show_deposit );
             }
         }
+        if ( isset( $_POST['sodek_gb_customer_payment_rule_override'] ) ) {
+            $customer_payment_rule_override = sanitize_text_field( $_POST['sodek_gb_customer_payment_rule_override'] );
+            if ( in_array( $customer_payment_rule_override, array( 'global', 'enable', 'disable' ), true ) ) {
+                update_post_meta( $post_id, '_sodek_gb_customer_payment_rule_override', $customer_payment_rule_override );
+            }
+        }
     }
 
     /**
@@ -583,6 +599,26 @@ class Sodek_GB_Service {
         }
 
         return min( $deposit_value, $price );
+    }
+
+    /**
+     * Determine whether customer payment rules should apply to a service.
+     *
+     * @param int $service_id Service ID.
+     * @return bool
+     */
+    public static function should_use_customer_payment_rules( $service_id ) {
+        $override = get_post_meta( $service_id, '_sodek_gb_customer_payment_rule_override', true ) ?: 'global';
+
+        if ( 'enable' === $override ) {
+            return true;
+        }
+
+        if ( 'disable' === $override ) {
+            return false;
+        }
+
+        return (bool) get_option( 'sodek_gb_customer_payment_rules_enabled', 1 );
     }
 
     /**
@@ -612,6 +648,10 @@ class Sodek_GB_Service {
         }
 
         $max_daily = get_post_meta( $post->ID, '_sodek_gb_max_daily_bookings', true );
+        $show_on_frontend = get_post_meta( $post->ID, '_sodek_gb_show_on_frontend', true );
+        if ( '' === $show_on_frontend ) {
+            $show_on_frontend = 'yes';
+        }
 
         return array(
             'id'                 => $post->ID,
@@ -624,12 +664,16 @@ class Sodek_GB_Service {
             'deposit_type'       => get_post_meta( $post->ID, '_sodek_gb_deposit_type', true ) ?: 'fixed',
             'deposit_value'      => (float) get_post_meta( $post->ID, '_sodek_gb_deposit_value', true ),
             'deposit_amount'     => self::calculate_deposit( $post->ID ),
+            'featured_image'         => get_the_post_thumbnail_url( $post->ID, 'full' ),
             'thumbnail'              => get_the_post_thumbnail_url( $post->ID, 'medium' ),
             'thumbnail_full'         => get_the_post_thumbnail_url( $post->ID, 'large' ),
             'categories'             => $categories,
             'max_daily_bookings'     => $max_daily !== '' ? (int) $max_daily : 0,
+            'show_on_frontend'       => 'yes' === $show_on_frontend,
+            'enable_staff_selection' => 'yes' === get_post_meta( $post->ID, '_sodek_gb_enable_staff_selection', true ),
             'show_image_override'    => get_post_meta( $post->ID, '_sodek_gb_show_image_override', true ) ?: 'global',
             'show_deposit_override'  => get_post_meta( $post->ID, '_sodek_gb_show_deposit_override', true ) ?: 'global',
+            'customer_payment_rule_override' => get_post_meta( $post->ID, '_sodek_gb_customer_payment_rule_override', true ) ?: 'global',
         );
     }
 

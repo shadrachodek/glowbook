@@ -585,14 +585,25 @@ class Sodek_GB_Staff_Availability {
      * @return int Staff user ID.
      */
     private static function get_least_busy_staff( $staff_list, $date ) {
-        $least_bookings = PHP_INT_MAX;
+        if ( empty( $staff_list ) ) {
+            return 0;
+        }
+
         $selected_staff = $staff_list[0]['id'];
 
-        foreach ( $staff_list as $staff ) {
-            $bookings_count = Sodek_GB_Staff::get_bookings_count( $staff['id'], 'today' );
+        // Get all staff IDs for batch query
+        $staff_ids = array_column( $staff_list, 'id' );
 
-            if ( $bookings_count < $least_bookings ) {
-                $least_bookings = $bookings_count;
+        // Single query to get booking counts for all staff members
+        $booking_counts = Sodek_GB_Staff::get_bookings_count_batch( $staff_ids, 'today' );
+
+        // Find the staff with the least bookings
+        $least_bookings = PHP_INT_MAX;
+        foreach ( $staff_list as $staff ) {
+            $count = $booking_counts[ $staff['id'] ] ?? 0;
+
+            if ( $count < $least_bookings ) {
+                $least_bookings = $count;
                 $selected_staff = $staff['id'];
             }
         }

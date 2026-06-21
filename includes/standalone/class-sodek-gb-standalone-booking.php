@@ -286,6 +286,10 @@ class Sodek_GB_Standalone_Booking {
             'enforceCustomerPaymentType' => (bool) get_option( 'sodek_gb_enforce_customer_payment_type', 0 ),
             'returningCustomerPaymentAmount' => (float) get_option( 'sodek_gb_returning_customer_payment_amount', 50 ),
             'newCustomerPaymentAmount' => (float) get_option( 'sodek_gb_new_customer_payment_amount', 150 ),
+            'bookingGate'     => array(
+                'enabled'    => (bool) get_option( 'sodek_gb_booking_gate_enabled', 0 ),
+                'storageKey' => 'sodek_gb_booking_gate_accepted',
+            ),
             'i18n'            => array(
                 'selectService'   => __( 'Select a Service', 'glowbook' ),
                 'selectStaff'     => __( 'Select a Stylist', 'glowbook' ),

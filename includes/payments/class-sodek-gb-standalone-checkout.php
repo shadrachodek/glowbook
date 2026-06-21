@@ -46,6 +46,24 @@ class Sodek_GB_Standalone_Checkout {
     }
 
     /**
+     * Check whether customer-specific booking payment rules apply to a service.
+     *
+     * @param int $service_id Service ID.
+     * @return bool
+     */
+    private static function customer_payment_rules_apply_to_service( int $service_id ): bool {
+        if ( ! self::customer_payment_rules_enabled() ) {
+            return false;
+        }
+
+        if ( class_exists( 'Sodek_GB_Service' ) && method_exists( 'Sodek_GB_Service', 'should_use_customer_payment_rules' ) ) {
+            return Sodek_GB_Service::should_use_customer_payment_rules( $service_id );
+        }
+
+        return true;
+    }
+
+    /**
      * Check whether customer type should be enforced from booking history.
      *
      * @return bool
@@ -99,7 +117,7 @@ class Sodek_GB_Standalone_Checkout {
      * @return float
      */
     private static function get_required_booking_payment_amount( int $service_id, float $total_price, bool $is_returning_customer ): float {
-        if ( ! self::customer_payment_rules_enabled() ) {
+        if ( ! self::customer_payment_rules_apply_to_service( $service_id ) ) {
             return self::get_service_minimum_payment_amount( $service_id, $total_price );
         }
 
@@ -340,8 +358,9 @@ class Sodek_GB_Standalone_Checkout {
 
         $total_price = $base_price + $addons_price;
 
+        $service_uses_customer_payment_rules = self::customer_payment_rules_apply_to_service( $service_id );
         $selected_customer_type = isset( $_POST['customer_type'] ) ? sanitize_key( wp_unslash( $_POST['customer_type'] ) ) : 'new';
-        $is_returning_customer  = self::customer_payment_rules_enabled() && ! self::enforce_customer_payment_type()
+        $is_returning_customer  = $service_uses_customer_payment_rules && ! self::enforce_customer_payment_type()
             ? ( 'returning' === $selected_customer_type )
             : Sodek_GB_Customer::is_returning_customer( $customer_email, $customer_phone );
         $required_deposit = self::get_required_booking_payment_amount( $service_id, $total_price, $is_returning_customer );
@@ -353,7 +372,7 @@ class Sodek_GB_Standalone_Checkout {
         if ( $custom_deposit < $required_deposit ) {
             $custom_deposit = $required_deposit;
         }
-        if ( ( ! self::customer_payment_rules_enabled() || $is_returning_customer ) && $custom_deposit > $total_price ) {
+        if ( ( ! $service_uses_customer_payment_rules || $is_returning_customer ) && $custom_deposit > $total_price ) {
             $custom_deposit = $total_price;
         }
 
@@ -387,7 +406,27 @@ class Sodek_GB_Standalone_Checkout {
         }
 
         // Create transaction record first (pending status)
+        $transaction_uuid = wp_generate_uuid4();
+        $payment_idempotency_key = 'gb_pay_' . substr(
+            hash(
+                'sha256',
+                wp_json_encode(
+                    array(
+                        'service_id'   => $service_id,
+                        'booking_date' => $booking_date,
+                        'start_time'   => $start_time,
+                        'email'        => strtolower( $customer_email ),
+                        'phone'        => preg_replace( '/\D+/', '', $customer_phone ),
+                        'amount'       => number_format( $custom_deposit, 2, '.', '' ),
+                        'addons'       => array_values( array_map( 'absint', $addon_ids ) ),
+                    )
+                )
+            ),
+            0,
+            38
+        );
         $transaction_id = Sodek_GB_Transaction::create( array(
+            'transaction_id'   => $transaction_uuid,
             'gateway'          => 'square',
             'environment'      => $environment,
             'amount'           => $custom_deposit,
@@ -443,6 +482,7 @@ class Sodek_GB_Standalone_Checkout {
             'verification_token' => $verification_token,
             'customer_email'     => $customer_email,
             'reference_id'       => $reference_id,
+            'idempotency_key'    => $payment_idempotency_key,
             'metadata'           => $booking_metadata,
             'note'               => sprintf(
                 /* translators: 1: service name, 2: booking date, 3: booking time, 4: customer name */

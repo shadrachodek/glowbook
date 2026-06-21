@@ -70,102 +70,171 @@ class Sodek_GB_WC_Checkout {
             return;
         }
 
-        $booking_ids = array();
-
-        foreach ( $order->get_items() as $item_id => $item ) {
-            $service_id = $item->get_meta( '_sodek_gb_service_id' );
-
-            if ( ! $service_id ) {
-                continue;
-            }
-
-            $booking_date = $item->get_meta( '_sodek_gb_booking_date' );
-            $booking_time = $item->get_meta( '_sodek_gb_booking_time' );
-
-            if ( ! $booking_date || ! $booking_time ) {
-                continue;
-            }
-
-            // Get add-on data
-            $addon_ids       = $item->get_meta( '_sodek_gb_addon_ids' );
-            $addons_duration = (int) $item->get_meta( '_sodek_gb_addons_duration' );
-            $addons_price    = (float) $item->get_meta( '_sodek_gb_addons_price' );
-
-            // Calculate end time including add-ons
-            $service = Sodek_GB_Service::get_service( $service_id );
-            $total_duration = $service['duration'] + $addons_duration;
-            $start = strtotime( $booking_time );
-            $end_time = gmdate( 'H:i', $start + ( $total_duration * 60 ) );
-
-            // Get notes
-            $booking_notes = $item->get_meta( '_sodek_gb_booking_notes' );
-
-            // Get full pricing from item
-            $full_price     = (float) $item->get_meta( '_sodek_gb_full_price' );
-            $deposit_amount = (float) $item->get_meta( '_sodek_gb_deposit_amount' );
-
-            // Create the booking
-            $booking_id = Sodek_GB_Booking::create_booking( array(
-                'service_id'     => $service_id,
-                'booking_date'   => $booking_date,
-                'start_time'     => $booking_time,
-                'end_time'       => $end_time,
-                'customer_name'  => $order->get_formatted_billing_full_name(),
-                'customer_email' => $order->get_billing_email(),
-                'customer_phone' => $order->get_billing_phone(),
-                'customer_id'    => $order->get_customer_id(),
-                'order_id'       => $order_id,
-                'status'         => Sodek_GB_Booking::STATUS_CONFIRMED,
-                'notes'          => $booking_notes,
-            ) );
-
-            if ( ! is_wp_error( $booking_id ) ) {
-                $booking_ids[] = $booking_id;
-
-                // Mark deposit as paid
-                update_post_meta( $booking_id, '_sodek_gb_deposit_paid', '1' );
-
-                // Save full pricing (overriding service defaults if add-ons were added)
-                if ( $full_price > 0 ) {
-                    update_post_meta( $booking_id, '_sodek_gb_total_price', $full_price );
-                }
-                if ( $deposit_amount > 0 ) {
-                    update_post_meta( $booking_id, '_sodek_gb_deposit_amount', $deposit_amount );
-                }
-
-                // Save add-ons to booking
-                if ( ! empty( $addon_ids ) && is_array( $addon_ids ) ) {
-                    Sodek_GB_Addon::save_booking_addons( $booking_id, $addon_ids );
-                }
-
-                // Save notes to booking
-                if ( $booking_notes ) {
-                    update_post_meta( $booking_id, '_sodek_gb_customer_notes', $booking_notes );
-                }
-
-                // Store booking ID on order item
-                wc_update_order_item_meta( $item_id, '_sodek_gb_booking_id', $booking_id );
-
-                // Trigger booking confirmed action
-                do_action( 'sodek_gb_booking_confirmed', $booking_id, $order_id );
-            }
+        // Acquire lock to prevent race condition from concurrent webhooks
+        $lock_token = wp_generate_uuid4();
+        if ( ! self::acquire_booking_creation_lock( $order_id, $lock_token ) ) {
+            return; // Another process is creating bookings for this order
         }
 
-        if ( ! empty( $booking_ids ) ) {
-            $order->update_meta_data( '_sodek_gb_bookings_created', true );
-            $order->update_meta_data( '_sodek_gb_booking_ids', $booking_ids );
-            $order->save();
+        try {
+            // Re-check after acquiring lock (another process may have completed)
+            $order = wc_get_order( $order_id ); // Refresh order data
+            if ( $order->get_meta( '_sodek_gb_bookings_created' ) ) {
+                return;
+            }
 
-            // Add order note
-            $order->add_order_note(
-                sprintf(
-                    /* translators: %s: booking IDs */
-                    __( 'Booking(s) created: %s', 'glowbook' ),
-                    implode( ', ', array_map( function( $id ) {
-                        return '#' . $id;
-                    }, $booking_ids ) )
-                )
-            );
+            $booking_ids = array();
+
+            foreach ( $order->get_items() as $item_id => $item ) {
+                $service_id = $item->get_meta( '_sodek_gb_service_id' );
+
+                if ( ! $service_id ) {
+                    continue;
+                }
+
+                $booking_date = $item->get_meta( '_sodek_gb_booking_date' );
+                $booking_time = $item->get_meta( '_sodek_gb_booking_time' );
+
+                if ( ! $booking_date || ! $booking_time ) {
+                    continue;
+                }
+
+                // Get add-on data
+                $addon_ids       = $item->get_meta( '_sodek_gb_addon_ids' );
+                $addons_duration = (int) $item->get_meta( '_sodek_gb_addons_duration' );
+                $addons_price    = (float) $item->get_meta( '_sodek_gb_addons_price' );
+
+                // Calculate end time including add-ons
+                $service = Sodek_GB_Service::get_service( $service_id );
+                $total_duration = $service['duration'] + $addons_duration;
+                $start = strtotime( $booking_time );
+                $end_time = gmdate( 'H:i', $start + ( $total_duration * 60 ) );
+
+                // Get notes
+                $booking_notes = $item->get_meta( '_sodek_gb_booking_notes' );
+
+                // Get full pricing from item
+                $full_price     = (float) $item->get_meta( '_sodek_gb_full_price' );
+                $deposit_amount = (float) $item->get_meta( '_sodek_gb_deposit_amount' );
+
+                // Create the booking
+                $booking_id = Sodek_GB_Booking::create_booking( array(
+                    'service_id'     => $service_id,
+                    'booking_date'   => $booking_date,
+                    'start_time'     => $booking_time,
+                    'end_time'       => $end_time,
+                    'customer_name'  => $order->get_formatted_billing_full_name(),
+                    'customer_email' => $order->get_billing_email(),
+                    'customer_phone' => $order->get_billing_phone(),
+                    'customer_id'    => $order->get_customer_id(),
+                    'order_id'       => $order_id,
+                    'status'         => Sodek_GB_Booking::STATUS_CONFIRMED,
+                    'notes'          => $booking_notes,
+                ) );
+
+                if ( ! is_wp_error( $booking_id ) ) {
+                    $booking_ids[] = $booking_id;
+
+                    // Mark deposit as paid
+                    update_post_meta( $booking_id, '_sodek_gb_deposit_paid', '1' );
+
+                    // Save full pricing (overriding service defaults if add-ons were added)
+                    if ( $full_price > 0 ) {
+                        update_post_meta( $booking_id, '_sodek_gb_total_price', $full_price );
+                    }
+                    if ( $deposit_amount > 0 ) {
+                        update_post_meta( $booking_id, '_sodek_gb_deposit_amount', $deposit_amount );
+                    }
+
+                    // Save add-ons to booking
+                    if ( ! empty( $addon_ids ) && is_array( $addon_ids ) ) {
+                        Sodek_GB_Addon::save_booking_addons( $booking_id, $addon_ids );
+                    }
+
+                    // Save notes to booking
+                    if ( $booking_notes ) {
+                        update_post_meta( $booking_id, '_sodek_gb_customer_notes', $booking_notes );
+                    }
+
+                    // Store booking ID on order item
+                    wc_update_order_item_meta( $item_id, '_sodek_gb_booking_id', $booking_id );
+
+                    // Trigger booking confirmed action
+                    do_action( 'sodek_gb_booking_confirmed', $booking_id, $order_id );
+                }
+            }
+
+            if ( ! empty( $booking_ids ) ) {
+                $order->update_meta_data( '_sodek_gb_bookings_created', true );
+                $order->update_meta_data( '_sodek_gb_booking_ids', $booking_ids );
+                $order->save();
+
+                // Add order note
+                $order->add_order_note(
+                    sprintf(
+                        /* translators: %s: booking IDs */
+                        __( 'Booking(s) created: %s', 'glowbook' ),
+                        implode( ', ', array_map( function( $id ) {
+                            return '#' . $id;
+                        }, $booking_ids ) )
+                    )
+                );
+            }
+        } finally {
+            self::release_booking_creation_lock( $order_id, $lock_token );
+        }
+    }
+
+    /**
+     * Acquire a lock to prevent concurrent booking creation for the same order.
+     *
+     * @param int    $order_id   Order ID.
+     * @param string $lock_token Unique lock token.
+     * @return bool True if lock acquired, false if already locked.
+     */
+    private static function acquire_booking_creation_lock( int $order_id, string $lock_token ): bool {
+        $option_name = 'sodek_gb_order_booking_lock_' . absint( $order_id );
+        $expires_at  = time() + MINUTE_IN_SECONDS * 5; // 5 minute expiration
+        $payload     = wp_json_encode(
+            array(
+                'token'   => $lock_token,
+                'expires' => $expires_at,
+            )
+        );
+
+        // Try to add the option (atomic operation - fails if exists)
+        if ( add_option( $option_name, $payload, '', false ) ) {
+            return true;
+        }
+
+        // Check if existing lock is expired
+        $existing = get_option( $option_name );
+        $decoded  = json_decode( (string) $existing, true );
+        $expired  = empty( $decoded['expires'] ) || (int) $decoded['expires'] < time();
+
+        if ( $expired ) {
+            delete_option( $option_name );
+            return add_option( $option_name, $payload, '', false );
+        }
+
+        return false;
+    }
+
+    /**
+     * Release the booking creation lock for an order.
+     *
+     * @param int    $order_id   Order ID.
+     * @param string $lock_token Lock token.
+     * @return void
+     */
+    private static function release_booking_creation_lock( int $order_id, string $lock_token ): void {
+        $option_name = 'sodek_gb_order_booking_lock_' . absint( $order_id );
+        $existing    = get_option( $option_name );
+        $decoded     = json_decode( (string) $existing, true );
+
+        // Only release if we own the lock
+        if ( is_array( $decoded ) && isset( $decoded['token'] ) && hash_equals( (string) $decoded['token'], $lock_token ) ) {
+            delete_option( $option_name );
         }
     }
 
@@ -187,11 +256,42 @@ class Sodek_GB_WC_Checkout {
             return;
         }
 
+        $cancelled_ids = array();
+
         foreach ( $booking_ids as $booking_id ) {
-            Sodek_GB_Booking::update_status( $booking_id, Sodek_GB_Booking::STATUS_CANCELLED );
+            // Use idempotent cancel to prevent duplicate waitlist notifications
+            // if order status changes multiple times (e.g., cancelled -> refunded)
+            $was_cancelled = Sodek_GB_Booking::cancel_booking_idempotent( $booking_id );
+            if ( $was_cancelled ) {
+                $cancelled_ids[] = $booking_id;
+
+                // Record cancellation metadata
+                update_post_meta( $booking_id, '_sodek_gb_cancelled_at', current_time( 'mysql' ) );
+                update_post_meta( $booking_id, '_sodek_gb_cancelled_by', 'order' );
+
+                // Get booking for waitlist notification
+                $booking = Sodek_GB_Booking::get_booking( $booking_id );
+                if ( $booking ) {
+                    $staff_id   = $booking['staff_id'];
+                    $service_id = $booking['service']['id'] ?? $booking['service_id'];
+                    Sodek_GB_Waitlist::notify_for_slot( $booking['booking_date'], $booking['start_time'], $service_id, $staff_id );
+
+                    do_action( 'sodek_gb_booking_cancelled', $booking_id, $booking, 'order' );
+                }
+            }
         }
 
-        $order->add_order_note( __( 'Associated booking(s) cancelled.', 'glowbook' ) );
+        if ( ! empty( $cancelled_ids ) ) {
+            $order->add_order_note(
+                sprintf(
+                    /* translators: %s: booking IDs */
+                    __( 'Associated booking(s) cancelled: %s', 'glowbook' ),
+                    implode( ', ', array_map( function( $id ) {
+                        return '#' . $id;
+                    }, $cancelled_ids ) )
+                )
+            );
+        }
     }
 
     /**

@@ -656,29 +656,38 @@ body.sodek-gb-booking-admin .wp-heading-inline {
     }
 
     body.sodek-gb-booking-admin .wp-list-table thead,
-    body.sodek-gb-booking-admin .wp-list-table tfoot {
+    body.sodek-gb-booking-admin .wp-list-table tfoot,
+    body.sodek-gb-booking-admin .widefat thead,
+    body.sodek-gb-booking-admin .widefat tfoot {
         display: none;
     }
 
     body.sodek-gb-booking-admin .wp-list-table,
     body.sodek-gb-booking-admin .wp-list-table tbody,
     body.sodek-gb-booking-admin .wp-list-table tr,
-    body.sodek-gb-booking-admin .wp-list-table td {
+    body.sodek-gb-booking-admin .wp-list-table td,
+    body.sodek-gb-booking-admin .widefat,
+    body.sodek-gb-booking-admin .widefat tbody,
+    body.sodek-gb-booking-admin .widefat tr,
+    body.sodek-gb-booking-admin .widefat td {
         display: block;
         width: 100%;
     }
 
-    body.sodek-gb-booking-admin .wp-list-table tr {
+    body.sodek-gb-booking-admin .wp-list-table tr,
+    body.sodek-gb-booking-admin .widefat tr {
         padding: 12px;
         border-bottom: 1px solid #f0e8dd;
     }
 
-    body.sodek-gb-booking-admin .wp-list-table td {
+    body.sodek-gb-booking-admin .wp-list-table td,
+    body.sodek-gb-booking-admin .widefat td {
         padding: 6px 0;
         border: 0;
     }
 
-    body.sodek-gb-booking-admin .wp-list-table td::before {
+    body.sodek-gb-booking-admin .wp-list-table td::before,
+    body.sodek-gb-booking-admin .widefat td::before {
         content: attr(data-colname);
         display: block;
         margin-bottom: 4px;

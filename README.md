@@ -2,7 +2,7 @@
 
 Premium standalone booking system for beauty salons, hair braiders, and service businesses. GlowBook helps salons manage services, add-ons, availability, customer profiles, deposits/retainers, Square payments, confirmations, and customer self-service from one polished WordPress plugin.
 
-![Version](https://img.shields.io/badge/version-2.3.18-gold)
+![Version](https://img.shields.io/badge/version-2.3.20-gold)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-blue)
 ![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-blue)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple)
@@ -102,6 +102,22 @@ Availability includes:
 ## Notifications
 
 GlowBook includes booking confirmation, cancellation, reschedule, reminder, and admin notification support. Email delivery depends on the WordPress mail environment, so production sites should use a reliable SMTP/mail provider.
+
+## Version 2.3.20
+
+This release improves payment-rule flexibility and booking-entry reliability:
+
+- Added a per-service override so consultations and special-case services can bypass returning/new customer payment rules and use their normal deposit settings.
+- Improved booking-policy popup reliability, including better support for media-library-backed popup images.
+- Fixed service export data so frontend visibility and staff-selection settings are preserved across import/export.
+
+## Version 2.3.19
+
+This release finishes the latest production hardening and booking-entry polish:
+
+- Hardened Square payment retry safety for standalone booking checkout and portal balance payments.
+- Added a configurable booking-policy acceptance popup shown before customers can begin booking.
+- Improved standalone production polish around payment safety, popup flow, and release cleanup.
 
 ## Version 2.3.18
 

@@ -880,9 +880,10 @@ class Sodek_GB_REST_API {
             return new WP_Error( 'invalid_time', __( 'Invalid time format.', 'glowbook' ), array( 'status' => 400 ) );
         }
 
-        // Check if the slot is available
+        // Check if the slot is available (including addon duration)
         $service_id = $booking['service']['id'] ?? 0;
-        if ( $service_id && ! Sodek_GB_Availability::is_slot_available( $new_date, $new_time, $service_id ) ) {
+        $addon_ids = $booking['addon_ids'] ?? array();
+        if ( $service_id && ! Sodek_GB_Availability::is_slot_available( $new_date, $new_time, $service_id, $addon_ids, $booking['id'] ) ) {
             return rest_ensure_response( array(
                 'success' => false,
                 'message' => __( 'The selected time slot is not available.', 'glowbook' ),
@@ -893,9 +894,15 @@ class Sodek_GB_REST_API {
         $old_date = $booking['booking_date'];
         $old_start_time = $booking['start_time'];
 
-        // Calculate new end time
-        $duration = $booking['service']['duration'] ?? 60;
-        $new_end_time = gmdate( 'H:i:s', strtotime( $new_time ) + ( $duration * 60 ) );
+        // Calculate new end time (service duration + addon duration)
+        $service_duration = $booking['service']['duration'] ?? 60;
+        $addons_duration = 0;
+        if ( ! empty( $addon_ids ) ) {
+            $addons_total = Sodek_GB_Addon::calculate_addons_total( $addon_ids );
+            $addons_duration = $addons_total['duration'] ?? 0;
+        }
+        $total_duration = $service_duration + $addons_duration;
+        $new_end_time = gmdate( 'H:i:s', strtotime( $new_time ) + ( $total_duration * 60 ) );
 
         // Update booking meta
         update_post_meta( $booking_id, '_sodek_gb_booking_date', $new_date );
@@ -957,7 +964,7 @@ class Sodek_GB_REST_API {
         $new_status = sanitize_text_field( $params['status'] );
 
         // Validate status
-        $valid_statuses = array( 'pending', 'confirmed', 'completed', 'cancelled', 'no-show' );
+        $valid_statuses = array_keys( Sodek_GB_Booking::get_statuses() );
         if ( ! in_array( $new_status, $valid_statuses, true ) ) {
             return new WP_Error( 'invalid_status', __( 'Invalid status.', 'glowbook' ), array( 'status' => 400 ) );
         }

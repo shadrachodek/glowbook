@@ -167,14 +167,14 @@ if ( ! empty( $selected_customer ) ) {
 								<tbody>
 									<?php foreach ( $recent as $booking ) : ?>
 										<tr>
-											<td>
+											<td data-colname="<?php esc_attr_e( 'Date', 'glowbook' ); ?>">
 												<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $booking['id'] . '&action=edit' ) ); ?>">
 													<?php echo esc_html( $format_date( $booking['booking_date'] ) ); ?>
 												</a>
 											</td>
-											<td><?php echo esc_html( $booking['service']['title'] ?? '—' ); ?></td>
-											<td><span class="sodek-gb-status sodek-gb-status-<?php echo esc_attr( sanitize_html_class( strtolower( $booking['status'] ) ) ); ?>"><?php echo esc_html( ucfirst( $booking['status'] ) ); ?></span></td>
-											<td><?php echo esc_html( $format_money( $booking['total_price'] ?? 0 ) ); ?></td>
+											<td data-colname="<?php esc_attr_e( 'Service', 'glowbook' ); ?>"><?php echo esc_html( $booking['service']['title'] ?? '—' ); ?></td>
+											<td data-colname="<?php esc_attr_e( 'Status', 'glowbook' ); ?>"><span class="sodek-gb-status sodek-gb-status-<?php echo esc_attr( sanitize_html_class( strtolower( $booking['status'] ) ) ); ?>"><?php echo esc_html( ucfirst( $booking['status'] ) ); ?></span></td>
+											<td data-colname="<?php esc_attr_e( 'Total', 'glowbook' ); ?>"><?php echo esc_html( $format_money( $booking['total_price'] ?? 0 ) ); ?></td>
 										</tr>
 									<?php endforeach; ?>
 								</tbody>

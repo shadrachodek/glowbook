@@ -131,8 +131,14 @@ class Sodek_GB_WC_Cart {
             return false;
         }
 
-        // Check if slot is still available
-        if ( ! Sodek_GB_Availability::is_slot_available( $date, $time, $service_id ) ) {
+        // Get addon IDs for accurate duration calculation in slot availability check
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Already verified above
+        $addon_ids_for_check = isset( $_POST['sodek_gb_addon_ids'] ) && is_array( $_POST['sodek_gb_addon_ids'] )
+            ? array_map( 'absint', wp_unslash( $_POST['sodek_gb_addon_ids'] ) )
+            : array();
+
+        // Check if slot is still available (including addon duration)
+        if ( ! Sodek_GB_Availability::is_slot_available( $date, $time, $service_id, $addon_ids_for_check ) ) {
             wc_add_notice( __( 'Sorry, this time slot is no longer available. Please choose another time.', 'glowbook' ), 'error' );
             return false;
         }
@@ -349,8 +355,14 @@ class Sodek_GB_WC_Cart {
             wp_send_json_error( array( 'message' => __( 'Invalid time format.', 'glowbook' ) ) );
         }
 
-        // Validate slot availability
-        if ( ! Sodek_GB_Availability::is_slot_available( $booking_date, $booking_time, $service_id ) ) {
+        // Get addon IDs for accurate duration calculation
+        $addon_ids_for_check = array();
+        if ( ! empty( $_POST['sodek_gb_addon_ids'] ) && is_array( $_POST['sodek_gb_addon_ids'] ) ) {
+            $addon_ids_for_check = array_map( 'absint', wp_unslash( $_POST['sodek_gb_addon_ids'] ) );
+        }
+
+        // Validate slot availability (including addon duration)
+        if ( ! Sodek_GB_Availability::is_slot_available( $booking_date, $booking_time, $service_id, $addon_ids_for_check ) ) {
             wp_send_json_error( array( 'message' => __( 'This time slot is no longer available.', 'glowbook' ) ) );
         }
 

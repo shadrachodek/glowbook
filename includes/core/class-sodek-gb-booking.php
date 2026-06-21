@@ -654,27 +654,35 @@ class Sodek_GB_Booking {
 
         $table = $wpdb->prefix . 'sodek_gb_booked_slots';
 
-        // Delete existing slot
-        $wpdb->delete( $table, array( 'booking_id' => $booking_id ) );
-
         // Get booking data
         $status = get_post_meta( $booking_id, '_sodek_gb_status', true );
 
-        // Only insert if not cancelled
-        if ( self::STATUS_CANCELLED !== $status ) {
-            $wpdb->insert(
-                $table,
-                array(
-                    'booking_id'  => $booking_id,
-                    'slot_date'   => get_post_meta( $booking_id, '_sodek_gb_booking_date', true ),
-                    'start_time'  => get_post_meta( $booking_id, '_sodek_gb_start_time', true ),
-                    'end_time'    => get_post_meta( $booking_id, '_sodek_gb_end_time', true ),
-                    'service_id'  => get_post_meta( $booking_id, '_sodek_gb_service_id', true ),
-                    'status'      => $status,
-                ),
-                array( '%d', '%s', '%s', '%s', '%d', '%s' )
-            );
+        // For cancelled bookings, delete the slot
+        if ( self::STATUS_CANCELLED === $status || self::STATUS_NO_SHOW === $status ) {
+            $wpdb->delete( $table, array( 'booking_id' => $booking_id ) );
+            return;
         }
+
+        // Use REPLACE INTO for atomic upsert (requires booking_id to be unique key)
+        // This prevents the race condition between delete and insert
+        $slot_date   = get_post_meta( $booking_id, '_sodek_gb_booking_date', true );
+        $start_time  = get_post_meta( $booking_id, '_sodek_gb_start_time', true );
+        $end_time    = get_post_meta( $booking_id, '_sodek_gb_end_time', true );
+        $service_id  = get_post_meta( $booking_id, '_sodek_gb_service_id', true );
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $wpdb->query(
+            $wpdb->prepare(
+                "REPLACE INTO {$table} (booking_id, slot_date, start_time, end_time, service_id, status)
+                VALUES (%d, %s, %s, %s, %d, %s)",
+                $booking_id,
+                $slot_date,
+                $start_time,
+                $end_time,
+                $service_id,
+                $status
+            )
+        );
     }
 
     /**
@@ -969,6 +977,44 @@ class Sodek_GB_Booking {
         do_action( 'sodek_gb_booking_status_changed', $booking_id, $status );
 
         return true;
+    }
+
+    /**
+     * Cancel a booking with idempotency check.
+     *
+     * This method ensures that concurrent cancellation requests don't
+     * trigger duplicate waitlist notifications or refund processing.
+     *
+     * @param int $booking_id Booking ID.
+     * @return bool True if this call actually performed the cancellation, false if already cancelled.
+     */
+    public static function cancel_booking_idempotent( $booking_id ) {
+        global $wpdb;
+
+        // Use atomic update with condition to prevent race conditions
+        // This will only update if the status is NOT already 'cancelled'
+        $result = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$wpdb->postmeta}
+                SET meta_value = %s
+                WHERE post_id = %d
+                AND meta_key = '_sodek_gb_status'
+                AND meta_value != %s",
+                self::STATUS_CANCELLED,
+                $booking_id,
+                self::STATUS_CANCELLED
+            )
+        );
+
+        if ( $result > 0 ) {
+            // We actually changed the status - update booked slots and fire action
+            self::update_booked_slot( $booking_id );
+            do_action( 'sodek_gb_booking_status_changed', $booking_id, self::STATUS_CANCELLED );
+            return true;
+        }
+
+        // Status was already cancelled or booking doesn't exist
+        return false;
     }
 
     /**

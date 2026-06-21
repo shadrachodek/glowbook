@@ -22,9 +22,59 @@ $default_booking_prep_text = "I do not wash hair or prewash extensions.\n\nYou a
 $default_booking_terms_text = "If you need help with anything not covered here, please email hairbymedey@gmail.com or book a virtual consultation.\n\nBy completing your booking, you agree to the booking terms above. Deposits are non-refundable.\n\nThank you for taking the time to read through everything. I look forward to braiding your hair and making your experience amazing.";
 $booking_prep_text  = trim( (string) get_option( 'sodek_gb_booking_prep_text', $default_booking_prep_text ) );
 $booking_terms_text = trim( (string) get_option( 'sodek_gb_booking_terms_text', $default_booking_terms_text ) );
+$booking_gate_enabled      = (bool) get_option( 'sodek_gb_booking_gate_enabled', 0 );
+$booking_gate_content_type = get_option( 'sodek_gb_booking_gate_content_type', 'text' );
+$booking_gate_text         = trim( (string) get_option( 'sodek_gb_booking_gate_text', $booking_terms_text ) );
+$booking_gate_image_id     = absint( get_option( 'sodek_gb_booking_gate_image_id', 0 ) );
+$booking_gate_image_url    = '';
+if ( $booking_gate_image_id ) {
+    $booking_gate_image_url = (string) wp_get_attachment_image_url( $booking_gate_image_id, 'full' );
+}
+if ( '' === $booking_gate_image_url ) {
+    $booking_gate_image_url = trim( (string) get_option( 'sodek_gb_booking_gate_image_url', '' ) );
+}
+$booking_gate_accept_label = trim( (string) get_option( 'sodek_gb_booking_gate_accept_label', 'I Accept' ) );
+$booking_gate_button_bg    = sanitize_hex_color( get_option( 'sodek_gb_booking_gate_button_bg', '#1f1f1f' ) );
+$booking_gate_button_text  = sanitize_hex_color( get_option( 'sodek_gb_booking_gate_button_text', '#ffffff' ) );
+$booking_gate_button_bg    = $booking_gate_button_bg ? $booking_gate_button_bg : '#1f1f1f';
+$booking_gate_button_text  = $booking_gate_button_text ? $booking_gate_button_text : '#ffffff';
 ?>
 
 <div class="sodek-gb-booking alignwide loading" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+    <?php if ( $booking_gate_enabled ) : ?>
+        <div
+            class="sodek-gb-booking-gate"
+            hidden
+            aria-hidden="true"
+            style="<?php echo esc_attr( '--sodek-gb-gate-button-bg:' . $booking_gate_button_bg . ';--sodek-gb-gate-button-text:' . $booking_gate_button_text . ';' ); ?>"
+        >
+            <div class="sodek-gb-booking-gate-backdrop"></div>
+            <div class="sodek-gb-booking-gate-dialog" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Booking policy', 'glowbook' ); ?>">
+                <div class="sodek-gb-booking-gate-body">
+                    <?php if ( 'image' === $booking_gate_content_type && '' !== $booking_gate_image_url ) : ?>
+                        <img
+                            class="sodek-gb-booking-gate-image"
+                            src="<?php echo esc_url( $booking_gate_image_url ); ?>"
+                            alt="<?php esc_attr_e( 'Booking policy', 'glowbook' ); ?>"
+                        >
+                    <?php else : ?>
+                        <div class="sodek-gb-booking-gate-copy">
+                            <span class="sodek-gb-booking-gate-kicker"><?php esc_html_e( 'Booking Policy', 'glowbook' ); ?></span>
+                            <h2 id="sodek-gb-booking-gate-title"><?php esc_html_e( 'Please review before booking', 'glowbook' ); ?></h2>
+                            <div class="sodek-gb-booking-gate-text">
+                                <?php echo wp_kses_post( wpautop( esc_html( $booking_gate_text ) ) ); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="sodek-gb-booking-gate-actions">
+                    <button type="button" class="sodek-gb-btn sodek-gb-btn-primary sodek-gb-booking-gate-accept">
+                        <?php echo esc_html( '' !== $booking_gate_accept_label ? $booking_gate_accept_label : __( 'I Accept', 'glowbook' ) ); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <!-- Step 1: Select Category -->
     <div class="sodek-gb-step sodek-gb-step-category active" data-step="category">
@@ -163,6 +213,7 @@ $booking_terms_text = trim( (string) get_option( 'sodek_gb_booking_terms_text', 
                      data-deposit-type="<?php echo esc_attr( $deposit_type ); ?>"
                      data-deposit-value="<?php echo esc_attr( $deposit_value ); ?>"
                      data-deposit-amount="<?php echo esc_attr( $deposit_amount ); ?>"
+                     data-customer-payment-rule="<?php echo esc_attr( $service['customer_payment_rule_override'] ?? 'global' ); ?>"
                      data-description="<?php echo esc_attr( wp_strip_all_tags( $description ) ); ?>">
 
                     <?php if ( $show_image && $thumbnail ) :

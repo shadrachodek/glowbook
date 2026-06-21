@@ -446,7 +446,7 @@ class Sodek_GB_Square_Gateway extends Sodek_GB_Gateway_Abstract {
             ]);
 
             $currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : get_option( 'sodek_gb_currency', 'USD' );
-            $idempotency_key = $this->generate_idempotency_key( 'gb_' );
+            $idempotency_key = $this->resolve_payment_idempotency_key( $amount, $metadata );
 
             // Build the payment request using Square SDK models
             $amount_money = new \Square\Models\Money();
@@ -584,7 +584,7 @@ class Sodek_GB_Square_Gateway extends Sodek_GB_Gateway_Abstract {
      * @return array Result with 'success' boolean and 'data' or 'error'.
      */
     private function create_payment_via_http( float $amount, array $metadata ): array {
-        $idempotency_key = $this->generate_idempotency_key( 'gb_' );
+        $idempotency_key = $this->resolve_payment_idempotency_key( $amount, $metadata );
         $currency        = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : get_option( 'sodek_gb_currency', 'USD' );
 
         $payment_data = array(
@@ -681,6 +681,37 @@ class Sodek_GB_Square_Gateway extends Sodek_GB_Gateway_Abstract {
             'created_at'       => $payment['created_at'] ?? '',
             'idempotency_key'  => $idempotency_key,
         ) );
+    }
+
+    /**
+     * Resolve a deterministic idempotency key for payment creation.
+     *
+     * Prefers a caller-provided key, then falls back to a stable digest of the
+     * logical payment payload so retries of the same charge do not create a new
+     * Square payment.
+     *
+     * @param float $amount   Payment amount.
+     * @param array $metadata Payment metadata.
+     * @return string
+     */
+    private function resolve_payment_idempotency_key( float $amount, array $metadata ): string {
+        if ( ! empty( $metadata['idempotency_key'] ) ) {
+            return substr( sanitize_text_field( (string) $metadata['idempotency_key'] ), 0, 45 );
+        }
+
+        $reference_id = sanitize_text_field( (string) ( $metadata['reference_id'] ?? '' ) );
+        $source_id    = sanitize_text_field( (string) ( $metadata['source_id'] ?? '' ) );
+        $email        = sanitize_email( (string) ( $metadata['customer_email'] ?? '' ) );
+        $digest_seed  = wp_json_encode(
+            array(
+                'reference_id' => $reference_id,
+                'amount'       => round( $amount, 2 ),
+                'source_tail'  => substr( $source_id, -12 ),
+                'email'        => $email,
+            )
+        );
+
+        return 'gb_' . substr( hash( 'sha256', (string) $digest_seed ), 0, 42 );
     }
 
     /**
