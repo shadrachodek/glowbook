@@ -75,6 +75,7 @@ class Sodek_GB_Booking {
 
         // Register meta boxes
         add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
+        add_action( 'add_meta_boxes', array( __CLASS__, 'remove_unwanted_meta_boxes' ), 999 );
         add_action( 'save_post_' . self::POST_TYPE, array( __CLASS__, 'save_meta' ), 10, 2 );
 
         // Custom columns
@@ -96,6 +97,42 @@ class Sodek_GB_Booking {
             self::STATUS_CANCELLED => __( 'Cancelled', 'glowbook' ),
             self::STATUS_NO_SHOW   => __( 'No Show', 'glowbook' ),
         );
+    }
+
+    /**
+     * Remove unwanted meta boxes from booking edit screen.
+     * This runs with high priority to remove metaboxes added by other plugins.
+     */
+    public static function remove_unwanted_meta_boxes() {
+        global $wp_meta_boxes;
+
+        if ( ! isset( $wp_meta_boxes[ self::POST_TYPE ] ) ) {
+            return;
+        }
+
+        // List of allowed GlowBook metabox IDs
+        $allowed_metaboxes = array(
+            'sodek_gb_booking_details',
+            'sodek_gb_booking_customer',
+            'sodek_gb_booking_status',
+            'sodek_gb_customer_notes',
+            'sodek_gb_booking_notes',
+            'sodek_gb_cancellation_details',
+            'sodek_gb_payment_details',
+            'submitdiv', // Keep the Publish box
+        );
+
+        // Loop through all contexts (normal, side, advanced)
+        foreach ( $wp_meta_boxes[ self::POST_TYPE ] as $context => $priorities ) {
+            foreach ( $priorities as $priority => $metaboxes ) {
+                foreach ( $metaboxes as $metabox_id => $metabox ) {
+                    // Remove if not in allowed list
+                    if ( ! in_array( $metabox_id, $allowed_metaboxes, true ) ) {
+                        remove_meta_box( $metabox_id, self::POST_TYPE, $context );
+                    }
+                }
+            }
+        }
     }
 
     /**
