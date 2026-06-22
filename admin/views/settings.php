@@ -139,6 +139,57 @@ $default_booking_terms_text = "If you need help with anything not covered here, 
                     <p class="description"><?php esc_html_e( 'Fixed retainer amount new customers pay during standalone booking.', 'glowbook' ); ?></p>
                 </td>
             </tr>
+        </table>
+
+        <h2 class="title"><?php esc_html_e( 'Manual Payment Methods', 'glowbook' ); ?></h2>
+        <p class="description"><?php esc_html_e( 'Enable manual payment options that staff can select when recording payments in the booking admin.', 'glowbook' ); ?></p>
+
+        <table class="form-table">
+            <tr>
+                <th scope="row">
+                    <label for="sodek_gb_cashapp_enabled"><?php esc_html_e( 'Cash App', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="sodek_gb_cashapp_enabled" name="sodek_gb_cashapp_enabled" value="1" <?php checked( get_option( 'sodek_gb_cashapp_enabled', 0 ), 1 ); ?>>
+                        <?php esc_html_e( 'Enable Cash App as a payment method', 'glowbook' ); ?>
+                    </label>
+                </td>
+            </tr>
+            <tr class="sodek-gb-cashapp-row">
+                <th scope="row">
+                    <label for="sodek_gb_cashapp_handle"><?php esc_html_e( 'Cash App Handle', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="text" id="sodek_gb_cashapp_handle" name="sodek_gb_cashapp_handle" value="<?php echo esc_attr( get_option( 'sodek_gb_cashapp_handle', '' ) ); ?>" class="regular-text" placeholder="$YourCashTag">
+                    <p class="description"><?php esc_html_e( 'Your Cash App $cashtag (e.g., $YourBusinessName). Shown to customers for payment instructions.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="sodek_gb_zelle_enabled"><?php esc_html_e( 'Zelle', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="sodek_gb_zelle_enabled" name="sodek_gb_zelle_enabled" value="1" <?php checked( get_option( 'sodek_gb_zelle_enabled', 0 ), 1 ); ?>>
+                        <?php esc_html_e( 'Enable Zelle as a payment method', 'glowbook' ); ?>
+                    </label>
+                </td>
+            </tr>
+            <tr class="sodek-gb-zelle-row">
+                <th scope="row">
+                    <label for="sodek_gb_zelle_info"><?php esc_html_e( 'Zelle Info', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <input type="text" id="sodek_gb_zelle_info" name="sodek_gb_zelle_info" value="<?php echo esc_attr( get_option( 'sodek_gb_zelle_info', '' ) ); ?>" class="regular-text" placeholder="email@example.com or phone">
+                    <p class="description"><?php esc_html_e( 'Your Zelle email or phone number. Shown to customers for payment instructions.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+        </table>
+
+        <h2 class="title"><?php esc_html_e( 'Booking Experience', 'glowbook' ); ?></h2>
+
+        <table class="form-table">
             <tr>
                 <th scope="row">
                     <label for="sodek_gb_booking_prep_text"><?php esc_html_e( 'Booking Prep Notice', 'glowbook' ); ?></label>
@@ -295,6 +346,23 @@ $default_booking_terms_text = "If you need help with anything not covered here, 
 
             $customerPaymentRules.on('change', toggleCustomerPaymentRules);
             toggleCustomerPaymentRules();
+
+            // Toggle Cash App and Zelle fields
+            var $cashappEnabled = $('#sodek_gb_cashapp_enabled');
+            var $zelleEnabled = $('#sodek_gb_zelle_enabled');
+
+            function toggleCashappFields() {
+                $('.sodek-gb-cashapp-row').toggle($cashappEnabled.is(':checked'));
+            }
+
+            function toggleZelleFields() {
+                $('.sodek-gb-zelle-row').toggle($zelleEnabled.is(':checked'));
+            }
+
+            $cashappEnabled.on('change', toggleCashappFields);
+            $zelleEnabled.on('change', toggleZelleFields);
+            toggleCashappFields();
+            toggleZelleFields();
 
             var $bookingGateEnabled = $('#sodek_gb_booking_gate_enabled');
             var $bookingGateContentType = $('#sodek_gb_booking_gate_content_type');
@@ -882,13 +950,26 @@ $default_booking_terms_text = "If you need help with anything not covered here, 
             </tr>
             <tr>
                 <th scope="row">
+                    <label for="sodek_gb_whatsapp_customer_chat_enabled"><?php esc_html_e( 'Customer Chat Button', 'glowbook' ); ?></label>
+                </th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="sodek_gb_whatsapp_customer_chat_enabled" name="sodek_gb_whatsapp_customer_chat_enabled" value="1"
+                            <?php checked( get_option( 'sodek_gb_whatsapp_customer_chat_enabled' ), 1 ); ?>>
+                        <?php esc_html_e( 'Show "Chat on WhatsApp" button after payment confirmation', 'glowbook' ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'Customers can message you directly via WhatsApp after completing their booking. Great for post-payment inquiries and coordination.', 'glowbook' ); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
                     <label for="sodek_gb_whatsapp_number"><?php esc_html_e( 'WhatsApp Business Number', 'glowbook' ); ?></label>
                 </th>
                 <td>
                     <input type="tel" id="sodek_gb_whatsapp_number" name="sodek_gb_whatsapp_number"
                         value="<?php echo esc_attr( get_option( 'sodek_gb_whatsapp_number', '' ) ); ?>"
                         class="regular-text" placeholder="+1234567890">
-                    <p class="description"><?php esc_html_e( 'Enter the WhatsApp Business phone number with country code (e.g., +1234567890). Notifications will be sent to this number when new bookings are made.', 'glowbook' ); ?></p>
+                    <p class="description"><?php esc_html_e( 'Enter the WhatsApp Business phone number with country code (e.g., +1234567890). Used for both admin notifications and customer chat.', 'glowbook' ); ?></p>
                 </td>
             </tr>
             <tr>

@@ -1,71 +1,210 @@
 /**
- * Braiderholic Booking Admin Styles
+ * GlowBook Admin Styles
+ * Soft studio aesthetic for salon booking management
  */
 
-/* Dashboard Stats */
-.sodek-gb-dashboard-stats {
+/* ==========================================================================
+   Soft Studio Admin Polish
+   ========================================================================== */
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) {
+    --gb-admin-ink: #2d231d;
+    --gb-admin-muted: #76695f;
+    --gb-admin-line: #eadfce;
+    --gb-admin-canvas: #f7f2ec;
+    --gb-admin-card: #fffdfb;
+    --gb-admin-accent: #f25f45;
+    --gb-admin-accent-dark: #d94b34;
+    background: var(--gb-admin-canvas);
+    color: var(--gb-admin-ink);
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wrap {
+    max-width: 1280px;
+    margin: 24px 24px 0 20px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wrap > h1,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-heading-inline {
+    color: var(--gb-admin-ink);
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 650;
+    letter-spacing: -.035em;
+}
+
+/* ==========================================================================
+   Dashboard Header
+   ========================================================================== */
+.sodek-gb-admin-heading {
     display: flex;
-    gap: 20px;
-    margin: 20px 0;
-    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 4px 0 24px;
+}
+
+.sodek-gb-admin-heading h1 {
+    margin: 3px 0 5px;
+    color: var(--gb-admin-ink);
+    font-size: clamp(30px, 3.4vw, 44px);
+    font-weight: 650;
+    letter-spacing: -.045em;
+    line-height: 1.05;
+}
+
+.sodek-gb-admin-heading p {
+    margin: 0;
+    color: var(--gb-admin-muted);
+    font-size: 15px;
+}
+
+.sodek-gb-admin-eyebrow,
+.sodek-gb-dashboard-panel-head span {
+    color: #a56f50;
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .button,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .button-primary {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .button-primary,
+.sodek-gb-dashboard-primary-action {
+    border-color: var(--gb-admin-accent-dark) !important;
+    background: var(--gb-admin-accent) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 22px rgba(190, 72, 48, .16) !important;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .button-primary:hover,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .button-primary:focus {
+    background: var(--gb-admin-accent-dark) !important;
+}
+
+/* ==========================================================================
+   Dashboard Stats
+   ========================================================================== */
+.sodek-gb-dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0 0 18px;
 }
 
 .sodek-gb-stat-box {
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
-    padding: 20px 30px;
-    text-align: center;
-    min-width: 150px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    min-width: 0;
+    padding: 22px 20px;
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 16px;
+    background: var(--gb-admin-card);
+    box-shadow: 0 12px 28px rgba(78, 54, 37, .05);
+    text-align: left;
 }
 
 .sodek-gb-stat-number {
     display: block;
-    font-size: 32px;
-    font-weight: 600;
-    color: #1d2327;
+    color: var(--gb-admin-ink);
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 650;
+    letter-spacing: -.035em;
     line-height: 1.2;
 }
 
 .sodek-gb-stat-label {
     display: block;
+    margin-top: 7px;
+    color: var(--gb-admin-muted);
     font-size: 13px;
-    color: #646970;
-    margin-top: 5px;
+    font-weight: 550;
 }
 
-/* Dashboard Columns */
+/* ==========================================================================
+   Dashboard Columns
+   ========================================================================== */
 .sodek-gb-dashboard-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
+    gap: 18px;
+    margin-top: 0;
+    align-items: start;
 }
 
 .sodek-gb-dashboard-column {
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
-    padding: 20px;
+    padding: 22px;
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 18px;
+    background: var(--gb-admin-card);
+    box-shadow: 0 16px 34px rgba(78, 54, 37, .05);
 }
 
-.sodek-gb-dashboard-column h2 {
-    margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #dcdcde;
+.sodek-gb-dashboard-column > h2 {
+    border: 0;
 }
 
+.sodek-gb-dashboard-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gb-admin-line);
+}
+
+.sodek-gb-dashboard-panel-head h2 {
+    margin: 3px 0 0;
+    color: var(--gb-admin-ink);
+    font-size: 20px;
+    letter-spacing: -.02em;
+}
+
+.sodek-gb-dashboard-panel-head > strong {
+    color: var(--gb-admin-muted);
+    font-size: 13px;
+}
+
+.sodek-gb-dashboard-panel-head > a {
+    color: #8a5d43;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.sodek-gb-dashboard-panel-head > a:hover {
+    color: var(--gb-admin-ink);
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
 .sodek-gb-no-bookings {
-    color: #646970;
-    font-style: italic;
-    padding: 20px;
+    display: grid;
+    gap: 4px;
+    padding: 30px 20px;
+    border: 1px dashed #e4d6c5;
+    border-radius: 14px;
+    background: #fbf8f4;
+    color: var(--gb-admin-muted);
+    font-style: normal;
     text-align: center;
-    background: #f6f7f7;
-    border-radius: 4px;
 }
 
-/* Status badges */
+.sodek-gb-no-bookings strong {
+    color: var(--gb-admin-ink);
+    font-size: 15px;
+}
+
+/* ==========================================================================
+   Status Badges
+   ========================================================================== */
 .sodek-gb-status {
     display: inline-block;
     padding: 3px 10px;
@@ -95,12 +234,159 @@
 
 .sodek-gb-status-cancelled,
 .sodek-gb-status-no-show,
+.sodek-gb-status-expired,
 .sodek-gb-status-error {
     background: #f8d7da;
     color: #721c24;
 }
 
-/* Availability Page */
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .widefat,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-list-table {
+    overflow: hidden;
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 16px;
+    background: var(--gb-admin-card);
+    box-shadow: 0 14px 30px rgba(78, 54, 37, .045);
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .widefat thead th,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .widefat tfoot th,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-list-table thead th,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-list-table tfoot th {
+    padding-top: 13px;
+    padding-bottom: 13px;
+    border-color: var(--gb-admin-line);
+    color: #65584f;
+    font-weight: 650;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .widefat td,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-list-table td {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-color: #eee5da;
+    vertical-align: middle;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .striped > tbody > :nth-child(odd) {
+    background: #fcfaf7;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .tablenav {
+    min-height: 46px;
+    margin: 12px 0;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .tablenav select,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .search-box input[type="search"] {
+    min-height: 40px;
+    border-color: var(--gb-admin-line);
+    border-radius: 10px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .subsubsub {
+    margin: 12px 0 8px;
+}
+
+/* ==========================================================================
+   Form Inputs
+   ========================================================================== */
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="text"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="search"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="email"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="tel"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="date"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="time"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) select,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) textarea {
+    min-height: 42px;
+    border-color: #e3d7c8;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="text"]:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="search"]:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="email"]:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="tel"]:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="date"]:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="time"]:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) select:focus,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) textarea:focus {
+    border-color: var(--gb-admin-accent);
+    box-shadow: 0 0 0 1px var(--gb-admin-accent);
+}
+
+/* ==========================================================================
+   Booking Post Type Styles
+   ========================================================================== */
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking #titlediv {
+    display: none;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking #poststuff {
+    padding-top: 8px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .postbox {
+    overflow: hidden;
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 16px;
+    background: var(--gb-admin-card);
+    box-shadow: 0 14px 30px rgba(78, 54, 37, .05);
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .postbox .postbox-header {
+    border-bottom-color: var(--gb-admin-line);
+    background: #fffaf6;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .postbox .hndle {
+    padding: 14px 16px;
+    color: var(--gb-admin-ink);
+    font-size: 14px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .postbox .inside {
+    margin: 0;
+    padding: 18px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table {
+    margin: 0;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table th {
+    width: 170px;
+    padding: 13px 12px 13px 0;
+    color: #5e5148;
+    font-weight: 650;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table td {
+    padding: 8px 0;
+}
+
+/* ==========================================================================
+   Booking Reference Badge
+   ========================================================================== */
+.sodek-gb-booking-reference {
+    display: inline-block;
+    padding: 5px 8px;
+    border: 1px solid #e7dacb;
+    border-radius: 7px;
+    background: #fffaf5;
+    color: #5f4637;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   Availability Page
+   ========================================================================== */
 .sodek-gb-availability-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -109,14 +395,16 @@
 }
 
 .sodek-gb-availability-column {
-    background: #fff;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
-    padding: 20px;
+    background: var(--gb-admin-card);
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 16px 34px rgba(78, 54, 37, .05);
 }
 
 .sodek-gb-availability-column h2 {
     margin-top: 0;
+    color: var(--gb-admin-ink);
 }
 
 .sodek-gb-schedule-table .sodek-gb-time-input {
@@ -160,7 +448,7 @@
 .sodek-gb-block-date-form {
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #dcdcde;
+    border-bottom: 1px solid var(--gb-admin-line);
 }
 
 /* Service meta boxes */
@@ -176,6 +464,10 @@
 
 .column-sodek_gb_datetime {
     width: 120px;
+}
+
+.column-sodek_gb_reference {
+    width: 150px;
 }
 
 /* Widget styling */
@@ -194,41 +486,9 @@
     border-bottom: none;
 }
 
-/* Responsive */
-@media screen and (max-width: 1200px) {
-    .sodek-gb-dashboard-columns,
-    .sodek-gb-availability-columns {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media screen and (max-width: 782px) {
-    .sodek-gb-dashboard-stats {
-        flex-direction: column;
-    }
-
-    .sodek-gb-stat-box {
-        width: 100%;
-    }
-
-    .sodek-gb-date-limit-overrides {
-        table-layout: auto;
-    }
-
-    .sodek-gb-date-limit-overrides th:nth-child(1),
-    .sodek-gb-date-limit-overrides td:nth-child(1),
-    .sodek-gb-date-limit-overrides th:nth-child(2),
-    .sodek-gb-date-limit-overrides td:nth-child(2),
-    .sodek-gb-date-limit-overrides th:nth-child(3),
-    .sodek-gb-date-limit-overrides td:nth-child(3) {
-        width: auto;
-    }
-}
-
-/* ============================================
+/* ==========================================================================
    Calendar Page
-   ============================================ */
-
+   ========================================================================== */
 .sodek-gb-calendar-wrap {
     margin-right: 20px;
 }
@@ -239,11 +499,12 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 15px;
-    background: #fff;
+    background: var(--gb-admin-card);
     padding: 15px 20px;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 16px;
     margin-bottom: 20px;
+    box-shadow: 0 14px 30px rgba(78, 54, 37, .045);
 }
 
 .sodek-gb-calendar-filters {
@@ -273,7 +534,7 @@
     align-items: center;
     gap: 5px;
     font-size: 12px;
-    color: #646970;
+    color: var(--gb-admin-muted);
 }
 
 .sodek-gb-legend-dot {
@@ -300,10 +561,11 @@
 
 /* FullCalendar customization */
 #sodek-gb-calendar {
-    background: #fff;
+    background: var(--gb-admin-card);
     padding: 20px;
-    border: 1px solid #ccd0d4;
-    border-radius: 4px;
+    border: 1px solid var(--gb-admin-line);
+    border-radius: 16px;
+    box-shadow: 0 14px 30px rgba(78, 54, 37, .045);
 }
 
 #sodek-gb-calendar.sodek-gb-loading {
@@ -313,22 +575,23 @@
 
 .fc .fc-toolbar-title {
     font-size: 1.4em;
+    color: var(--gb-admin-ink);
 }
 
 .fc .fc-button-primary {
-    background-color: #2271b1;
-    border-color: #2271b1;
+    background-color: var(--gb-admin-accent);
+    border-color: var(--gb-admin-accent);
 }
 
 .fc .fc-button-primary:hover {
-    background-color: #135e96;
-    border-color: #135e96;
+    background-color: var(--gb-admin-accent-dark);
+    border-color: var(--gb-admin-accent-dark);
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-    background-color: #135e96;
-    border-color: #135e96;
+    background-color: var(--gb-admin-accent-dark);
+    border-color: var(--gb-admin-accent-dark);
 }
 
 .fc-event {
@@ -389,7 +652,15 @@
     opacity: 0.7;
 }
 
-/* Modal */
+.fc-event.sodek-gb-status-expired {
+    background-color: #a33f35 !important;
+    border-color: #8d352d !important;
+    opacity: 0.72;
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
 .sodek-gb-modal {
     position: fixed;
     top: 0;
@@ -405,8 +676,8 @@
 }
 
 .sodek-gb-modal-content {
-    background: #fff;
-    border-radius: 8px;
+    background: var(--gb-admin-card);
+    border-radius: 18px;
     max-width: 500px;
     width: 100%;
     max-height: 90vh;
@@ -419,12 +690,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    border-bottom: 1px solid #dcdcde;
+    border-bottom: 1px solid var(--gb-admin-line);
 }
 
 .sodek-gb-modal-header h2 {
     margin: 0;
     font-size: 18px;
+    color: var(--gb-admin-ink);
 }
 
 .sodek-gb-modal-close {
@@ -432,13 +704,19 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #646970;
+    color: var(--gb-admin-muted);
     padding: 0;
     line-height: 1;
 }
 
 .sodek-gb-modal-close:hover {
-    color: #1d2327;
+    color: var(--gb-admin-ink);
+}
+
+.sodek-gb-modal-close:focus-visible {
+    outline: 2px solid var(--gb-admin-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
 }
 
 .sodek-gb-modal-body {
@@ -459,7 +737,7 @@
     font-weight: 600;
     width: 100px;
     flex-shrink: 0;
-    color: #646970;
+    color: var(--gb-admin-muted);
 }
 
 .sodek-gb-detail-row span {
@@ -478,8 +756,9 @@
     display: flex;
     gap: 10px;
     padding: 15px 20px;
-    border-top: 1px solid #dcdcde;
+    border-top: 1px solid var(--gb-admin-line);
     background: #f6f7f7;
+    border-radius: 0 0 18px 18px;
 }
 
 /* Status badge in modal */
@@ -508,7 +787,8 @@
 }
 
 .sodek-gb-status-badge.sodek-gb-status-cancelled,
-.sodek-gb-status-badge.sodek-gb-status-no-show {
+.sodek-gb-status-badge.sodek-gb-status-no-show,
+.sodek-gb-status-badge.sodek-gb-status-expired {
     background: #f8d7da;
     color: #721c24;
 }
@@ -518,8 +798,226 @@
     transition: opacity 0.3s ease;
 }
 
-/* Responsive calendar */
+/* ==========================================================================
+   Save/Action Boxes
+   ========================================================================== */
+.sodek-gb-field-stack {
+    display: grid;
+    gap: 7px;
+    margin: 0 0 8px;
+}
+
+.sodek-gb-field-stack select {
+    width: 100%;
+}
+
+.sodek-gb-save-booking-box {
+    display: grid;
+    gap: 13px;
+}
+
+.sodek-gb-save-booking-box p {
+    margin: 0;
+    color: var(--gb-admin-muted);
+    line-height: 1.55;
+}
+
+.sodek-gb-save-booking-box .button {
+    width: 100%;
+    justify-content: center;
+}
+
+.sodek-gb-delete-booking {
+    color: #a63f35;
+    font-size: 12px;
+    text-align: center;
+}
+
+.sodek-gb-payment-details > p {
+    margin: 0;
+    padding: 11px 0;
+    border-bottom: 1px solid #eee5da;
+    line-height: 1.55;
+}
+
+.sodek-gb-payment-details > p:last-child {
+    border-bottom: 0;
+}
+
+.sodek-gb-payment-details hr {
+    margin: 4px 0;
+    border-color: #eee5da;
+}
+
+.sodek-gb-payment-details code {
+    display: inline-block;
+    margin-top: 4px;
+    border-radius: 6px;
+}
+
+/* Payment receiver fields */
+.sodek-gb-payment-receiver-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 12px 20px;
+    max-width: 900px;
+    margin-bottom: 10px;
+}
+
+.sodek-gb-payment-receiver-fields p {
+    margin: 0;
+}
+
+.sodek-gb-payment-receiver-fields .regular-text {
+    width: 100%;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media screen and (max-width: 1200px) {
+    .sodek-gb-dashboard-columns,
+    .sodek-gb-availability-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 1080px) {
+    .sodek-gb-dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media screen and (max-width: 782px) {
+    .sodek-gb-payment-receiver-fields {
+        grid-template-columns: 1fr;
+    }
+
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wrap {
+        margin: 0;
+        padding: 16px 12px 28px;
+    }
+
+    .sodek-gb-admin-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .sodek-gb-dashboard-primary-action {
+        width: 100%;
+        text-align: center;
+    }
+
+    .sodek-gb-dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .sodek-gb-stat-box {
+        padding: 17px 15px;
+    }
+
+    .sodek-gb-dashboard-column,
+    .sodek-gb-availability-column {
+        padding: 16px;
+    }
+
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking #post-body.columns-2 {
+        margin-right: 0;
+    }
+
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking #postbox-container-1 {
+        width: 100%;
+    }
+
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table,
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table tbody,
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table tr,
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table th,
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table th {
+        padding: 12px 0 4px;
+    }
+
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table input,
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table select,
+    :is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .form-table textarea {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    body.sodek-gb-plugin-admin .wp-list-table thead,
+    body.sodek-gb-plugin-admin .wp-list-table tfoot {
+        display: none;
+    }
+
+    body.sodek-gb-plugin-admin .wp-list-table,
+    body.sodek-gb-plugin-admin .wp-list-table tbody,
+    body.sodek-gb-plugin-admin .wp-list-table tr,
+    body.sodek-gb-plugin-admin .wp-list-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.sodek-gb-plugin-admin .wp-list-table tr {
+        padding: 12px;
+        border-bottom: 1px solid #eee5da;
+    }
+
+    body.sodek-gb-plugin-admin .wp-list-table td {
+        padding: 7px 0;
+        border: 0;
+    }
+
+    body.sodek-gb-plugin-admin .wp-list-table td::before {
+        content: attr(data-colname);
+        display: block;
+        margin-bottom: 4px;
+        color: #7a6a5b;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .sodek-gb-date-limit-overrides {
+        table-layout: auto;
+    }
+
+    .sodek-gb-date-limit-overrides th:nth-child(1),
+    .sodek-gb-date-limit-overrides td:nth-child(1),
+    .sodek-gb-date-limit-overrides th:nth-child(2),
+    .sodek-gb-date-limit-overrides td:nth-child(2),
+    .sodek-gb-date-limit-overrides th:nth-child(3),
+    .sodek-gb-date-limit-overrides td:nth-child(3) {
+        width: auto;
+    }
+
+    .sodek-gb-modal {
+        padding: 10px;
+    }
+
+    .sodek-gb-modal-footer {
+        flex-direction: column;
+    }
+
+    .sodek-gb-modal-footer .button {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
     .sodek-gb-calendar-toolbar {
         flex-direction: column;
         align-items: flex-start;
@@ -534,24 +1032,23 @@
     .sodek-gb-calendar-filters select {
         width: 100%;
     }
+}
 
-    .fc .fc-toolbar {
-        flex-direction: column;
-        gap: 10px;
+@media screen and (max-width: 480px) {
+    .sodek-gb-dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .sodek-gb-dashboard-panel-head {
+        align-items: flex-start;
     }
 }
 
-/* ============================================
+/* ==========================================================================
    Booking Admin Mobile Experience
-   ============================================ */
-
+   ========================================================================== */
 body.sodek-gb-booking-admin {
     background: #f4efe8;
-}
-
-body.sodek-gb-booking-admin #wpcontent,
-body.sodek-gb-booking-admin #wpfooter {
-    margin-left: 0;
 }
 
 body.sodek-gb-booking-admin .wrap {
@@ -616,9 +1113,6 @@ body.sodek-gb-booking-admin .wp-heading-inline {
 }
 
 @media screen and (max-width: 782px) {
-    body.sodek-gb-booking-admin.auto-fold #adminmenumain,
-    body.sodek-gb-booking-admin.auto-fold #adminmenuwrap,
-    body.sodek-gb-booking-admin.auto-fold #adminmenu,
     body.sodek-gb-booking-admin #screen-meta-links,
     body.sodek-gb-booking-admin #contextual-help-link-wrap,
     body.sodek-gb-booking-admin #wpfooter {
@@ -697,4 +1191,28 @@ body.sodek-gb-booking-admin .wp-heading-inline {
         letter-spacing: 0.08em;
         text-transform: uppercase;
     }
+}
+
+/* Final component precedence for the focused booking workspace. */
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-core-ui .button,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) .wp-core-ui .button-primary {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin).post-type-sodek_gb_booking .postbox {
+    border-radius: 16px;
+}
+
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="text"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="search"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="email"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="tel"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="number"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="date"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) input[type="time"],
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) select,
+:is(body.sodek-gb-plugin-admin, body.sodek-gb-booking-admin) textarea {
+    border-radius: 10px;
 }

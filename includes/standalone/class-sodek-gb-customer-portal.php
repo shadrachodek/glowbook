@@ -984,7 +984,7 @@ class Sodek_GB_Customer_Portal {
 
         $times = array_map(
             function( $slot ) {
-                $time = is_array( $slot ) ? $slot['time'] : $slot;
+                $time = is_array( $slot ) ? $slot['start'] : $slot;
 
                 return array(
                     'value' => $time,

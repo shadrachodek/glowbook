@@ -449,14 +449,39 @@ $booking_gate_button_text  = $booking_gate_button_text ? $booking_gate_button_te
                     <input type="hidden" name="custom_deposit" id="sodek-gb-custom-deposit" value="0">
                 </div>
 
+                <?php
+                $cash_app_enabled = ! empty( $square_config['cashAppPayEnabled'] );
+                ?>
                 <div class="sodek-gb-payment-section">
                     <div class="sodek-gb-payment-head">
                         <span class="sodek-gb-payment-kicker"><?php esc_html_e( 'Secure checkout', 'glowbook' ); ?></span>
                         <h3><?php esc_html_e( 'Payment Method', 'glowbook' ); ?></h3>
-                        <p class="sodek-gb-payment-copy"><?php esc_html_e( 'Pay during booking with card to confirm your appointment. Your payment details are encrypted and handled securely by Square.', 'glowbook' ); ?></p>
+                        <p class="sodek-gb-payment-copy"><?php esc_html_e( 'Pay during booking to confirm your appointment. Your payment details are encrypted and handled securely by Square.', 'glowbook' ); ?></p>
                     </div>
                     <?php if ( $has_square_config ) : ?>
-                        <div class="sodek-gb-payment-shell">
+                        <?php if ( $cash_app_enabled ) : ?>
+                            <!-- Payment Method Tabs -->
+                            <div class="sodek-gb-payment-tabs" role="tablist">
+                                <button type="button" class="sodek-gb-payment-tab active" role="tab" aria-selected="true" data-method="card">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                    <span><?php esc_html_e( 'Card', 'glowbook' ); ?></span>
+                                </button>
+                                <button type="button" class="sodek-gb-payment-tab" role="tab" aria-selected="false" data-method="cashapp">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect width="24" height="24" rx="4" fill="#00D632"/>
+                                        <path d="M17.5 8.5L15.3 10.7C14.5 9.9 13.4 9.4 12.2 9.4C10.8 9.4 9.5 10 8.6 11L6.5 8.8C8 7.3 10 6.4 12.2 6.4C14.1 6.4 15.9 7.1 17.5 8.5Z" fill="white"/>
+                                        <path d="M6.5 15.5L8.7 13.3C9.5 14.1 10.6 14.6 11.8 14.6C13.2 14.6 14.5 14 15.4 13L17.5 15.2C16 16.7 14 17.6 11.8 17.6C9.9 17.6 8.1 16.9 6.5 15.5Z" fill="white"/>
+                                    </svg>
+                                    <span><?php esc_html_e( 'Cash App', 'glowbook' ); ?></span>
+                                </button>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Card Payment -->
+                        <div class="sodek-gb-payment-shell sodek-gb-payment-method-card <?php echo $cash_app_enabled ? '' : 'no-tabs'; ?>" data-method="card">
                             <div class="sodek-gb-payment-shell-head" aria-hidden="true">
                                 <span class="sodek-gb-payment-chip"><?php esc_html_e( 'Card details', 'glowbook' ); ?></span>
                                 <span class="sodek-gb-payment-supported"><?php esc_html_e( 'Visa, Mastercard, Amex, Discover', 'glowbook' ); ?></span>
@@ -471,6 +496,29 @@ $booking_gate_button_text  = $booking_gate_button_text ? $booking_gate_button_te
                                 <span><?php esc_html_e( 'Encrypted card entry powered by Square', 'glowbook' ); ?></span>
                             </div>
                         </div>
+
+                        <?php if ( $cash_app_enabled ) : ?>
+                            <!-- Cash App Pay -->
+                            <div class="sodek-gb-payment-shell sodek-gb-payment-method-cashapp" data-method="cashapp" style="display: none;">
+                                <div class="sodek-gb-payment-shell-head" aria-hidden="true">
+                                    <span class="sodek-gb-payment-chip"><?php esc_html_e( 'Cash App Pay', 'glowbook' ); ?></span>
+                                    <span class="sodek-gb-payment-supported"><?php esc_html_e( 'Pay with your Cash App balance', 'glowbook' ); ?></span>
+                                </div>
+                                <div id="sodek-gb-cashapp-container" class="sodek-gb-cashapp-container">
+                                    <!-- Cash App Pay button will be mounted here -->
+                                    <div class="sodek-gb-cashapp-loading">
+                                        <span class="sodek-gb-spinner"></span>
+                                        <span><?php esc_html_e( 'Loading Cash App Pay...', 'glowbook' ); ?></span>
+                                    </div>
+                                </div>
+                                <div class="sodek-gb-payment-trust" aria-hidden="true">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    <span><?php esc_html_e( 'Secure payment via Cash App', 'glowbook' ); ?></span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     <?php else : ?>
                         <div class="sodek-gb-payment-error">
                             <?php
@@ -486,6 +534,7 @@ $booking_gate_button_text  = $booking_gate_button_text ? $booking_gate_button_te
                     <div id="sodek-gb-payment-errors" class="sodek-gb-payment-errors" role="alert" aria-live="polite"></div>
                     <input type="hidden" name="card_token" id="sodek_gb_card_token" value="">
                     <input type="hidden" name="verification_token" id="sodek_gb_verification_token" value="">
+                    <input type="hidden" name="payment_method_type" id="sodek_gb_payment_method_type" value="card">
                 </div>
             <?php else : ?>
                 <div class="sodek-gb-payment-error" role="alert">

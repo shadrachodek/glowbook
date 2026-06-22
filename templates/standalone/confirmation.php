@@ -36,12 +36,12 @@ $service = $booking['service'] ?? array();
                 </svg>
             </div>
 
-            <h1><?php esc_html_e( 'Booking Confirmed!', 'glowbook' ); ?></h1>
+            <h1><?php esc_html_e( 'Your appointment is confirmed', 'glowbook' ); ?></h1>
             <p class="sodek-gb-confirmation-subtitle">
                 <?php
                 printf(
                     /* translators: %s: customer email */
-                    esc_html__( 'A confirmation email has been sent to %s', 'glowbook' ),
+                    esc_html__( 'We sent the confirmation details to %s.', 'glowbook' ),
                     '<strong>' . esc_html( $booking['customer_email'] ) . '</strong>'
                 );
                 ?>
@@ -52,9 +52,9 @@ $service = $booking['service'] ?? array();
                     <?php esc_html_e( 'Confirmation', 'glowbook' ); ?>
                     <strong>#<?php echo esc_html( $booking['id'] ); ?></strong>
                 </span>
-                <?php if ( ! empty( $service['title'] ) ) : ?>
-                    <span class="sodek-gb-confirmation-pill is-soft"><?php echo esc_html( $service['title'] ); ?></span>
-                <?php endif; ?>
+                <span class="sodek-gb-confirmation-pill is-soft">
+                    <?php printf( esc_html__( 'Request #%d', 'glowbook' ), (int) $booking['id'] ); ?>
+                </span>
             </div>
         </div>
 
@@ -62,7 +62,7 @@ $service = $booking['service'] ?? array();
             <div class="sodek-gb-confirmation-card sodek-gb-confirmation-card-primary">
                 <div class="sodek-gb-confirmation-section-head">
                     <span class="sodek-gb-section-kicker"><?php esc_html_e( 'Appointment', 'glowbook' ); ?></span>
-                    <h2><?php esc_html_e( 'Your booking details', 'glowbook' ); ?></h2>
+                    <h2><?php esc_html_e( 'Appointment details', 'glowbook' ); ?></h2>
                 </div>
 
                 <div class="sodek-gb-confirmation-details">
@@ -118,17 +118,31 @@ $service = $booking['service'] ?? array();
                     <?php endif; ?>
 
                     <div class="sodek-gb-detail-row">
-                        <span class="sodek-gb-detail-label"><?php esc_html_e( 'Confirmation #', 'glowbook' ); ?></span>
+                        <span class="sodek-gb-detail-label"><?php esc_html_e( 'Request ID', 'glowbook' ); ?></span>
                         <span class="sodek-gb-detail-value sodek-gb-booking-id">#<?php echo esc_html( $booking['id'] ); ?></span>
                     </div>
                 </div>
+
+                <?php if ( $can_reschedule || $can_cancel ) : ?>
+                    <div class="sodek-gb-appointment-actions">
+                        <span><?php esc_html_e( 'Need to make a change?', 'glowbook' ); ?></span>
+                        <div>
+                            <?php if ( $can_reschedule ) : ?>
+                                <a href="<?php echo esc_url( add_query_arg( 'booking_id', $booking['id'], $portal_url . 'reschedule/' ) ); ?>"><?php esc_html_e( 'Choose another time', 'glowbook' ); ?></a>
+                            <?php endif; ?>
+                            <?php if ( $can_cancel ) : ?>
+                                <a href="<?php echo esc_url( add_query_arg( 'booking_id', $booking['id'], $portal_url . 'cancel/' ) ); ?>" class="sodek-gb-text-danger"><?php esc_html_e( 'Cancel request', 'glowbook' ); ?></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="sodek-gb-confirmation-side">
                 <div class="sodek-gb-confirmation-card sodek-gb-confirmation-payment">
                     <div class="sodek-gb-confirmation-section-head">
-                        <span class="sodek-gb-section-kicker"><?php esc_html_e( 'Receipt', 'glowbook' ); ?></span>
-                        <h3><?php esc_html_e( 'Payment Summary', 'glowbook' ); ?></h3>
+                        <span class="sodek-gb-section-kicker"><?php esc_html_e( 'Next step', 'glowbook' ); ?></span>
+                        <h3><?php esc_html_e( 'Payment summary', 'glowbook' ); ?></h3>
                     </div>
 
                     <div class="sodek-gb-payment-lines">
@@ -206,7 +220,7 @@ $service = $booking['service'] ?? array();
                                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                             </svg>
-                            Google Calendar
+                            Google
                         </a>
                         <a href="<?php echo esc_url( $calendar_links['ical'] ); ?>" download="appointment.ics" class="sodek-gb-btn sodek-gb-btn-outline">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -215,7 +229,7 @@ $service = $booking['service'] ?? array();
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            Apple Calendar
+                            Apple
                         </a>
                         <a href="<?php echo esc_url( $calendar_links['outlook'] ); ?>" target="_blank" class="sodek-gb-btn sodek-gb-btn-outline">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -245,28 +259,13 @@ $service = $booking['service'] ?? array();
             </div>
         </div>
 
-        <!-- Actions -->
-        <div class="sodek-gb-confirmation-actions">
-            <?php if ( $can_reschedule ) : ?>
-                <a href="<?php echo esc_url( add_query_arg( 'booking_id', $booking['id'], $portal_url . 'reschedule/' ) ); ?>" class="sodek-gb-btn sodek-gb-btn-secondary">
-                    <?php esc_html_e( 'Reschedule', 'glowbook' ); ?>
-                </a>
-            <?php endif; ?>
-
-            <?php if ( $can_cancel ) : ?>
-                <a href="<?php echo esc_url( add_query_arg( 'booking_id', $booking['id'], $portal_url . 'cancel/' ) ); ?>" class="sodek-gb-btn sodek-gb-btn-link sodek-gb-text-danger">
-                    <?php esc_html_e( 'Cancel Booking', 'glowbook' ); ?>
-                </a>
-            <?php endif; ?>
-        </div>
-
         <!-- View All Appointments -->
         <div class="sodek-gb-confirmation-footer">
             <a href="<?php echo esc_url( $portal_url ); ?>" class="sodek-gb-btn sodek-gb-btn-primary">
-                <?php esc_html_e( 'View My Appointments', 'glowbook' ); ?>
+                <?php esc_html_e( 'View my appointments', 'glowbook' ); ?>
             </a>
             <a href="<?php echo esc_url( Sodek_GB_Standalone_Booking::get_booking_url() ); ?>" class="sodek-gb-btn sodek-gb-btn-link">
-                <?php esc_html_e( 'Book Another Appointment', 'glowbook' ); ?>
+                <?php esc_html_e( 'Book another appointment', 'glowbook' ); ?>
             </a>
         </div>
     </div>

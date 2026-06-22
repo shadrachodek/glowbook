@@ -529,27 +529,88 @@ class Sodek_GB_Admin {
 
     /**
      * Remove unrelated admin menus for booking admin users.
+     * Only GlowBook menus should be visible.
      */
     public static function limit_admin_menu_for_booking_admin() {
         if ( ! self::is_booking_admin_user() ) {
             return;
         }
 
+        global $menu;
+
+        // GlowBook menu slugs to keep
+        $allowed_menus = array(
+            'sodek-gb-dashboard',
+            'edit.php?post_type=sodek_gb_booking',
+            'edit.php?post_type=sodek_gb_service',
+        );
+
+        // Remove all menu pages except GlowBook ones
+        if ( is_array( $menu ) ) {
+            foreach ( $menu as $position => $item ) {
+                if ( ! isset( $item[2] ) ) {
+                    continue;
+                }
+
+                $menu_slug = $item[2];
+
+                // Keep GlowBook menus
+                if ( in_array( $menu_slug, $allowed_menus, true ) || strpos( $menu_slug, 'sodek-gb' ) === 0 ) {
+                    continue;
+                }
+
+                // Remove everything else
+                remove_menu_page( $menu_slug );
+            }
+        }
+
+        // Explicitly remove common menus that might persist
         $remove_pages = array(
-            'index.php',
-            'edit.php',
-            'upload.php',
-            'edit.php?post_type=page',
-            'edit-comments.php',
-            'profile.php',
-            'themes.php',
-            'plugins.php',
-            'users.php',
-            'tools.php',
-            'options-general.php',
-            'woocommerce',
-            'wc-admin',
-            'elementor',
+            'index.php',                    // Dashboard
+            'edit.php',                     // Posts
+            'upload.php',                   // Media
+            'edit.php?post_type=page',      // Pages
+            'edit-comments.php',            // Comments
+            'profile.php',                  // Profile
+            'themes.php',                   // Appearance
+            'plugins.php',                  // Plugins
+            'users.php',                    // Users
+            'tools.php',                    // Tools
+            'options-general.php',          // Settings
+            'woocommerce',                  // WooCommerce
+            'wc-admin',                     // WooCommerce Admin
+            'wc-admin&path=/analytics/overview', // WC Analytics
+            'elementor',                    // Elementor
+            'edit.php?post_type=elementor_library', // Elementor Templates
+            'jet-dashboard',                // JetPlugins
+            'jetpack',                      // Jetpack
+            'yoast_seo_dashboard',          // Yoast SEO
+            'wpseo_dashboard',              // Yoast SEO
+            'rank-math',                    // Rank Math
+            'aioseo',                       // All in One SEO
+            'wpforms-overview',             // WPForms
+            'contact-form-7',               // Contact Form 7
+            'mailchimp-for-wp',             // Mailchimp
+            'smush',                        // Smush
+            'updraftplus',                  // UpdraftPlus
+            'wordfence',                    // Wordfence
+            'sucuri-security',              // Sucuri
+            'ai1wm_export',                 // All-in-One WP Migration
+            'w3tc_dashboard',               // W3 Total Cache
+            'wp-rocket',                    // WP Rocket
+            'litespeed',                    // LiteSpeed Cache
+            'wpcf7',                        // Contact Form 7
+            'gf_edit_forms',                // Gravity Forms
+            'tablepress',                   // TablePress
+            'ninja_forms',                  // Ninja Forms
+            'edit.php?post_type=product',   // WooCommerce Products
+            'edit.php?post_type=shop_order', // WooCommerce Orders
+            'edit.php?post_type=shop_coupon', // WooCommerce Coupons
+            'woocommerce-marketing',        // WooCommerce Marketing
+            'coupons-overview',             // Coupons
+            'separator1',                   // Menu separators
+            'separator2',
+            'separator-last',
         );
 
         foreach ( $remove_pages as $slug ) {
@@ -1046,6 +1107,12 @@ class Sodek_GB_Admin {
             'default'           => false,
         ) );
 
+        register_setting( 'sodek_gb_settings', 'sodek_gb_square_cashapp_enabled', array(
+            'type'              => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default'           => false,
+        ) );
+
         register_setting( 'sodek_gb_settings', 'sodek_gb_square_environment', array(
             'type'              => 'string',
             'sanitize_callback' => 'sanitize_text_field',
@@ -1122,8 +1189,19 @@ class Sodek_GB_Admin {
         register_setting( 'sodek_gb_settings', 'sodek_gb_reminder_24h_enabled' );
         register_setting( 'sodek_gb_settings', 'sodek_gb_reminder_2h_enabled' );
 
+        // Manual payment method settings
+        register_setting( 'sodek_gb_settings', 'sodek_gb_cashapp_enabled' );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_cashapp_handle', array(
+            'sanitize_callback' => 'sanitize_text_field',
+        ) );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_zelle_enabled' );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_zelle_info', array(
+            'sanitize_callback' => 'sanitize_text_field',
+        ) );
+
         // WhatsApp settings
         register_setting( 'sodek_gb_settings', 'sodek_gb_whatsapp_enabled' );
+        register_setting( 'sodek_gb_settings', 'sodek_gb_whatsapp_customer_chat_enabled' );
         register_setting( 'sodek_gb_settings', 'sodek_gb_whatsapp_number', array(
             'sanitize_callback' => array( __CLASS__, 'sanitize_phone_number' ),
         ) );

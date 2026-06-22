@@ -1317,13 +1317,14 @@ class Sodek_GB_Square_Gateway extends Sodek_GB_Gateway_Abstract {
         }
 
         return array(
-            'applicationId'  => $this->application_id,
-            'locationId'     => $this->location_id,
-            'environment'    => $this->environment,
-            'currency'       => $currency,
-            'countryCode'    => $country_code,
-            'usingWcSquare'  => $this->using_wc_square,
-            'strings'        => array(
+            'applicationId'      => $this->application_id,
+            'locationId'         => $this->location_id,
+            'environment'        => $this->environment,
+            'currency'           => $currency,
+            'countryCode'        => $country_code,
+            'usingWcSquare'      => $this->using_wc_square,
+            'cashAppPayEnabled'  => (bool) get_option( 'sodek_gb_square_cashapp_enabled', false ) && 'US' === $country_code,
+            'strings'            => array(
                 'cardNumber'        => __( 'Card Number', 'glowbook' ),
                 'expirationDate'    => __( 'Expiration Date', 'glowbook' ),
                 'cvv'               => __( 'CVV', 'glowbook' ),
@@ -1367,6 +1368,85 @@ class Sodek_GB_Square_Gateway extends Sodek_GB_Gateway_Abstract {
                     <input type="checkbox" id="sodek_gb_square_enabled" name="sodek_gb_square_enabled" value="1" <?php checked( $enabled, true ); ?>>
                     <?php esc_html_e( 'Enable Square payment gateway', 'glowbook' ); ?>
                 </label>
+            </td>
+        </tr>
+
+        <!-- Configuration Status Diagnostic -->
+        <tr>
+            <th scope="row"><?php esc_html_e( 'Configuration Status', 'glowbook' ); ?></th>
+            <td>
+                <?php
+                $debug = $this->get_debug_info();
+                $status_style = $debug['is_available'] ? 'color: #46b450;' : 'color: #dc3232;';
+                $status_icon = $debug['is_available'] ? 'yes-alt' : 'warning';
+                ?>
+                <p style="<?php echo esc_attr( $status_style ); ?>">
+                    <span class="dashicons dashicons-<?php echo esc_attr( $status_icon ); ?>"></span>
+                    <strong>
+                        <?php echo $debug['is_available'] ? esc_html__( 'Ready to accept payments', 'glowbook' ) : esc_html__( 'Not configured - see details below', 'glowbook' ); ?>
+                    </strong>
+                </p>
+                <details style="margin-top: 10px;">
+                    <summary style="cursor: pointer; color: #2271b1;"><?php esc_html_e( 'View diagnostic details', 'glowbook' ); ?></summary>
+                    <table class="widefat" style="margin-top: 10px; max-width: 500px;">
+                        <tr>
+                            <td><?php esc_html_e( 'Gateway Enabled', 'glowbook' ); ?></td>
+                            <td><?php echo $debug['enabled'] ? '<span style="color:#46b450;">&#10003; Yes</span>' : '<span style="color:#dc3232;">&#10007; No</span>'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e( 'Environment', 'glowbook' ); ?></td>
+                            <td><?php echo esc_html( ucfirst( $debug['environment'] ) ); ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e( 'Using WC Square', 'glowbook' ); ?></td>
+                            <td><?php echo $debug['using_wc_square'] ? '<span style="color:#46b450;">&#10003; Yes</span>' : 'No (manual)'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e( 'WC Square Active', 'glowbook' ); ?></td>
+                            <td><?php echo $debug['wc_square_active'] ? '<span style="color:#46b450;">&#10003; Yes</span>' : 'No'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e( 'Application ID', 'glowbook' ); ?></td>
+                            <td><?php echo $debug['has_application_id'] ? '<span style="color:#46b450;">&#10003; Set</span> (' . esc_html( $debug['application_id_start'] ) . '...)' : '<span style="color:#dc3232;">&#10007; Missing</span>'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e( 'Access Token', 'glowbook' ); ?></td>
+                            <td><?php echo $debug['has_access_token'] ? '<span style="color:#46b450;">&#10003; Set</span>' : '<span style="color:#dc3232;">&#10007; Missing</span>'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php esc_html_e( 'Location ID', 'glowbook' ); ?></td>
+                            <td><?php echo $debug['has_location_id'] ? '<span style="color:#46b450;">&#10003; Set</span>' : '<span style="color:#dc3232;">&#10007; Missing</span>'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong><?php esc_html_e( 'Is Configured', 'glowbook' ); ?></strong></td>
+                            <td><?php echo $debug['is_configured'] ? '<span style="color:#46b450;">&#10003; Yes</span>' : '<span style="color:#dc3232;">&#10007; No</span>'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong><?php esc_html_e( 'Is Available', 'glowbook' ); ?></strong></td>
+                            <td><?php echo $debug['is_available'] ? '<span style="color:#46b450;">&#10003; Yes</span>' : '<span style="color:#dc3232;">&#10007; No</span>'; ?></td>
+                        </tr>
+                        <?php if ( ! empty( $debug['error_hint'] ) ) : ?>
+                        <tr>
+                            <td colspan="2" style="color: #dc3232; background: #fef7f1;">
+                                <strong><?php esc_html_e( 'Hint:', 'glowbook' ); ?></strong> <?php echo esc_html( $debug['error_hint'] ); ?>
+                            </td>
+                        </tr>
+                        <?php endif; ?>
+                    </table>
+                </details>
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="row">
+                <label for="sodek_gb_square_cashapp_enabled"><?php esc_html_e( 'Cash App Pay', 'glowbook' ); ?></label>
+            </th>
+            <td>
+                <label>
+                    <input type="checkbox" id="sodek_gb_square_cashapp_enabled" name="sodek_gb_square_cashapp_enabled" value="1" <?php checked( get_option( 'sodek_gb_square_cashapp_enabled', false ), true ); ?>>
+                    <?php esc_html_e( 'Enable Cash App Pay as a checkout option', 'glowbook' ); ?>
+                </label>
+                <p class="description"><?php esc_html_e( 'Allow customers to pay with Cash App directly at checkout. US only.', 'glowbook' ); ?></p>
             </td>
         </tr>
 

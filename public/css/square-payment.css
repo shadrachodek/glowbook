@@ -232,3 +232,132 @@
         display: none;
     }
 }
+
+/* ==========================================================================
+   Payment Method Tabs
+   ========================================================================== */
+
+.sodek-gb-payment-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 4px;
+    background: #f1f5f9;
+    border-radius: var(--sodek-gb-radius-md, 8px);
+}
+
+.sodek-gb-payment-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--sodek-gb-radius-sm, 6px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sodek-gb-payment-tab:hover {
+    color: #334155;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.sodek-gb-payment-tab.active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sodek-gb-payment-tab svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Cash App Pay Container
+   ========================================================================== */
+
+.sodek-gb-cashapp-container {
+    min-height: 56px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sodek-gb-cashapp-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.sodek-gb-cashapp-loading .sodek-gb-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-top-color: #00D632;
+    border-radius: 50%;
+    animation: sodek-gb-spin 0.8s linear infinite;
+}
+
+/* Cash App Pay button styling (Square SDK generates the button) */
+#sodek-gb-cashapp-container [data-testid="cash-app-pay-button"],
+#sodek-gb-cashapp-container .cash-app-pay-button {
+    width: 100%;
+    min-height: 48px;
+}
+
+/* Cash App Pay tokenized/success state */
+#sodek-gb-cashapp-container.tokenized {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+#sodek-gb-cashapp-container.tokenized::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid #00D632;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: sodek-gb-spin 0.8s linear infinite;
+}
+
+/* Payment method shells */
+.sodek-gb-payment-method-card,
+.sodek-gb-payment-method-cashapp {
+    transition: opacity 0.2s ease;
+}
+
+.sodek-gb-payment-method-card.no-tabs {
+    /* No extra margin when tabs are not shown */
+}
+
+/* ==========================================================================
+   Responsive Adjustments for Tabs
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    .sodek-gb-payment-tabs {
+        flex-direction: column;
+    }
+
+    .sodek-gb-payment-tab {
+        justify-content: flex-start;
+    }
+}

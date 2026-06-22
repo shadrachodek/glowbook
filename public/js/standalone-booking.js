@@ -454,6 +454,40 @@
                 closeLightbox();
             }
         });
+
+        // Cash App Pay tokenization - auto-submit form when token is received
+        $(document).on('sodek_gb_cashapp_tokenized', function(e, token) {
+            if (token) {
+                // Token received - validate form before auto-submitting
+                const $form = $('#sodek-gb-customer-form');
+                const form = $form[0];
+
+                // Check HTML5 form validity before auto-submit
+                if (form && !form.checkValidity()) {
+                    // Trigger native validation UI to show which fields are missing
+                    form.reportValidity();
+                    // Clear the token since we can't proceed
+                    if (window.SodekGbSquarePayment) {
+                        window.SodekGbSquarePayment.cashAppToken = null;
+                    }
+                    $('#sodek-gb-cashapp-container').removeClass('tokenized');
+                    return;
+                }
+
+                // Show success state on the Cash App container
+                $('#sodek-gb-cashapp-container').addClass('tokenized');
+
+                // Auto-submit the form
+                $form.trigger('submit');
+            }
+        });
+
+        // Update Cash App amount when deposit changes
+        $container.on('change', '#sodek-gb-custom-deposit, #sodek-gb-deposit-input', function() {
+            if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.updateCashAppAmount) {
+                window.SodekGbSquarePayment.updateCashAppAmount();
+            }
+        });
     }
 
     /**
@@ -838,6 +872,11 @@
 
             if (state.date) {
                 loadTimeSlots(state.date);
+            }
+
+            // Update Cash App Pay amount when addons change total
+            if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.updateCashAppAmount) {
+                window.SodekGbSquarePayment.updateCashAppAmount();
             }
         }
     }
@@ -1345,15 +1384,25 @@
             const requiredDeposit = getRequiredDeposit(total);
             const depositAmount = customDeposit > 0 ? customDeposit : requiredDeposit;
 
-            // Tokenize card if Square payment is available
+            // Get payment method type and tokenize accordingly
             let cardToken = '';
             let verificationToken = '';
+            const paymentMethodType = $('#sodek_gb_payment_method_type').val() || 'card';
 
-            // Check for Square card (either from SodekGbSquarePayment or debug init)
+            // Check for Square payment objects
             const squareCard = window.glowbookSquareCard || (window.SodekGbSquarePayment && window.SodekGbSquarePayment.card);
             const squarePayments = window.glowbookSquarePayments || (window.SodekGbSquarePayment && window.SodekGbSquarePayment.payments);
 
-            if (squareCard) {
+            if (paymentMethodType === 'cashapp') {
+                // Cash App Pay - check if token is already available
+                if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.cashAppToken) {
+                    cardToken = window.SodekGbSquarePayment.cashAppToken;
+                } else {
+                    // No Cash App token - user needs to click the Cash App button first
+                    throw new Error('Please click the Cash App Pay button to authorize payment.');
+                }
+            } else if (squareCard) {
+                // Card payment flow
                 try {
                     const tokenResult = await squareCard.tokenize();
 
@@ -1409,7 +1458,8 @@
                     card_token: cardToken,
                     verification_token: verificationToken,
                     custom_deposit: depositAmount,
-                    customer_type: state.customerType === 'returning' ? 'returning' : 'new'
+                    customer_type: state.customerType === 'returning' ? 'returning' : 'new',
+                    payment_method_type: paymentMethodType
                 })
             });
 
@@ -1461,6 +1511,11 @@
 
         if (shouldEnforceCustomerPaymentType()) {
             scheduleCustomerTypeCheck(true);
+        }
+
+        // Update Cash App Pay amount to match the initialized deposit
+        if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.updateCashAppAmount) {
+            window.SodekGbSquarePayment.updateCashAppAmount();
         }
     }
 
@@ -1514,6 +1569,11 @@
 
         // Update active button
         updateDepositActiveButton(depositAmount, returningDeposit, total, serviceMinimum);
+
+        // Update Cash App Pay amount after validation clamps the value
+        if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.updateCashAppAmount) {
+            window.SodekGbSquarePayment.updateCashAppAmount();
+        }
     }
 
     /**
@@ -1578,6 +1638,11 @@
         updateDepositOptionAmounts(total, returningDeposit, serviceMinimum);
         $('.sodek-gb-deposit-option').removeClass('active');
         $(`.sodek-gb-deposit-option[data-percent="${percent}"]`).addClass('active');
+
+        // Update Cash App Pay amount when deposit option changes
+        if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.updateCashAppAmount) {
+            window.SodekGbSquarePayment.updateCashAppAmount();
+        }
     }
 
     /**
@@ -1830,6 +1895,11 @@
         $('#sodek-gb-custom-deposit').val(depositAmount);
         updateDepositDisplay(depositAmount, total);
         updateDepositActiveButton(depositAmount, nextReturningDeposit, total, serviceMinimum);
+
+        // Update Cash App Pay amount when customer type changes deposit
+        if (window.SodekGbSquarePayment && window.SodekGbSquarePayment.updateCashAppAmount) {
+            window.SodekGbSquarePayment.updateCashAppAmount();
+        }
     }
 
     /**

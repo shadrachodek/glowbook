@@ -463,92 +463,256 @@ class Sodek_GB_Booking {
      * @param WP_Post $post Post object.
      */
     public static function render_payment_meta_box( $post ) {
-        $order_id = get_post_meta( $post->ID, '_sodek_gb_order_id', true );
-        $deposit_amount = get_post_meta( $post->ID, '_sodek_gb_deposit_amount', true );
-        $deposit_paid = get_post_meta( $post->ID, '_sodek_gb_deposit_paid', true );
-        $balance_amount = (float) get_post_meta( $post->ID, '_sodek_gb_balance_amount', true );
-        $balance_paid = get_post_meta( $post->ID, '_sodek_gb_balance_paid', true );
-        $balance_paid_at = get_post_meta( $post->ID, '_sodek_gb_balance_paid_at', true );
-        $balance_payment_method = get_post_meta( $post->ID, '_sodek_gb_balance_payment_method', true );
-        $total_price = (float) get_post_meta( $post->ID, '_sodek_gb_total_price', true );
-        $expected_balance = max( 0, $total_price - (float) $deposit_amount );
-        $payment_method_labels = array(
-            '' => __( 'Select payment method', 'glowbook' ),
-            'cash_in_person' => __( 'Cash at appointment', 'glowbook' ),
+        $order_id       = get_post_meta( $post->ID, '_sodek_gb_order_id', true );
+        $total_price    = (float) get_post_meta( $post->ID, '_sodek_gb_total_price', true );
+        $deposit_amount = (float) get_post_meta( $post->ID, '_sodek_gb_deposit_amount', true );
+        $booking_status = get_post_meta( $post->ID, '_sodek_gb_status', true ) ?: self::STATUS_PENDING;
+
+        // Only allow payments for active bookings (pending, confirmed, completed).
+        $payment_allowed_statuses = array( self::STATUS_PENDING, self::STATUS_CONFIRMED, self::STATUS_COMPLETED );
+        $can_record_payment       = in_array( $booking_status, $payment_allowed_statuses, true );
+
+        // Calculate total paid from transactions.
+        $transactions = class_exists( 'Sodek_GB_Transaction' ) ? Sodek_GB_Transaction::get_by_booking( $post->ID ) : array();
+        $total_paid   = 0;
+        foreach ( $transactions as $txn ) {
+            if ( Sodek_GB_Transaction::STATUS_COMPLETED === $txn['status'] ) {
+                if ( Sodek_GB_Transaction::TYPE_PAYMENT === $txn['transaction_type'] ) {
+                    $total_paid += $txn['amount'];
+                } elseif ( Sodek_GB_Transaction::TYPE_REFUND === $txn['transaction_type'] ) {
+                    $total_paid -= $txn['amount'];
+                }
+            }
+        }
+        $amount_due = max( 0, $total_price - $total_paid );
+
+        // Payment method options.
+        $payment_methods = array(
+            ''                     => __( 'Select payment method', 'glowbook' ),
+            'cash_in_person'       => __( 'Cash at appointment', 'glowbook' ),
             'card_reader_in_person' => __( 'Card reader at appointment', 'glowbook' ),
-            'bank_transfer' => __( 'Bank transfer', 'glowbook' ),
-            'online_card' => __( 'Online card payment', 'glowbook' ),
-            'saved_card' => __( 'Saved card on file', 'glowbook' ),
-            'manual_other' => __( 'Other / manual entry', 'glowbook' ),
+            'bank_transfer'        => __( 'Bank transfer', 'glowbook' ),
+            'online_card'          => __( 'Online card payment', 'glowbook' ),
+            'saved_card'           => __( 'Saved card on file', 'glowbook' ),
         );
+
+        // Add Cash App if enabled.
+        if ( get_option( 'sodek_gb_cashapp_enabled', false ) ) {
+            $payment_methods['cashapp'] = __( 'Cash App', 'glowbook' );
+        }
+
+        // Add Zelle if enabled.
+        if ( get_option( 'sodek_gb_zelle_enabled', false ) ) {
+            $payment_methods['zelle'] = __( 'Zelle', 'glowbook' );
+        }
+
+        $payment_methods['manual_other'] = __( 'Other / manual entry', 'glowbook' );
         ?>
-        <div class="sodek-gb-payment-details">
+        <style>
+            .sodek-gb-payment-box { padding: 0; }
+            .sodek-gb-payment-summary { background: #f8f9fa; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+            .sodek-gb-payment-summary-row { display: flex; justify-content: space-between; padding: 4px 0; }
+            .sodek-gb-payment-summary-row.total { border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px; font-weight: 600; }
+            .sodek-gb-payment-summary-row.due { color: #d63638; }
+            .sodek-gb-payment-summary-row.paid-full { color: #00a32a; }
+            .sodek-gb-record-payment { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+            .sodek-gb-record-payment h4 { margin: 0 0 12px 0; font-size: 13px; }
+            .sodek-gb-payment-field { margin-bottom: 10px; }
+            .sodek-gb-payment-field label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px; }
+            .sodek-gb-payment-field input,
+            .sodek-gb-payment-field select { width: 100%; }
+            .sodek-gb-quick-amounts { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+            .sodek-gb-quick-amounts button { padding: 4px 10px; font-size: 11px; cursor: pointer; background: #f0f0f1; border: 1px solid #c3c4c7; border-radius: 3px; }
+            .sodek-gb-quick-amounts button:hover { background: #e0e0e0; }
+            .sodek-gb-payment-history { margin-top: 15px; }
+            .sodek-gb-payment-history h4 { margin: 0 0 10px 0; font-size: 13px; }
+            .sodek-gb-payment-history-empty { color: #666; font-style: italic; font-size: 12px; }
+            .sodek-gb-payment-history-list { font-size: 12px; }
+            .sodek-gb-payment-history-item { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+            .sodek-gb-payment-history-item:last-child { border-bottom: none; }
+            .sodek-gb-payment-history-item .amount { font-weight: 600; }
+            .sodek-gb-payment-history-item .amount.refund { color: #d63638; }
+            .sodek-gb-payment-history-item .details { color: #666; font-size: 11px; }
+            .sodek-gb-status-blocked { background: #fcf0e3; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #9a6700; font-size: 12px; }
+        </style>
+
+        <div class="sodek-gb-payment-box">
             <?php if ( $order_id ) : ?>
-                <p>
-                    <strong><?php esc_html_e( 'WooCommerce Order:', 'glowbook' ); ?></strong><br>
+                <p style="margin-bottom: 15px;">
+                    <strong><?php esc_html_e( 'WooCommerce Order:', 'glowbook' ); ?></strong>
                     <a href="<?php echo esc_url( admin_url( 'post.php?post=' . $order_id . '&action=edit' ) ); ?>">
                         #<?php echo esc_html( $order_id ); ?>
                     </a>
                 </p>
             <?php endif; ?>
 
-            <p>
-                <strong><?php esc_html_e( 'Deposit:', 'glowbook' ); ?></strong>
-                <?php echo wc_price( $deposit_amount ); ?>
-            </p>
-            <p>
-                <label>
-                    <input type="checkbox" name="sodek_gb_deposit_paid" value="1" <?php checked( $deposit_paid, '1' ); ?>>
-                    <?php esc_html_e( 'Deposit Paid', 'glowbook' ); ?>
-                </label>
-            </p>
+            <!-- Payment Summary -->
+            <div class="sodek-gb-payment-summary">
+                <div class="sodek-gb-payment-summary-row">
+                    <span><?php esc_html_e( 'Total', 'glowbook' ); ?></span>
+                    <span><?php echo esc_html( self::format_price( $total_price ) ); ?></span>
+                </div>
+                <div class="sodek-gb-payment-summary-row">
+                    <span><?php esc_html_e( 'Paid', 'glowbook' ); ?></span>
+                    <span><?php echo esc_html( self::format_price( $total_paid ) ); ?></span>
+                </div>
+                <div class="sodek-gb-payment-summary-row total <?php echo $amount_due <= 0 ? 'paid-full' : 'due'; ?>">
+                    <span><?php echo $amount_due <= 0 ? esc_html__( 'Status', 'glowbook' ) : esc_html__( 'Due', 'glowbook' ); ?></span>
+                    <span><?php echo $amount_due <= 0 ? esc_html__( 'Paid in Full', 'glowbook' ) : esc_html( self::format_price( $amount_due ) ); ?></span>
+                </div>
+            </div>
 
-            <?php if ( $expected_balance > 0 || '1' === $balance_paid ) : ?>
-                <hr>
-                <p>
-                    <strong><?php echo '1' === $balance_paid ? esc_html__( 'Balance Received:', 'glowbook' ) : esc_html__( 'Balance Due:', 'glowbook' ); ?></strong>
-                    <?php echo wc_price( '1' === $balance_paid ? $expected_balance : $balance_amount ); ?>
-                </p>
-                <p>
-                    <label>
-                        <input type="checkbox" name="sodek_gb_balance_paid" value="1" <?php checked( $balance_paid, '1' ); ?>>
-                        <?php esc_html_e( 'Balance Paid', 'glowbook' ); ?>
-                    </label>
-                </p>
-                <p>
-                    <label for="sodek_gb_balance_payment_method"><strong><?php esc_html_e( 'Balance Payment Method', 'glowbook' ); ?></strong></label><br>
-                    <select id="sodek_gb_balance_payment_method" name="sodek_gb_balance_payment_method" style="width: 100%; margin-top: 5px;">
-                        <?php foreach ( $payment_method_labels as $method_key => $method_label ) : ?>
-                            <option value="<?php echo esc_attr( $method_key ); ?>" <?php selected( $balance_payment_method, $method_key ); ?>>
-                                <?php echo esc_html( $method_label ); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </p>
-                <?php if ( ! empty( $balance_paid_at ) ) : ?>
-                    <p>
-                        <em>
-                            <?php
-                            printf(
-                                /* translators: %s: payment received datetime */
-                                esc_html__( 'Marked received on %s.', 'glowbook' ),
-                                esc_html( wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $balance_paid_at ) ) )
-                            );
-                            ?>
-                        </em>
+            <?php if ( ! $can_record_payment ) : ?>
+                <div class="sodek-gb-status-blocked">
+                    <span class="dashicons dashicons-info" style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px;"></span>
+                    <?php
+                    printf(
+                        /* translators: %s: booking status */
+                        esc_html__( 'Payments cannot be recorded for %s bookings.', 'glowbook' ),
+                        '<strong>' . esc_html( ucfirst( str_replace( '-', ' ', $booking_status ) ) ) . '</strong>'
+                    );
+                    ?>
+                </div>
+            <?php else : ?>
+                <!-- Record Payment Section -->
+                <div class="sodek-gb-record-payment">
+                    <h4><?php esc_html_e( 'Record Payment', 'glowbook' ); ?></h4>
+
+                    <div class="sodek-gb-payment-field">
+                        <label for="sodek_gb_payment_amount"><?php esc_html_e( 'Amount', 'glowbook' ); ?></label>
+                        <input type="number" id="sodek_gb_payment_amount" name="sodek_gb_payment_amount" step="0.01" min="0" value="" placeholder="0.00">
+                        <div class="sodek-gb-quick-amounts">
+                            <?php if ( $deposit_amount > 0 && $total_paid < $deposit_amount ) : ?>
+                                <button type="button" data-amount="<?php echo esc_attr( $deposit_amount ); ?>">
+                                    <?php echo esc_html( sprintf( __( 'Deposit %s', 'glowbook' ), self::format_price( $deposit_amount ) ) ); ?>
+                                </button>
+                            <?php endif; ?>
+                            <?php if ( $amount_due > 0 ) : ?>
+                                <button type="button" data-amount="<?php echo esc_attr( $amount_due ); ?>">
+                                    <?php echo esc_html( sprintf( __( 'Balance %s', 'glowbook' ), self::format_price( $amount_due ) ) ); ?>
+                                </button>
+                            <?php endif; ?>
+                            <?php if ( $total_paid <= 0 && $total_price > 0 ) : ?>
+                                <button type="button" data-amount="<?php echo esc_attr( $total_price ); ?>">
+                                    <?php echo esc_html( sprintf( __( 'Full %s', 'glowbook' ), self::format_price( $total_price ) ) ); ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="sodek-gb-payment-field">
+                        <label for="sodek_gb_payment_method"><?php esc_html_e( 'Payment Method', 'glowbook' ); ?></label>
+                        <select id="sodek_gb_payment_method" name="sodek_gb_payment_method">
+                            <?php foreach ( $payment_methods as $method_key => $method_label ) : ?>
+                                <option value="<?php echo esc_attr( $method_key ); ?>"><?php echo esc_html( $method_label ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="sodek_gb_confirm_payment" id="sodek_gb_confirm_payment" value="0">
+
+                    <p style="margin: 0; font-size: 11px; color: #666;">
+                        <?php esc_html_e( 'Enter amount and select method, then click "Update" to record the payment.', 'glowbook' ); ?>
                     </p>
-                <?php else : ?>
-                    <p><em><?php esc_html_e( 'Use this when the remaining balance is paid in salon or manually reconciled by staff.', 'glowbook' ); ?></em></p>
-                <?php endif; ?>
+                </div>
             <?php endif; ?>
 
-            <hr>
-            <p>
-                <strong><?php esc_html_e( 'Total:', 'glowbook' ); ?></strong>
-                <?php echo wc_price( $total_price ); ?>
-            </p>
+            <!-- Payment History -->
+            <div class="sodek-gb-payment-history">
+                <h4><?php esc_html_e( 'Payment History', 'glowbook' ); ?></h4>
+                <?php if ( empty( $transactions ) ) : ?>
+                    <p class="sodek-gb-payment-history-empty"><?php esc_html_e( 'No payments recorded yet.', 'glowbook' ); ?></p>
+                <?php else : ?>
+                    <div class="sodek-gb-payment-history-list">
+                        <?php foreach ( array_reverse( $transactions ) as $txn ) : ?>
+                            <?php
+                            $is_refund   = Sodek_GB_Transaction::TYPE_REFUND === $txn['transaction_type'];
+                            $method_name = self::get_payment_method_label( $txn['gateway'] );
+                            ?>
+                            <div class="sodek-gb-payment-history-item">
+                                <div>
+                                    <span class="amount <?php echo $is_refund ? 'refund' : ''; ?>">
+                                        <?php echo $is_refund ? '-' : '+'; ?><?php echo esc_html( self::format_price( $txn['amount'] ) ); ?>
+                                    </span>
+                                    <div class="details">
+                                        <?php echo esc_html( $method_name ); ?> &bull;
+                                        <?php echo esc_html( wp_date( 'M j, Y g:i A', strtotime( $txn['created_at'] ) ) ); ?>
+                                    </div>
+                                </div>
+                                <span style="font-size: 11px; color: <?php echo 'completed' === $txn['status'] ? '#00a32a' : '#d63638'; ?>;">
+                                    <?php echo esc_html( ucfirst( $txn['status'] ) ); ?>
+                                </span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
+
+        <script>
+        jQuery(function($) {
+            // Quick amount buttons
+            $('.sodek-gb-quick-amounts button').on('click', function(e) {
+                e.preventDefault();
+                var amount = $(this).data('amount');
+                $('#sodek_gb_payment_amount').val(parseFloat(amount).toFixed(2));
+            });
+
+            // Auto-set confirm flag when amount and method are filled
+            $('form#post').on('submit', function() {
+                var amount = parseFloat($('#sodek_gb_payment_amount').val()) || 0;
+                var method = $('#sodek_gb_payment_method').val();
+                if (amount > 0 && method) {
+                    $('#sodek_gb_confirm_payment').val('1');
+                }
+            });
+        });
+        </script>
         <?php
+    }
+
+    /**
+     * Format price for display.
+     *
+     * @param float $amount Amount to format.
+     * @return string
+     */
+    private static function format_price( float $amount ): string {
+        if ( function_exists( 'wc_price' ) ) {
+            return wp_strip_all_tags( wc_price( $amount ) );
+        }
+        $currency = get_option( 'sodek_gb_currency', 'USD' );
+        $symbol   = '$';
+        if ( 'EUR' === $currency ) {
+            $symbol = '€';
+        } elseif ( 'GBP' === $currency ) {
+            $symbol = '£';
+        } elseif ( 'NGN' === $currency ) {
+            $symbol = '₦';
+        }
+        return $symbol . number_format( $amount, 2 );
+    }
+
+    /**
+     * Get payment method label.
+     *
+     * @param string $method Payment method key.
+     * @return string
+     */
+    private static function get_payment_method_label( string $method ): string {
+        $labels = array(
+            'square'               => __( 'Square', 'glowbook' ),
+            'stripe'               => __( 'Stripe', 'glowbook' ),
+            'cash_in_person'       => __( 'Cash', 'glowbook' ),
+            'card_reader_in_person' => __( 'Card Reader', 'glowbook' ),
+            'bank_transfer'        => __( 'Bank Transfer', 'glowbook' ),
+            'online_card'          => __( 'Online Card', 'glowbook' ),
+            'saved_card'           => __( 'Saved Card', 'glowbook' ),
+            'cashapp'              => __( 'Cash App', 'glowbook' ),
+            'zelle'                => __( 'Zelle', 'glowbook' ),
+            'manual_other'         => __( 'Manual', 'glowbook' ),
+        );
+        return $labels[ $method ] ?? ucfirst( str_replace( '_', ' ', $method ) );
     }
 
     /**
@@ -590,37 +754,80 @@ class Sodek_GB_Booking {
             }
         }
 
-        $deposit_amount = (float) get_post_meta( $post_id, '_sodek_gb_deposit_amount', true );
-        $total_price    = (float) get_post_meta( $post_id, '_sodek_gb_total_price', true );
+        // Handle payment recording from the new unified UI.
+        $confirm_payment = isset( $_POST['sodek_gb_confirm_payment'] ) && '1' === $_POST['sodek_gb_confirm_payment'];
+        $payment_amount  = isset( $_POST['sodek_gb_payment_amount'] ) ? (float) $_POST['sodek_gb_payment_amount'] : 0;
+        $payment_method  = isset( $_POST['sodek_gb_payment_method'] ) ? sanitize_text_field( wp_unslash( $_POST['sodek_gb_payment_method'] ) ) : '';
+
+        // Auto-record payment if both amount and method are filled (even without explicit confirmation).
+        $should_record_payment = $confirm_payment || ( $payment_amount > 0 && ! empty( $payment_method ) );
+
+        // Only allow payments for active bookings (pending, confirmed, completed).
+        $booking_status           = get_post_meta( $post_id, '_sodek_gb_status', true ) ?: self::STATUS_PENDING;
+        $payment_allowed_statuses = array( self::STATUS_PENDING, self::STATUS_CONFIRMED, self::STATUS_COMPLETED );
+        $can_record_payment       = in_array( $booking_status, $payment_allowed_statuses, true );
+
+        $deposit_amount   = (float) get_post_meta( $post_id, '_sodek_gb_deposit_amount', true );
+        $total_price      = (float) get_post_meta( $post_id, '_sodek_gb_total_price', true );
         $expected_balance = max( 0, $total_price - $deposit_amount );
-        $balance_was_paid = '1' === get_post_meta( $post_id, '_sodek_gb_balance_paid', true );
-        $balance_is_paid  = isset( $_POST['sodek_gb_balance_paid'] );
+        $customer_email   = get_post_meta( $post_id, '_sodek_gb_customer_email', true );
+        $customer_name    = get_post_meta( $post_id, '_sodek_gb_customer_name', true );
 
-        // Checkbox fields
-        update_post_meta( $post_id, '_sodek_gb_deposit_paid', isset( $_POST['sodek_gb_deposit_paid'] ) ? '1' : '0' );
-        update_post_meta( $post_id, '_sodek_gb_balance_paid', $balance_is_paid ? '1' : '0' );
-
-        if ( isset( $_POST['sodek_gb_balance_payment_method'] ) ) {
-            update_post_meta( $post_id, '_sodek_gb_balance_payment_method', sanitize_text_field( wp_unslash( $_POST['sodek_gb_balance_payment_method'] ) ) );
+        // Calculate total already paid from transactions.
+        $transactions = class_exists( 'Sodek_GB_Transaction' ) ? Sodek_GB_Transaction::get_by_booking( $post_id ) : array();
+        $total_paid   = 0;
+        foreach ( $transactions as $txn ) {
+            if ( Sodek_GB_Transaction::STATUS_COMPLETED === $txn['status'] ) {
+                if ( Sodek_GB_Transaction::TYPE_PAYMENT === $txn['transaction_type'] ) {
+                    $total_paid += $txn['amount'];
+                } elseif ( Sodek_GB_Transaction::TYPE_REFUND === $txn['transaction_type'] ) {
+                    $total_paid -= $txn['amount'];
+                }
+            }
         }
 
-        if ( $balance_is_paid ) {
-            update_post_meta( $post_id, '_sodek_gb_balance_amount', 0 );
-            if ( ! $balance_was_paid ) {
-                update_post_meta( $post_id, '_sodek_gb_balance_paid_at', current_time( 'mysql' ) );
+        if ( $should_record_payment && $can_record_payment && $payment_amount > 0 && ! empty( $payment_method ) ) {
+            // Create transaction record.
+            if ( class_exists( 'Sodek_GB_Transaction' ) ) {
+                $currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : get_option( 'sodek_gb_currency', 'USD' );
+
+                Sodek_GB_Transaction::create( array(
+                    'transaction_id'   => wp_generate_uuid4(),
+                    'booking_id'       => $post_id,
+                    'gateway'          => $payment_method,
+                    'environment'      => 'production',
+                    'amount'           => $payment_amount,
+                    'currency'         => $currency,
+                    'transaction_type' => Sodek_GB_Transaction::TYPE_PAYMENT,
+                    'status'           => Sodek_GB_Transaction::STATUS_COMPLETED,
+                    'customer_email'   => $customer_email,
+                    'customer_name'    => $customer_name,
+                ) );
             }
 
-            $payment_method = isset( $_POST['sodek_gb_balance_payment_method'] ) ? sanitize_text_field( wp_unslash( $_POST['sodek_gb_balance_payment_method'] ) ) : '';
-            if ( empty( $payment_method ) ) {
-                update_post_meta( $post_id, '_sodek_gb_balance_payment_method', 'manual_other' );
+            // Update total paid.
+            $total_paid += $payment_amount;
+
+            // Update deposit/balance paid status based on payment.
+            if ( $total_paid >= $deposit_amount && '1' !== get_post_meta( $post_id, '_sodek_gb_deposit_paid', true ) ) {
+                update_post_meta( $post_id, '_sodek_gb_deposit_paid', '1' );
             }
-        } else {
-            if ( $balance_was_paid && $expected_balance > 0 ) {
-                update_post_meta( $post_id, '_sodek_gb_balance_amount', $expected_balance );
+
+            if ( $total_paid >= $total_price ) {
+                update_post_meta( $post_id, '_sodek_gb_balance_paid', '1' );
+                update_post_meta( $post_id, '_sodek_gb_balance_amount', 0 );
+                update_post_meta( $post_id, '_sodek_gb_balance_paid_at', current_time( 'mysql' ) );
+                update_post_meta( $post_id, '_sodek_gb_balance_payment_method', $payment_method );
+
+                // Auto-confirm booking if pending and fully paid.
+                if ( self::STATUS_PENDING === $booking_status ) {
+                    update_post_meta( $post_id, '_sodek_gb_status', self::STATUS_CONFIRMED );
+                }
+            } else {
+                // Update remaining balance.
+                $remaining = max( 0, $total_price - $total_paid );
+                update_post_meta( $post_id, '_sodek_gb_balance_amount', $remaining );
             }
-            delete_post_meta( $post_id, '_sodek_gb_balance_paid_at' );
-            delete_post_meta( $post_id, '_sodek_gb_balance_payment_method' );
-            delete_post_meta( $post_id, '_sodek_gb_balance_payment_id' );
         }
 
         // Mark refund as processed

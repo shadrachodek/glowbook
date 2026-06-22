@@ -697,6 +697,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentBookingContext = null;
     let selectedDate = null;
     let selectedTime = null;
+    let calendarMonth = new Date().getMonth();
+    let calendarYear = new Date().getFullYear();
+    let availableDatesCache = [];
     let portalSquarePayments = null;
     let portalSquareCard = null;
     let portalSquareReady = false;
@@ -893,11 +896,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function loadRescheduleCalendar() {
-        // Simplified calendar - in production, use a proper calendar library
         const calendarEl = document.getElementById('sodek-gb-reschedule-calendar');
         const timesEl = document.getElementById('sodek-gb-reschedule-times');
         calendarEl.innerHTML = '<p class="sodek-gb-loading"><?php esc_html_e( 'Loading available dates...', 'glowbook' ); ?></p>';
         timesEl.innerHTML = '';
+
+        // Reset calendar to current month
+        calendarMonth = new Date().getMonth();
+        calendarYear = new Date().getFullYear();
 
         try {
             const response = await fetch(sodekGbPortal.ajaxUrl + '?' + new URLSearchParams({
@@ -908,7 +914,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.success) {
-                renderMiniCalendar(calendarEl, data.data.dates);
+                availableDatesCache = data.data.dates || [];
+                renderMiniCalendar(calendarEl);
             }
         } catch (error) {
             calendarEl.innerHTML = '<p class="sodek-gb-error"><?php esc_html_e( 'Failed to load dates.', 'glowbook' ); ?></p>';
@@ -916,16 +923,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function renderMiniCalendar(container, availableDates) {
+    function renderMiniCalendar(container) {
         const today = new Date();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
+        const todayMonth = today.getMonth();
+        const todayYear = today.getFullYear();
+
+        // Check if we can go to previous month (not before current month)
+        const canGoPrev = calendarYear > todayYear || (calendarYear === todayYear && calendarMonth > todayMonth);
 
         let html = '<div class="sodek-gb-calendar-grid">';
 
-        // Header
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        html += '<div class="sodek-gb-calendar-header">' + monthNames[currentMonth] + ' ' + currentYear + '</div>';
+        // Header with navigation
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        html += '<div class="sodek-gb-calendar-header">';
+        html += '<button type="button" class="sodek-gb-calendar-nav sodek-gb-calendar-prev" ' + (canGoPrev ? '' : 'disabled') + '>';
+        html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+        html += '</button>';
+        html += '<span class="sodek-gb-calendar-title">' + monthNames[calendarMonth] + ' ' + calendarYear + '</span>';
+        html += '<button type="button" class="sodek-gb-calendar-nav sodek-gb-calendar-next">';
+        html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+        html += '</button>';
+        html += '</div>';
 
         // Day names
         const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -937,27 +955,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Days
         html += '<div class="sodek-gb-calendar-dates">';
-        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+        const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
 
         for (let i = 0; i < firstDay; i++) {
             html += '<span class="sodek-gb-empty"></span>';
         }
 
         for (let day = 1; day <= daysInMonth; day++) {
-            const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-            const isAvailable = availableDates.includes(dateStr);
+            const dateStr = calendarYear + '-' + String(calendarMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+            const isAvailable = availableDatesCache.includes(dateStr);
             const isPast = new Date(dateStr) < new Date(today.toDateString());
+            const isSelected = dateStr === selectedDate;
 
             let classes = 'sodek-gb-date';
             if (isPast) classes += ' sodek-gb-past';
             else if (isAvailable) classes += ' sodek-gb-available';
+            if (isSelected) classes += ' sodek-gb-selected';
 
             html += '<span class="' + classes + '" data-date="' + dateStr + '">' + day + '</span>';
         }
 
         html += '</div></div>';
         container.innerHTML = html;
+
+        // Navigation click handlers
+        container.querySelector('.sodek-gb-calendar-prev')?.addEventListener('click', function() {
+            if (this.disabled) return;
+            calendarMonth--;
+            if (calendarMonth < 0) {
+                calendarMonth = 11;
+                calendarYear--;
+            }
+            renderMiniCalendar(container);
+        });
+
+        container.querySelector('.sodek-gb-calendar-next')?.addEventListener('click', function() {
+            calendarMonth++;
+            if (calendarMonth > 11) {
+                calendarMonth = 0;
+                calendarYear++;
+            }
+            renderMiniCalendar(container);
+        });
 
         // Date click handlers
         container.querySelectorAll('.sodek-gb-date.sodek-gb-available').forEach(el => {
@@ -1012,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!selectedDate || !selectedTime) return;
 
         this.disabled = true;
-        this.innerHTML = '<span class="sodek-gb-spinner"></span>';
+        this.innerHTML = '<span class="sodek-gb-spinner"></span> Updating...';
 
         try {
                 const response = await fetch(sodekGbPortal.ajaxUrl, {
@@ -1069,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('sodek-gb-confirm-cancel').addEventListener('click', async function() {
         this.disabled = true;
-        this.innerHTML = '<span class="sodek-gb-spinner"></span>';
+        this.innerHTML = '<span class="sodek-gb-spinner"></span> Cancelling...';
 
         try {
                 const response = await fetch(sodekGbPortal.ajaxUrl, {
@@ -1124,7 +1164,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const originalLabel = this.textContent;
             this.disabled = true;
-            this.innerHTML = '<span class="sodek-gb-spinner"></span>';
+            this.innerHTML = '<span class="sodek-gb-spinner"></span> Processing...';
 
             try {
                 const params = new URLSearchParams({
@@ -1197,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const btn = this.querySelector('button[type="submit"]');
         btn.disabled = true;
-        btn.innerHTML = '<span class="sodek-gb-spinner"></span>';
+        btn.innerHTML = '<span class="sodek-gb-spinner"></span> Saving...';
 
         try {
             const formData = new FormData(this);
@@ -1227,7 +1267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const btn = this.querySelector('button[type="submit"]');
         btn.disabled = true;
-        btn.innerHTML = '<span class="sodek-gb-spinner"></span>';
+        btn.innerHTML = '<span class="sodek-gb-spinner"></span> Saving...';
 
         try {
             const formData = new FormData(this);
@@ -1259,7 +1299,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const btn = this.querySelector('button[type="submit"]');
             btn.disabled = true;
-            btn.innerHTML = '<span class="sodek-gb-spinner"></span>';
+            btn.innerHTML = '<span class="sodek-gb-spinner"></span> Saving...';
 
             try {
                 const formData = new FormData(this);

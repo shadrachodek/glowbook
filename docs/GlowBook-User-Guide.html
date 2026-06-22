@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowBook User Guide</title>
+    <style>
+        :root {
+            --primary: #f25f45;
+            --primary-dark: #d94b34;
+            --ink: #2d231d;
+            --muted: #76695f;
+            --canvas: #f7f2ec;
+            --card: #fffdfb;
+            --line: #eadfce;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--canvas);
+            padding: 0;
+        }
+
+        .page {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card);
+            min-height: 100vh;
+        }
+
+        /* Cover Page */
+        .cover {
+            background: linear-gradient(135deg, var(--ink) 0%, #4a3830 100%);
+            color: white;
+            padding: 80px 60px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            page-break-after: always;
+        }
+
+        .cover h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .cover .subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+
+        .cover .tagline {
+            font-size: 1.1rem;
+            opacity: 0.7;
+            margin-top: auto;
+        }
+
+        .cover .logo {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            border-radius: 24px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        /* Content Pages */
+        .content {
+            padding: 60px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin: 2.5rem 0 1rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--ink);
+            margin: 2rem 0 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--muted);
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--canvas);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            color: var(--ink);
+        }
+
+        .toc ol {
+            list-style: none;
+            counter-reset: toc-counter;
+        }
+
+        .toc li {
+            counter-increment: toc-counter;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+        }
+
+        .toc li:last-child {
+            border-bottom: none;
+        }
+
+        .toc li::before {
+            content: counter(toc-counter);
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--canvas);
+            border-left: 4px solid var(--primary);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box.tip {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+            background: #fffbeb;
+        }
+
+        .info-box.important {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        /* Diagram Boxes */
+        .diagram {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            line-height: 1.4;
+        }
+
+        .diagram .highlight {
+            color: var(--primary);
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-header {
+            background: var(--canvas);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .dashboard-header .eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .dashboard-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .dashboard-header p {
+            margin: 0.5rem 0 0;
+            color: var(--muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--canvas);
+        }
+
+        .stat-box {
+            background: var(--card);
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--ink);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+        }
+
+        th {
+            background: var(--canvas);
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        tr:hover {
+            background: var(--canvas);
+        }
+
+        /* Status Badges */
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-noshow {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* Checklists */
+        .checklist {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.65rem;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--line);
+            border-radius: 4px;
+        }
+
+        /* Steps */
+        .steps {
+            margin: 1.5rem 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            margin: 0 0 0.5rem;
+            color: var(--ink);
+        }
+
+        .step-content p {
+            margin: 0;
+        }
+
+        /* Flow Diagram */
+        .flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .flow-box {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--muted);
+        }
+
+        .flow-branch {
+            display: flex;
+            gap: 2rem;
+            margin: 0.5rem 0;
+        }
+
+        .flow-branch .flow-box {
+            font-size: 0.875rem;
+        }
+
+        /* Image Placeholder */
+        .img-placeholder {
+            background: var(--canvas);
+            border: 2px dashed var(--line);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: var(--muted);
+            margin: 1rem 0;
+        }
+
+        .img-placeholder::before {
+            content: '📷';
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page {
+                box-shadow: none;
+            }
+
+            .cover {
+                page-break-after: always;
+            }
+
+            h1, h2 {
+                page-break-after: avoid;
+            }
+
+            .dashboard-preview, .diagram, table {
+                page-break-inside: avoid;
+            }
+
+            section {
+                page-break-before: always;
+            }
+
+            section:first-of-type {
+                page-break-before: avoid;
+            }
+        }
+
+        /* Section dividers */
+        section {
+            padding-top: 1rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--line);
+            margin: 3rem 0;
+        }
+
+        /* Button styles for examples */
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--ink);
+        }
+
+        /* Form example */
+        .form-example {
+            background: var(--canvas);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .form-row {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: var(--ink);
+        }
+
+        .form-input {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--card);
+            color: var(--ink);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Cover Page -->
+        <div class="cover">
+            <div class="logo">GB</div>
+            <h1>GlowBook</h1>
+            <p class="subtitle">Booking System User Guide</p>
+            <p class="tagline">Everything you need to manage your appointments</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2>Table of Contents</h2>
+                <ol>
+                    <li>Getting Started</li>
+                    <li>Understanding the Dashboard</li>
+                    <li>Managing Bookings</li>
+                    <li>Managing Services</li>
+                    <li>Service Categories</li>
+                    <li>Before & After Appointment Workflow</li>
+                    <li>Quick Reference</li>
+                </ol>
+            </div>
+
+            <hr>
+
+            <!-- Section 1: Getting Started -->
+            <section>
+                <h1>1. Getting Started</h1>
+
+                <h2>Logging In</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Go to your website's admin area</h4>
+                            <p>Visit <strong>yourwebsite.com/wp-admin</strong> in your browser</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Enter your credentials</h4>
+                            <p>Type your username and password, then click "Log In"</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>You're in!</h4>
+                            <p>You'll be taken directly to the GlowBook Dashboard</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="img-placeholder">Screenshot: WordPress login page</div>
+            </section>
+
+            <hr>
+
+            <!-- Section 2: Dashboard -->
+            <section>
+                <h1>2. Understanding the Dashboard</h1>
+
+                <p>When you log in, you'll see the <strong>GlowBook Dashboard</strong> - your command center for managing appointments.</p>
+
+                <h2>Dashboard Overview</h2>
+
+                <div class="dashboard-preview">
+                    <div class="dashboard-header">
+                        <div class="eyebrow">Booking overview</div>
+                        <h3>Good day, Sarah</h3>
+                        <p>Here's what is happening with your appointments.</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-number">3</span>
+                            <span class="stat-label">Appointments today</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">This week</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">2</span>
+                            <span class="stat-label">Awaiting confirmation</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">$450</span>
+                            <span class="stat-label">Deposits this month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Dashboard Stats Explained</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th>What It Means</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Appointments Today</strong></td>
+                            <td>Number of bookings scheduled for today</td>
+                        </tr>
+                        <tr>
+                            <td><strong>This Week</strong></td>
+                            <td>Total bookings for the current week</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Awaiting Confirmation</strong></td>
+                            <td>Bookings that need your approval (Pending status)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deposits This Month</strong></td>
+                            <td>Total deposit payments received this month</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <!-- Section 3: Managing Bookings -->
+            <section>
+                <h1>3. Managing Bookings</h1>
+
+                <h2>How to Create a New Booking</h2>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Click "Add Booking"</h4>
+                            <p>Find the button on the dashboard or go to GlowBook → Bookings → Add New</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Fill in the booking details</h4>
+                            <p>Select service, date, time, and enter customer information</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Set the status</h4>
+                            <p>Usually "Confirmed" for manual bookings</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Click "Publish"</h4>
+                            <p>Save the booking - customer will receive confirmation email</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-example">
+                    <h4 style="margin-top:0;">Required Fields</h4>
+                    <div class="form-row">
+                        <label class="form-label">Service</label>
+                        <select class="form-input"><option>Select a service...</option></select>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Date</label>
+                        <input type="text" class="form-input" value="June 25, 2026" readonly>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Time</label>
+                        <select class="form-input"><option>9:00 AM</option></select>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Customer Name</label>
+                        <input type="text" class="form-input" placeholder="Jane Doe">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Customer Phone</label>
+                        <input type="text" class="form-input" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Customer Email</label>
+                        <input type="text" class="form-input" placeholder="jane@email.com">
+                    </div>
+                </div>
+
+                <h2>Booking Statuses</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Meaning</th>
+                            <th>When to Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="status status-pending">Pending</span></td>
+                            <td>Waiting for approval</td>
+                            <td>New online bookings that need review</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                            <td>Approved and scheduled</td>
+                            <td>After you approve a booking</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-completed">Completed</span></td>
+                            <td>Service was delivered</td>
+                            <td>After the appointment is done</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                            <td>Appointment cancelled</td>
+                            <td>Client or you cancelled</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-noshow">No Show</span></td>
+                            <td>Client didn't show up</td>
+                            <td>Client missed appointment</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>How to View All Bookings</h2>
+                <p>Go to <strong>GlowBook → Bookings</strong> in the menu to see all your appointments. Use the tabs at the top to filter by status.</p>
+
+                <div class="img-placeholder">Screenshot: Bookings list page with filter tabs</div>
+            </section>
+
+            <hr>
+
+            <!-- Section 4: Managing Services -->
+            <section>
+                <h1>4. Managing Services</h1>
+
+                <h2>How to Add a New Service</h2>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Go to GlowBook → Services → Add New</h4>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Fill in the service details</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Service Name</strong></td>
+                            <td>Clear, descriptive name</td>
+                            <td>"Box Braids - Medium Length"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Description</strong></td>
+                            <td>What's included, what to expect</td>
+                            <td>"Includes wash, condition, and styling..."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Duration</strong></td>
+                            <td>How long in minutes</td>
+                            <td>180 (for 3 hours)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Price</strong></td>
+                            <td>Display price (informational)</td>
+                            <td>$250</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deposit</strong></td>
+                            <td>Required deposit amount</td>
+                            <td>$75</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Category</strong></td>
+                            <td>Service category</td>
+                            <td>Braids</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Featured Image</strong></td>
+                            <td>Photo of the style</td>
+                            <td>Upload a portfolio image</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box tip">
+                    <strong>Important Checkboxes</strong>
+                    <p>✅ <strong>Show on Frontend</strong> - Makes it visible on your website<br>
+                    ✅ <strong>Allow Online Booking</strong> - Lets clients book online</p>
+                </div>
+
+                <h2>Tips for Service Setup</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="info-box tip">
+                        <strong>✅ DO:</strong>
+                        <ul style="margin: 0.5rem 0 0 1rem;">
+                            <li>Use clear, descriptive names</li>
+                            <li>Include what's included</li>
+                            <li>Set accurate duration times</li>
+                            <li>Add beautiful photos</li>
+                            <li>Set appropriate deposits</li>
+                        </ul>
+                    </div>
+                    <div class="info-box important">
+                        <strong>❌ DON'T:</strong>
+                        <ul style="margin: 0.5rem 0 0 1rem;">
+                            <li>Use vague names like "Style 1"</li>
+                            <li>Forget to set the duration</li>
+                            <li>Leave deposit at $0</li>
+                            <li>Skip the featured image</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- Section 5: Categories -->
+            <section>
+                <h1>5. Service Categories</h1>
+
+                <p>Categories help organize your services and make it easier for clients to find what they want.</p>
+
+                <h2>How to Add a Category</h2>
+                <p>Go to <strong>GlowBook → Services → Categories</strong></p>
+
+                <div class="form-example">
+                    <div class="form-row">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-input" placeholder="Braids">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Description (optional)</label>
+                        <textarea class="form-input" rows="2" placeholder="All braiding styles including box braids, knotless, and more."></textarea>
+                    </div>
+                    <button class="btn">Add New Category</button>
+                </div>
+
+                <h2>Suggested Categories</h2>
+                <table>
+                    <tbody>
+                        <tr><td><strong>Braids</strong></td><td>Box braids, knotless, tribal, etc.</td></tr>
+                        <tr><td><strong>Locs</strong></td><td>Starter locs, retwists, interlocks</td></tr>
+                        <tr><td><strong>Twists</strong></td><td>Senegalese, Marley, passion twists</td></tr>
+                        <tr><td><strong>Crochet</strong></td><td>Crochet braids and styles</td></tr>
+                        <tr><td><strong>Natural Styles</strong></td><td>Cornrows, flat twists, updos</td></tr>
+                        <tr><td><strong>Kids</strong></td><td>Children's styling services</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <!-- Section 6: Workflow -->
+            <section>
+                <h1>6. Before & After Appointment Workflow</h1>
+
+                <h2>When a New Booking Comes In</h2>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Check Your Dashboard</h4>
+                            <p>Look for bookings with <span class="status status-pending">Pending</span> status</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Review the Booking</h4>
+                            <p>Check service, date/time, customer notes, and payment status</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Confirm or Contact</h4>
+                            <p>Change status to <span class="status status-confirmed">Confirmed</span> or contact the customer for more info</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Checklist Before Confirming</h3>
+                <ul class="checklist">
+                    <li>Check your calendar - are you available?</li>
+                    <li>Is the service duration realistic?</li>
+                    <li>Has the deposit been paid?</li>
+                    <li>Any special requests you can accommodate?</li>
+                    <li>Do you need a hair consultation?</li>
+                </ul>
+
+                <h3>Day Before the Appointment</h3>
+                <ul class="checklist">
+                    <li>Review tomorrow's schedule</li>
+                    <li>Check customer notes</li>
+                    <li>Prepare supplies needed</li>
+                    <li>Send reminder if needed</li>
+                </ul>
+
+                <hr>
+
+                <h2>After the Appointment</h2>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Open the booking</h4>
+                            <p>GlowBook → Bookings → Click on the booking</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Change status to "Completed"</h4>
+                            <p>Select <span class="status status-completed">Completed</span> from the status dropdown</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Add admin notes (optional)</h4>
+                            <p>Record products used, client preferences, or other notes</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Click "Update"</h4>
+                            <p>Save your changes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Post-Appointment Checklist</h3>
+                <ul class="checklist">
+                    <li>Mark booking as "Completed"</li>
+                    <li>Add any admin notes for your records</li>
+                    <li>Collect remaining balance</li>
+                    <li>Ask for a review or referral</li>
+                    <li>Upload photos to your portfolio</li>
+                </ul>
+
+                <hr>
+
+                <h2>Handling No-Shows</h2>
+                <div class="info-box warning">
+                    <strong>If a client doesn't show up:</strong>
+                    <ol style="margin: 0.5rem 0 0 1rem;">
+                        <li>Wait 15-30 minutes past appointment time</li>
+                        <li>Attempt to contact the client</li>
+                        <li>If no response, open the booking</li>
+                        <li>Change status to <span class="status status-noshow">No Show</span></li>
+                        <li>Add notes about contact attempts</li>
+                    </ol>
+                    <p style="margin-top: 1rem;"><strong>Tip:</strong> Your deposit policy protects you from no-shows!</p>
+                </div>
+
+                <h2>Handling Cancellations</h2>
+                <div class="info-box">
+                    <strong>If a client needs to cancel:</strong>
+                    <ol style="margin: 0.5rem 0 0 1rem;">
+                        <li>Open the booking</li>
+                        <li>Change status to <span class="status status-cancelled">Cancelled</span></li>
+                        <li>Add notes about the cancellation</li>
+                        <li>Process any refund according to your policy</li>
+                    </ol>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- Section 7: Quick Reference -->
+            <section>
+                <h1>7. Quick Reference</h1>
+
+                <h2>Booking Status Flow</h2>
+
+                <div class="flow">
+                    <div class="flow-box" style="background: var(--canvas);">📬 New Booking</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box status-pending">Pending</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box status-confirmed">Confirmed</div>
+                    <div class="flow-branch">
+                        <div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-box status-completed">Completed ✓</div>
+                        </div>
+                        <div>
+                            <div class="flow-arrow" style="transform: rotate(45deg);">↘</div>
+                            <div class="flow-box status-noshow">No Show</div>
+                        </div>
+                        <div>
+                            <div class="flow-arrow" style="transform: rotate(-45deg);">↗</div>
+                            <div class="flow-box status-cancelled">Cancelled</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Menu Navigation</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Menu Item</th>
+                            <th>What It Does</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GlowBook (Dashboard)</strong></td>
+                            <td>Overview of your bookings and stats</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bookings</strong></td>
+                            <td>View, add, and manage all appointments</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Services</strong></td>
+                            <td>Add and edit your service offerings</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Categories</strong></td>
+                            <td>Organize services into groups</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Status Color Guide</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Color</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="status status-pending">Pending</span></td>
+                            <td>Yellow/Orange</td>
+                            <td>Needs your attention</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-confirmed">Confirmed</span></td>
+                            <td>Green</td>
+                            <td>Good to go</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-completed">Completed</span></td>
+                            <td>Blue</td>
+                            <td>Finished</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                            <td>Red</td>
+                            <td>Cancelled</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status status-noshow">No Show</span></td>
+                            <td>Gray</td>
+                            <td>Client didn't show</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <div style="text-align: center; padding: 2rem 0; color: var(--muted);">
+                    <p><strong>GlowBook Booking System</strong></p>
+                    <p>Document Version 1.0 • June 2026</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

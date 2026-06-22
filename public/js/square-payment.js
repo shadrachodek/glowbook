@@ -13,9 +13,13 @@
     var SodekGbSquarePayment = {
         payments: null,
         card: null,
+        cashAppPay: null,
+        cashAppPaymentRequest: null,
+        currentPaymentMethod: 'card',
         initialized: false,
         initializing: false,
         isProcessing: false,
+        cashAppToken: null,
 
         /**
          * Initialize Square Web Payments SDK.
@@ -82,6 +86,13 @@
                 }
 
                 await this.initializeCard();
+
+                // Initialize Cash App Pay if enabled
+                if (sodekGbSquare.cashAppPayEnabled && $('#sodek-gb-cashapp-container').length > 0) {
+                    await this.initializeCashApp();
+                }
+
+                this.bindPaymentTabs();
                 this.initialized = true;
                 this.initializing = false;
 
@@ -90,6 +101,174 @@
                 this.showError(sodekGbSquare.strings.paymentError);
                 this.initializing = false;
             }
+        },
+
+        /**
+         * Bind payment method tab events.
+         */
+        bindPaymentTabs: function() {
+            var self = this;
+            var $tabs = $('.sodek-gb-payment-tab');
+
+            if ($tabs.length === 0) {
+                return;
+            }
+
+            $tabs.on('click', function(e) {
+                e.preventDefault();
+                var method = $(this).data('method');
+                self.switchPaymentMethod(method);
+            });
+        },
+
+        /**
+         * Switch payment method.
+         *
+         * @param {string} method Payment method ('card' or 'cashapp').
+         */
+        switchPaymentMethod: function(method) {
+            this.currentPaymentMethod = method;
+            $('#sodek_gb_payment_method_type').val(method);
+
+            // Update tabs
+            $('.sodek-gb-payment-tab').removeClass('active').attr('aria-selected', 'false');
+            $('.sodek-gb-payment-tab[data-method="' + method + '"]').addClass('active').attr('aria-selected', 'true');
+
+            // Show/hide payment forms
+            $('.sodek-gb-payment-method-card').toggle(method === 'card');
+            $('.sodek-gb-payment-method-cashapp').toggle(method === 'cashapp');
+
+            // Clear any errors
+            this.clearError();
+
+            // Clear Cash App token when switching to card to prevent stale token issues
+            if (method === 'card') {
+                this.cashAppToken = null;
+                $('#sodek_gb_card_token').val('');
+            }
+
+            // Update Cash App payment request amount if switching to Cash App
+            if (method === 'cashapp' && this.cashAppPay) {
+                this.updateCashAppAmount();
+            }
+        },
+
+        /**
+         * Update Cash App payment amount.
+         */
+        updateCashAppAmount: function() {
+            var amount = this.getCurrentPaymentAmount();
+            if (this.cashAppPaymentRequest && amount > 0) {
+                try {
+                    this.cashAppPaymentRequest.update({
+                        total: {
+                            amount: amount.toFixed(2),
+                            label: 'Booking Deposit'
+                        }
+                    });
+                } catch (err) {
+                    console.warn('GlowBook Square: Could not update Cash App amount:', err);
+                }
+            }
+        },
+
+        /**
+         * Get current payment amount from the form.
+         *
+         * @returns {number} Amount in dollars.
+         */
+        getCurrentPaymentAmount: function() {
+            var $customDeposit = $('#sodek-gb-custom-deposit');
+            if ($customDeposit.length > 0) {
+                return parseFloat($customDeposit.val()) || 0;
+            }
+            // Fallback: try deposit input
+            var $depositInput = $('#sodek-gb-deposit-input');
+            if ($depositInput.length > 0) {
+                return parseFloat($depositInput.val()) || 0;
+            }
+            return 0;
+        },
+
+        /**
+         * Initialize Cash App Pay.
+         */
+        initializeCashApp: async function() {
+            var self = this;
+            var $container = $('#sodek-gb-cashapp-container');
+
+            if ($container.length === 0) {
+                return;
+            }
+
+            try {
+                var initialAmount = this.getCurrentPaymentAmount() || 1.00;
+
+                // Create payment request
+                this.cashAppPaymentRequest = this.payments.paymentRequest({
+                    countryCode: sodekGbSquare.countryCode || 'US',
+                    currencyCode: sodekGbSquare.currency || 'USD',
+                    total: {
+                        amount: initialAmount.toFixed(2),
+                        label: 'Booking Deposit'
+                    }
+                });
+
+                // Initialize Cash App Pay
+                this.cashAppPay = await this.payments.cashAppPay(this.cashAppPaymentRequest, {
+                    redirectURL: window.location.href.split('?')[0],
+                    referenceId: 'glowbook-' + Date.now()
+                });
+
+                // Attach to container
+                await this.cashAppPay.attach('#sodek-gb-cashapp-container');
+
+                // Remove loading state
+                $container.find('.sodek-gb-cashapp-loading').hide();
+
+                // Listen for tokenization
+                this.cashAppPay.addEventListener('ontokenization', function(event) {
+                    var tokenResult = event.detail.tokenResult;
+
+                    if (tokenResult.status === 'OK') {
+                        self.cashAppToken = tokenResult.token;
+                        $('#sodek_gb_card_token').val(tokenResult.token);
+
+                        // Trigger form submission or notify that payment is ready
+                        $(document).trigger('sodek_gb_cashapp_tokenized', [tokenResult.token]);
+                    } else {
+                        // Clear any stale token on failure
+                        self.cashAppToken = null;
+                        $('#sodek_gb_card_token').val('');
+                        var errorMessage = self.parseCashAppError(tokenResult);
+                        self.showError(errorMessage);
+                    }
+                });
+
+                // Store reference
+                window.glowbookCashAppPay = this.cashAppPay;
+
+            } catch (error) {
+                console.error('GlowBook Square: Failed to initialize Cash App Pay:', error);
+                $container.find('.sodek-gb-cashapp-loading').html(
+                    '<span style="color: #d92d20;">Cash App Pay is not available. Please use card payment.</span>'
+                );
+            }
+        },
+
+        /**
+         * Parse Cash App error to user-friendly message.
+         *
+         * @param {Object} result Token result.
+         * @returns {string} Error message.
+         */
+        parseCashAppError: function(result) {
+            if (!result.errors || result.errors.length === 0) {
+                return 'Cash App payment failed. Please try again or use card payment.';
+            }
+
+            var error = result.errors[0];
+            return error.message || 'Cash App payment failed. Please try again.';
         },
 
         /**
@@ -198,13 +377,24 @@
         },
 
         /**
-         * Tokenize the card.
+         * Tokenize the payment method.
          *
-         * @returns {Promise<string|null>} Card token or null on failure.
+         * @returns {Promise<string|null>} Token or null on failure.
          */
         tokenize: async function() {
             var self = this;
 
+            // If Cash App Pay is selected and we already have a token, return it
+            if (this.currentPaymentMethod === 'cashapp') {
+                if (this.cashAppToken) {
+                    return this.cashAppToken;
+                }
+                // Cash App Pay requires user interaction - show message
+                this.showError('Please click the Cash App Pay button to complete payment.');
+                return null;
+            }
+
+            // Card payment flow
             if (!this.card) {
                 this.showError(sodekGbSquare.strings.paymentError);
                 return null;
@@ -238,6 +428,24 @@
                 this.isProcessing = false;
                 return null;
             }
+        },
+
+        /**
+         * Check if Cash App Pay token is ready.
+         *
+         * @returns {boolean}
+         */
+        hasCashAppToken: function() {
+            return this.currentPaymentMethod === 'cashapp' && this.cashAppToken !== null;
+        },
+
+        /**
+         * Get current payment method type.
+         *
+         * @returns {string} 'card' or 'cashapp'.
+         */
+        getPaymentMethodType: function() {
+            return this.currentPaymentMethod;
         },
 
         /**
@@ -348,7 +556,7 @@
         },
 
         /**
-         * Reset the card form.
+         * Reset the payment forms.
          */
         reset: function() {
             if (this.card) {
@@ -357,6 +565,7 @@
             this.clearError();
             $('#sodek_gb_card_token').val('');
             $('#sodek_gb_verification_token').val('');
+            this.cashAppToken = null;
             this.isProcessing = false;
         },
 
@@ -368,6 +577,12 @@
                 this.card.destroy();
                 this.card = null;
             }
+            if (this.cashAppPay) {
+                this.cashAppPay.destroy();
+                this.cashAppPay = null;
+            }
+            this.cashAppPaymentRequest = null;
+            this.cashAppToken = null;
             this.payments = null;
             this.initialized = false;
         }
