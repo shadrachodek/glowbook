@@ -355,11 +355,12 @@ class Sodek_GB_REST_API {
 
     /**
      * Admin permission check.
+     * Allows users with WooCommerce management or GlowBook booking capabilities.
      *
      * @return bool
      */
     public static function admin_permission_check() {
-        return current_user_can( 'manage_woocommerce' );
+        return current_user_can( 'manage_woocommerce' ) || current_user_can( 'edit_sodek_gb_bookings' );
     }
 
     /**
