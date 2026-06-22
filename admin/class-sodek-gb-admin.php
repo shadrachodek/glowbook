@@ -394,6 +394,16 @@ class Sodek_GB_Admin {
             'sodek-gb-settings',
             array( __CLASS__, 'render_settings_page' )
         );
+
+        // Help & Documentation
+        add_submenu_page(
+            'sodek-gb-dashboard',
+            __( 'Help & Docs', 'glowbook' ),
+            __( 'Help & Docs', 'glowbook' ),
+            $booking_capability,
+            'sodek-gb-help',
+            array( __CLASS__, 'render_help_page' )
+        );
     }
 
     /**
@@ -641,6 +651,7 @@ class Sodek_GB_Admin {
             'sodek-gb-transactions',
             'sodek-gb-import-export',
             'sodek-gb-settings',
+            'sodek-gb-help',
         );
 
         // All GlowBook post types
@@ -1895,6 +1906,13 @@ class Sodek_GB_Admin {
      */
     public static function render_settings_page() {
         include SODEK_GB_PLUGIN_DIR . 'admin/views/settings.php';
+    }
+
+    /**
+     * Render help and documentation page.
+     */
+    public static function render_help_page() {
+        include SODEK_GB_PLUGIN_DIR . 'admin/views/help.php';
     }
 
     /**
