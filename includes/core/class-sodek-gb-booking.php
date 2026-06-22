@@ -510,30 +510,148 @@ class Sodek_GB_Booking {
         ?>
         <style>
             .sodek-gb-payment-box { padding: 0; }
-            .sodek-gb-payment-summary { background: #f8f9fa; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
-            .sodek-gb-payment-summary-row { display: flex; justify-content: space-between; padding: 4px 0; }
-            .sodek-gb-payment-summary-row.total { border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px; font-weight: 600; }
-            .sodek-gb-payment-summary-row.due { color: #d63638; }
-            .sodek-gb-payment-summary-row.paid-full { color: #00a32a; }
-            .sodek-gb-record-payment { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
-            .sodek-gb-record-payment h4 { margin: 0 0 12px 0; font-size: 13px; }
-            .sodek-gb-payment-field { margin-bottom: 10px; }
-            .sodek-gb-payment-field label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 12px; }
+            .sodek-gb-payment-summary {
+                background: linear-gradient(135deg, #fdf8f3 0%, #f9f3eb 100%);
+                padding: 16px;
+                border-radius: 12px;
+                margin-bottom: 16px;
+                border: 1px solid rgba(197, 168, 141, 0.15);
+            }
+            .sodek-gb-payment-summary-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                font-size: 13px;
+            }
+            .sodek-gb-payment-summary-row:first-child { padding-top: 0; }
+            .sodek-gb-payment-summary-row.total {
+                border-top: 1px solid rgba(197, 168, 141, 0.25);
+                margin-top: 8px;
+                padding-top: 12px;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            .sodek-gb-payment-summary-row.due { color: #c53030; }
+            .sodek-gb-payment-summary-row.paid-full { color: #276749; }
+            .sodek-gb-record-payment {
+                background: #fff;
+                border: 1px solid rgba(197, 168, 141, 0.2);
+                padding: 16px;
+                border-radius: 12px;
+                margin-bottom: 16px;
+            }
+            .sodek-gb-record-payment h4 {
+                margin: 0 0 14px 0;
+                font-size: 13px;
+                font-weight: 600;
+                letter-spacing: 0.02em;
+            }
+            .sodek-gb-payment-field { margin-bottom: 14px; }
+            .sodek-gb-payment-field:last-of-type { margin-bottom: 10px; }
+            .sodek-gb-payment-field label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 6px;
+                font-size: 11px;
+                color: #6b5c4d;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
             .sodek-gb-payment-field input,
-            .sodek-gb-payment-field select { width: 100%; }
-            .sodek-gb-quick-amounts { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-            .sodek-gb-quick-amounts button { padding: 4px 10px; font-size: 11px; cursor: pointer; background: #f0f0f1; border: 1px solid #c3c4c7; border-radius: 3px; }
-            .sodek-gb-quick-amounts button:hover { background: #e0e0e0; }
-            .sodek-gb-payment-history { margin-top: 15px; }
-            .sodek-gb-payment-history h4 { margin: 0 0 10px 0; font-size: 13px; }
-            .sodek-gb-payment-history-empty { color: #666; font-style: italic; font-size: 12px; }
-            .sodek-gb-payment-history-list { font-size: 12px; }
-            .sodek-gb-payment-history-item { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+            .sodek-gb-payment-field select {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid rgba(197, 168, 141, 0.25);
+                border-radius: 8px;
+                font-size: 14px;
+                background: #fff;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+            .sodek-gb-payment-field input:focus,
+            .sodek-gb-payment-field select:focus {
+                border-color: rgba(176, 137, 104, 0.5);
+                box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.1);
+                outline: none;
+            }
+            .sodek-gb-quick-amounts {
+                display: flex;
+                gap: 8px;
+                margin-top: 10px;
+                flex-wrap: wrap;
+            }
+            .sodek-gb-quick-amounts button {
+                padding: 8px 14px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                background: linear-gradient(135deg, #fdf8f3 0%, #f5ede4 100%);
+                border: 1px solid rgba(197, 168, 141, 0.3);
+                border-radius: 8px;
+                transition: all 0.2s ease;
+            }
+            .sodek-gb-quick-amounts button:hover {
+                background: linear-gradient(135deg, #f5ede4 0%, #ebe3d8 100%);
+                border-color: rgba(176, 137, 104, 0.5);
+                transform: translateY(-1px);
+            }
+            .sodek-gb-payment-history {
+                margin-top: 0;
+                padding-top: 16px;
+                border-top: 1px solid rgba(197, 168, 141, 0.15);
+            }
+            .sodek-gb-payment-history h4 {
+                margin: 0 0 12px 0;
+                font-size: 13px;
+                font-weight: 600;
+            }
+            .sodek-gb-payment-history-empty {
+                color: #6b5c4d;
+                font-style: italic;
+                font-size: 12px;
+                padding: 12px;
+                background: #fafafa;
+                border-radius: 8px;
+                text-align: center;
+            }
+            .sodek-gb-payment-history-list {
+                font-size: 13px;
+                background: #fafafa;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            .sodek-gb-payment-history-item {
+                padding: 12px 14px;
+                border-bottom: 1px solid rgba(197, 168, 141, 0.12);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #fff;
+            }
             .sodek-gb-payment-history-item:last-child { border-bottom: none; }
-            .sodek-gb-payment-history-item .amount { font-weight: 600; }
-            .sodek-gb-payment-history-item .amount.refund { color: #d63638; }
-            .sodek-gb-payment-history-item .details { color: #666; font-size: 11px; }
-            .sodek-gb-status-blocked { background: #fcf0e3; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #9a6700; font-size: 12px; }
+            .sodek-gb-payment-history-item:nth-child(even) { background: #fdfcfa; }
+            .sodek-gb-payment-history-item .amount {
+                font-weight: 700;
+                font-size: 14px;
+                color: #276749;
+            }
+            .sodek-gb-payment-history-item .amount.refund { color: #c53030; }
+            .sodek-gb-payment-history-item .details {
+                color: #6b5c4d;
+                font-size: 11px;
+                margin-top: 2px;
+            }
+            .sodek-gb-status-blocked {
+                background: linear-gradient(135deg, #fef3e2 0%, #fdebd0 100%);
+                padding: 14px;
+                border-radius: 10px;
+                margin-bottom: 16px;
+                color: #8a6914;
+                font-size: 12px;
+                border: 1px solid rgba(218, 165, 32, 0.2);
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+            }
         </style>
 
         <div class="sodek-gb-payment-box">
