@@ -46,6 +46,9 @@ class Sodek_GB_Admin {
         add_action( 'admin_init', array( __CLASS__, 'handle_import_export' ) );
         add_action( 'admin_init', array( __CLASS__, 'redirect_booking_admin_pages' ) );
 
+        // Allow booking admin role to save settings.
+        add_filter( 'option_page_capability_sodek_gb_settings', array( __CLASS__, 'settings_page_capability' ) );
+
         // Dashboard widget
         add_action( 'wp_dashboard_setup', array( __CLASS__, 'add_dashboard_widget' ) );
 
@@ -229,6 +232,16 @@ class Sodek_GB_Admin {
      */
     public static function get_booking_admin_capability() {
         return self::BOOKING_ADMIN_ACCESS_CAP;
+    }
+
+    /**
+     * Allow booking admin role to save settings.
+     *
+     * @param string $capability The capability required.
+     * @return string
+     */
+    public static function settings_page_capability( $capability ) {
+        return self::get_booking_admin_capability();
     }
 
     /**

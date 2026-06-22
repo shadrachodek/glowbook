@@ -4,7 +4,7 @@
  * Plugin Name: GlowBook
  * Plugin URI: https://github.com/shadrachodek/glowbook
  * Description: Premium standalone booking system for beauty salons and service businesses with deposit handling, customer portal, staff management, and optional WooCommerce integration.
- * Version: 2.3.21
+ * Version: 2.3.22
  * Author: Shadrach Odekhiran
  * Author URI: https://shadrachodek.com
  * Text Domain: glowbook
@@ -19,6 +19,16 @@
  * @package GlowBook
  *
  * ## Changelog
+ *
+ * ### 2.3.22
+ * - Add Help & Documentation page in admin menu with simplified guides for non-technical users
+ * - Allow booking admin role to save plugin settings
+ * - Improve documentation with step-by-step guides, FAQ section, and visual styling
+ *
+ * ### 2.3.21
+ * - Redesign Payment Details metabox with BFB-style clean layout
+ * - Fix calendar REST API permissions for booking role users
+ * - Remove unwanted third-party plugin metaboxes from booking edit screen
  *
  * ### 2.3.20
  * - Add per-service override for returning/new customer payment rules
@@ -213,7 +223,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Plugin constants
-define( 'SODEK_GB_VERSION', '2.3.21' );
+define( 'SODEK_GB_VERSION', '2.3.22' );
 define( 'SODEK_GB_PLUGIN_FILE', __FILE__ );
 define( 'SODEK_GB_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SODEK_GB_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
