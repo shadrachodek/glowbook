@@ -510,144 +510,191 @@ class Sodek_GB_Booking {
         ?>
         <style>
             .sodek-gb-payment-box { padding: 0; }
+
+            /* Payment Summary - Clean minimal style */
             .sodek-gb-payment-summary {
-                background: linear-gradient(135deg, #fdf8f3 0%, #f9f3eb 100%);
-                padding: 16px;
-                border-radius: 12px;
+                padding: 0 0 16px 0;
                 margin-bottom: 16px;
-                border: 1px solid rgba(197, 168, 141, 0.15);
+                border-bottom: 1px solid #e5e5e5;
             }
             .sodek-gb-payment-summary-row {
                 display: flex;
                 justify-content: space-between;
-                padding: 8px 0;
+                padding: 4px 0;
                 font-size: 13px;
+                color: #1e1e1e;
             }
-            .sodek-gb-payment-summary-row:first-child { padding-top: 0; }
             .sodek-gb-payment-summary-row.total {
-                border-top: 1px solid rgba(197, 168, 141, 0.25);
-                margin-top: 8px;
-                padding-top: 12px;
-                font-weight: 700;
-                font-size: 14px;
+                font-weight: 600;
             }
-            .sodek-gb-payment-summary-row.due { color: #c53030; }
-            .sodek-gb-payment-summary-row.paid-full { color: #276749; }
+            .sodek-gb-payment-summary-row.due span:first-child { color: #d63638; }
+            .sodek-gb-payment-summary-row.due span:last-child { color: #d63638; font-weight: 600; }
+            .sodek-gb-payment-summary-row.paid-full span:first-child { color: #00a32a; }
+            .sodek-gb-payment-summary-row.paid-full span:last-child { color: #00a32a; font-weight: 600; }
+
+            /* Record Payment Section */
             .sodek-gb-record-payment {
-                background: #fff;
-                border: 1px solid rgba(197, 168, 141, 0.2);
-                padding: 16px;
-                border-radius: 12px;
-                margin-bottom: 16px;
+                padding: 0;
+                margin-bottom: 20px;
             }
             .sodek-gb-record-payment h4 {
-                margin: 0 0 14px 0;
+                margin: 0 0 12px 0;
                 font-size: 13px;
                 font-weight: 600;
-                letter-spacing: 0.02em;
+                color: #1e1e1e;
             }
-            .sodek-gb-payment-field { margin-bottom: 14px; }
-            .sodek-gb-payment-field:last-of-type { margin-bottom: 10px; }
+            .sodek-gb-payment-field { margin-bottom: 12px; }
             .sodek-gb-payment-field label {
                 display: block;
-                font-weight: 600;
+                font-weight: 400;
                 margin-bottom: 6px;
-                font-size: 11px;
-                color: #6b5c4d;
-                text-transform: uppercase;
-                letter-spacing: 0.04em;
+                font-size: 12px;
+                color: #50575e;
             }
             .sodek-gb-payment-field input,
             .sodek-gb-payment-field select {
                 width: 100%;
-                padding: 10px 12px;
-                border: 1px solid rgba(197, 168, 141, 0.25);
-                border-radius: 8px;
+                padding: 8px 12px;
+                border: 1px solid #c3c4c7;
+                border-radius: 4px;
                 font-size: 14px;
                 background: #fff;
-                transition: border-color 0.2s, box-shadow 0.2s;
+                transition: border-color 0.15s, box-shadow 0.15s;
+                box-sizing: border-box;
             }
             .sodek-gb-payment-field input:focus,
             .sodek-gb-payment-field select:focus {
-                border-color: rgba(176, 137, 104, 0.5);
-                box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.1);
+                border-color: #2271b1;
+                box-shadow: 0 0 0 1px #2271b1;
                 outline: none;
             }
+
+            /* Quick Amount Button - Outlined blue style */
             .sodek-gb-quick-amounts {
                 display: flex;
                 gap: 8px;
-                margin-top: 10px;
+                margin-top: 8px;
                 flex-wrap: wrap;
             }
             .sodek-gb-quick-amounts button {
-                padding: 8px 14px;
+                padding: 6px 12px;
                 font-size: 12px;
-                font-weight: 600;
+                font-weight: 500;
                 cursor: pointer;
-                background: linear-gradient(135deg, #fdf8f3 0%, #f5ede4 100%);
-                border: 1px solid rgba(197, 168, 141, 0.3);
-                border-radius: 8px;
-                transition: all 0.2s ease;
+                background: #fff;
+                color: #2271b1;
+                border: 1px solid #2271b1;
+                border-radius: 4px;
+                transition: all 0.15s ease;
             }
             .sodek-gb-quick-amounts button:hover {
-                background: linear-gradient(135deg, #f5ede4 0%, #ebe3d8 100%);
-                border-color: rgba(176, 137, 104, 0.5);
-                transform: translateY(-1px);
+                background: #f0f7fc;
+                border-color: #135e96;
+                color: #135e96;
             }
+
+            /* Record Payment Button */
+            .sodek-gb-record-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                width: 100%;
+                padding: 10px 16px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                background: #2271b1;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                margin-top: 12px;
+                transition: background 0.15s ease;
+            }
+            .sodek-gb-record-btn:hover {
+                background: #135e96;
+            }
+            .sodek-gb-record-btn:disabled {
+                background: #a7aaad;
+                cursor: not-allowed;
+            }
+            .sodek-gb-record-btn .dashicons {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+                line-height: 16px;
+            }
+            .sodek-gb-helper-text {
+                margin: 8px 0 0 0;
+                font-size: 11px;
+                color: #757575;
+                text-align: center;
+            }
+
+            /* Payment History */
             .sodek-gb-payment-history {
                 margin-top: 0;
                 padding-top: 16px;
-                border-top: 1px solid rgba(197, 168, 141, 0.15);
+                border-top: 1px solid #e5e5e5;
             }
             .sodek-gb-payment-history h4 {
-                margin: 0 0 12px 0;
-                font-size: 13px;
+                margin: 0 0 10px 0;
+                font-size: 11px;
                 font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #50575e;
             }
             .sodek-gb-payment-history-empty {
-                color: #6b5c4d;
+                color: #757575;
                 font-style: italic;
                 font-size: 12px;
                 padding: 12px;
-                background: #fafafa;
-                border-radius: 8px;
+                background: #f6f7f7;
+                border-radius: 4px;
                 text-align: center;
             }
             .sodek-gb-payment-history-list {
                 font-size: 13px;
-                background: #fafafa;
-                border-radius: 10px;
-                overflow: hidden;
             }
             .sodek-gb-payment-history-item {
-                padding: 12px 14px;
-                border-bottom: 1px solid rgba(197, 168, 141, 0.12);
+                padding: 8px 0;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                background: #fff;
+                align-items: flex-start;
+                border-bottom: 1px solid #f0f0f1;
             }
             .sodek-gb-payment-history-item:last-child { border-bottom: none; }
-            .sodek-gb-payment-history-item:nth-child(even) { background: #fdfcfa; }
-            .sodek-gb-payment-history-item .amount {
-                font-weight: 700;
-                font-size: 14px;
-                color: #276749;
+            .sodek-gb-payment-history-item .txn-info {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
             }
-            .sodek-gb-payment-history-item .amount.refund { color: #c53030; }
-            .sodek-gb-payment-history-item .details {
-                color: #6b5c4d;
+            .sodek-gb-payment-history-item .txn-date {
+                font-size: 13px;
+                color: #1e1e1e;
+                font-weight: 500;
+            }
+            .sodek-gb-payment-history-item .txn-method {
                 font-size: 11px;
-                margin-top: 2px;
+                color: #757575;
             }
+            .sodek-gb-payment-history-item .amount {
+                font-weight: 600;
+                font-size: 13px;
+                color: #00a32a;
+            }
+            .sodek-gb-payment-history-item .amount.refund { color: #d63638; }
+
+            /* Status blocked message */
             .sodek-gb-status-blocked {
-                background: linear-gradient(135deg, #fef3e2 0%, #fdebd0 100%);
-                padding: 14px;
-                border-radius: 10px;
+                background: #fcf9e8;
+                padding: 12px;
+                border-radius: 4px;
                 margin-bottom: 16px;
                 color: #8a6914;
                 font-size: 12px;
-                border: 1px solid rgba(218, 165, 32, 0.2);
+                border-left: 4px solid #dba617;
                 display: flex;
                 align-items: flex-start;
                 gap: 8px;
@@ -707,7 +754,7 @@ class Sodek_GB_Booking {
                             <?php endif; ?>
                             <?php if ( $amount_due > 0 ) : ?>
                                 <button type="button" data-amount="<?php echo esc_attr( $amount_due ); ?>">
-                                    <?php echo esc_html( sprintf( __( 'Balance %s', 'glowbook' ), self::format_price( $amount_due ) ) ); ?>
+                                    <?php echo esc_html( sprintf( __( 'Full %s', 'glowbook' ), self::format_price( $amount_due ) ) ); ?>
                                 </button>
                             <?php endif; ?>
                             <?php if ( $total_paid <= 0 && $total_price > 0 ) : ?>
@@ -729,8 +776,12 @@ class Sodek_GB_Booking {
 
                     <input type="hidden" name="sodek_gb_confirm_payment" id="sodek_gb_confirm_payment" value="0">
 
-                    <p style="margin: 0; font-size: 11px; color: #666;">
-                        <?php esc_html_e( 'Enter amount and select method, then click "Update" to record the payment.', 'glowbook' ); ?>
+                    <button type="button" class="sodek-gb-record-btn" id="sodek_gb_record_payment_btn">
+                        <span class="dashicons dashicons-yes-alt"></span>
+                        <?php esc_html_e( 'Record Payment', 'glowbook' ); ?>
+                    </button>
+                    <p class="sodek-gb-helper-text">
+                        <?php esc_html_e( 'Or fill in details and click "Update"', 'glowbook' ); ?>
                     </p>
                 </div>
             <?php endif; ?>
@@ -748,17 +799,12 @@ class Sodek_GB_Booking {
                             $method_name = self::get_payment_method_label( $txn['gateway'] );
                             ?>
                             <div class="sodek-gb-payment-history-item">
-                                <div>
-                                    <span class="amount <?php echo $is_refund ? 'refund' : ''; ?>">
-                                        <?php echo $is_refund ? '-' : '+'; ?><?php echo esc_html( self::format_price( $txn['amount'] ) ); ?>
-                                    </span>
-                                    <div class="details">
-                                        <?php echo esc_html( $method_name ); ?> &bull;
-                                        <?php echo esc_html( wp_date( 'M j, Y g:i A', strtotime( $txn['created_at'] ) ) ); ?>
-                                    </div>
+                                <div class="txn-info">
+                                    <span class="txn-date"><?php echo esc_html( wp_date( 'M j, Y', strtotime( $txn['created_at'] ) ) ); ?></span>
+                                    <span class="txn-method"><?php echo esc_html( $method_name ); ?></span>
                                 </div>
-                                <span style="font-size: 11px; color: <?php echo 'completed' === $txn['status'] ? '#00a32a' : '#d63638'; ?>;">
-                                    <?php echo esc_html( ucfirst( $txn['status'] ) ); ?>
+                                <span class="amount <?php echo $is_refund ? 'refund' : ''; ?>">
+                                    <?php echo $is_refund ? '-' : '+'; ?><?php echo esc_html( self::format_price( $txn['amount'] ) ); ?>
                                 </span>
                             </div>
                         <?php endforeach; ?>
@@ -776,11 +822,33 @@ class Sodek_GB_Booking {
                 $('#sodek_gb_payment_amount').val(parseFloat(amount).toFixed(2));
             });
 
-            // Auto-set confirm flag when amount and method are filled
+            // Record Payment button click
+            $('#sodek_gb_record_payment_btn').on('click', function(e) {
+                e.preventDefault();
+                var amount = parseFloat($('#sodek_gb_payment_amount').val()) || 0;
+                var method = $('#sodek_gb_payment_method').val();
+
+                if (amount <= 0) {
+                    alert('<?php echo esc_js( __( 'Please enter a payment amount.', 'glowbook' ) ); ?>');
+                    $('#sodek_gb_payment_amount').focus();
+                    return;
+                }
+                if (!method || method === 'select') {
+                    alert('<?php echo esc_js( __( 'Please select a payment method.', 'glowbook' ) ); ?>');
+                    $('#sodek_gb_payment_method').focus();
+                    return;
+                }
+
+                // Set confirm flag and submit the form
+                $('#sodek_gb_confirm_payment').val('1');
+                $('form#post').submit();
+            });
+
+            // Auto-set confirm flag when amount and method are filled (for Update button)
             $('form#post').on('submit', function() {
                 var amount = parseFloat($('#sodek_gb_payment_amount').val()) || 0;
                 var method = $('#sodek_gb_payment_method').val();
-                if (amount > 0 && method) {
+                if (amount > 0 && method && method !== 'select') {
                     $('#sodek_gb_confirm_payment').val('1');
                 }
             });
